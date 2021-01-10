@@ -1,0 +1,123 @@
+리포지토리 만들기
+
+--private 열람 업로드 모든 유저에게 제한
+--public 열람은 모든 유저에게 허락
+
+Root 폴더 만들기
+
+--web상의 Git과 연결될 Local Folder만들기
+
+Root 폴더 연결
+1. git init
+2. git remote add origin <repository address>
+
+
+******Push 전엔 Pull이 있다!!!!!******
+
+<어떤 파일을 올릴때 이순서대로 하면 됨>
+1. pull (먼저 당겨옴)
+-- git pull origin master
+
+2. git status(변경되거나 수정된 폴더가 없는지 체크)
+-- 현재 나의 로컬폴더와 깃과의 동기화 상태를 체크
+
+3. git add .(수정되거나 변경된 폴더가 있다면 업데이트 해줌)
+-- 새로 추가된 로컬 폴더 혹은 변경/수정된 로컬 폴더를 새로 업데이트해달라는 의미
+
+4. git commit -m "<message>" (커밋 남겨줌)
+-- 커밋 메세지
+
+5. push
+-- git push origin master
+
+
+<어떤 파일을 삭제 할때!>
+
+1. git status
+
+2. git rm --cached <특정파일명>
+-- 원격저장소에 올라간 특정 파일을 삭제할 때
+
+3. git push origin master
+
+<git 사용자 설정>
+
+1. 아이디 설정
+-- git config --global user.name "이름명"
+
+2. 이메일 설정
+-- git config --global user.email 이메일명
+
+
+<git 브랜치 만들기>
+
+개념 : 현재 브랜치를 head에 위치해 있다고 함.  예를들어 내가 지금 master브랜치다, 그러면
+나의 head는 master이다.
+
+1. 깃 브랜치 만들기
+-- git branch <브랜치명>
+
+2. 브랜치 목록 확인
+-- git branch
+
+3. 만든 브랜치 사용하기
+-- git checkout <만든 브랜치명>
+
+4. 브랜치 만듬과 동시에 체크아웃하기
+-- git checkout -b <브랜치명>
+
+<git 브랜치 병합하기>
+
+1. 먼저 브랜치를 병합하고자 하는 브랜치로 옮겨야됨.
+-- 예를들어 내가 namjun브랜치에 있는데, master브랜치로 내 코드를 합치고자 한다면,
+-- 먼저 master브랜치로 옮겨야된다
+-- git checkout master
+
+2. 그다음 병합
+-- git merge namjun --> Fast-forward(빨리감기)병합이라고 부름
+
+<git 브랜치 삭제하기>
+
+1. namjun이라는 브랜치 삭제하기
+-- git branch -d namjun
+
+2. git branch를 통해 삭제가 완료되었는지 확인
+참고로, git branch 했을때 *표시가 있는것이 내가 속한 브랜치
+
+>>git branch
+*  namjun --> 내가 속한 브랜치임
+   master
+   issue1
+
+<git config 알아보기>
+
+1. config list 알아보기
+-- git config --list
+
+2. git config 설정하기
+-- git config --global user.name "이름명"
+-- git config --global user.email <이메일명>
+
+3. git config 삭제하기
+--> git config --unset user.name
+--> git config --unset user.email
+
+4. git config 글로벌로 삭제하기
+
+--> git config --unset --global user.name
+--> git config --unset --global user.email
+
+
+
+<github bash터미널 계정 바꾸기>
+
+1. 제어판 -> 사용자 계정 -> 자격 증명 관리 -> Windows자격 증명->git과 관련된거 다 삭제
+
+2.  git init, git remote add origin <사이트>,git pull origin master,git status, git add . , git commit -m "commit text", git push origin master
+	를 하면 Login하라고 뜸, 그때 바꾸고싶은 계정과 아이디를 치면 됨
+
+3. 잘 바뀌었는지 push로 올림
+
+    
+
+  
