@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "138959232015",
+    "project_id": "sleepwell-8332f",
+    "storage_bucket": "sleepwell-8332f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:138959232015:android:b0a964a13fd015eaf4977a",
+        "android_client_info": {
+          "package_name": "kr.ac.kpu.sleepwell"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "138959232015-m4qqalt10546h3n9ggfecbqdgqlov4lr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCHLsg9sQgX3IIh6Ee_rbFp5SKOY0iR0w4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "138959232015-m4qqalt10546h3n9ggfecbqdgqlov4lr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
