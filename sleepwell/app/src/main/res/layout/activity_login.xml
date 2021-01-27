@@ -28,18 +28,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:background="@color/background"
+        android:src="@mipmap/btn_google_signin_light_normal_web"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logoView"
-        app:srcCompat="@android:drawable/btn_dropdown" />
+        app:layout_constraintTop_toBottomOf="@+id/logoView" />
 
-    <ImageButton
-        android:id="@+id/loginkakao"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/logingoogle"
-        app:srcCompat="@android:drawable/btn_dropdown" />
+
+
 </androidx.constraintlayout.widget.ConstraintLayout>
