@@ -110,6 +110,19 @@
                 android:padding="10dp"
                 />
 
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="잠든 시간333"
+                android:textSize="25sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="20sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="10sp"
+                android:padding="10dp"
+                />
         </LinearLayout>
     </ScrollView>
 
