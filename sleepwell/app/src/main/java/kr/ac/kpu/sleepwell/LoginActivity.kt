@@ -143,26 +143,6 @@ class LoginActivity : AppCompatActivity() {
     }
 }
 /*
-import android.content.Intent
-import android.os.Bundle
-import com.google.android.material.snackbar.Snackbar
-import android.util.Log
-import android.view.View
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
-import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.GoogleAuthProvider
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.quickstart.auth.R
-import com.google.firebase.quickstart.auth.databinding.ActivityGoogleBinding
-
-/**
- * Demonstrate Firebase Authentication using a Google ID Token.
- */
 class GoogleSignInActivity : BaseActivity(), View.OnClickListener {
 
     // [START declare_auth]
