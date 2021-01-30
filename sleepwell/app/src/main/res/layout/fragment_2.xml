@@ -51,24 +51,11 @@
                 android:id="@+id/childFragment"
                 android:orientation="vertical">
 
-<<<<<<< HEAD
-            <com.github.mikephil.charting.charts.LineChart
-                android:background="@drawable/tag_background_design"
-                android:id="@+id/linechart"
-                android:layout_width="match_parent"
-                android:layout_height="300dp"
-                android:layout_marginTop="20sp"
-                android:layout_marginLeft="10sp"
-                android:layout_marginRight="10sp"
-                android:padding="10dp"
-                />
+
             
         </LinearLayout>
     </ScrollView>
-=======
-            </LinearLayout>
-        </ScrollView>
     </LinearLayout>
->>>>>>> namjun
+
 
 </FrameLayout>
