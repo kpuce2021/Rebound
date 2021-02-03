@@ -24,18 +24,20 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        var x = 0
+        var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
         view.sleep_btn.setOnClickListener{
-            if(x==0) {
+            if(i==0) {
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                         SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
-                x = 1
+                i = 1
+                view.sleep_btn.setText("수면 중지")
             }
             else{
                 sensorManager.unregisterListener(this)
-                x = 0
+                i = 0
+                view.sleep_btn.setText("수면 시작")
             }
         }
         return view
@@ -44,18 +46,23 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            Log.d("Fragment0", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]} ") // [0] x축값, [1] y축값, [2] z축값
+            var x = event.values[0]
+            var y = event.values[1]
+            var z = event.values[2]
+            var x2 = Math.pow(x.toDouble(), 2.0)//x제곱
+            var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
+            var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
+            var m = Math.sqrt(x2+y2+z2)//움직임 값
+            Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
     override fun onPause() {
         super.onPause()
         Log.e("Fragment0", "onPause()")
-        sensorManager.unregisterListener(this)
     }
 
     override fun onDestroy() {
         super.onDestroy()
         Log.e("Fragment0", "onDestroy()")
-        sensorManager.unregisterListener(this)
     }
 }
