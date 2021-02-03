@@ -5,15 +5,16 @@ import android.media.MediaRecorder
 import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_mic.*
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class MicActivity : AppCompatActivity() {
 
     private var Recorder : MediaRecorder? = null
+    private var listener : MediaRecorder? = null
     private lateinit var path : File
     private lateinit var Fname : String
     private var audionum : Int = 0
@@ -26,89 +27,101 @@ class MicActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_mic)
-        var detect = Micdetect()
-        handler?.postDelayed(detect,1000)
-
+        initListener()
+        Log.d("init","done")
+        startListener()
+        //var detect = Micdetect()
+        //handler?.postDelayed(detect,1000)
         buttonRecord.setOnClickListener {
-            recordStart()
+            stopListener()
+            initrecorder()
+            startRecord()
         }
         buttonStop.setOnClickListener {
             stopRecord()
+            initListener()
+            startListener()
         }
 
     }
-    inner class Micdetect : Thread(){
+    /*inner class Micdetect : Thread(){
         override fun run() {
+            Log.d("micrun","start")
             if(getAmplitude()!! > 50){
+
                 decibel = getAmplitude()
                 decibelTV.text = "Decibel = $decibel"
                 recordStart()
             }else {
+                closeRecord()
                 decibel = getAmplitude()
                 decibelTV.text = "Decibel = $decibel"
-                start()
+                initrecorder()
             }
+            handler?.postDelayed(this,1000)
         }
+    }*/
+    private fun initrecorder(){
+        Recorder?.setAudioSource(
+                MediaRecorder.AudioSource.MIC)
+        Recorder?.setOutputFormat(
+                MediaRecorder.OutputFormat.THREE_GPP)
+        Recorder?.setAudioEncoder(
+                MediaRecorder.AudioEncoder.DEFAULT)
+    }
+    private fun initListener(){
+        listener?.setAudioSource(
+                MediaRecorder.AudioSource.MIC)
+        listener?.setOutputFormat(
+                MediaRecorder.OutputFormat.THREE_GPP)
+        listener?.setAudioEncoder(
+                MediaRecorder.AudioEncoder.DEFAULT)
+        listener?.setOutputFile("/dev/null")
     }
 
-    private fun recordStart(){
-        closeRecord()
+    private fun startRecord(){
         path = Environment.getDataDirectory()
         val newaudio = File(path,"recorded$audionum")
         Fname = newaudio.absolutePath
-        Recorder!!.setAudioSource(MediaRecorder.AudioSource.MIC)
-        Recorder!!.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-        Recorder!!.setAudioEncoder(MediaRecorder.AudioEncoder.DEFAULT)
-        Recorder!!.setOutputFile(Fname)
-
+        Recorder?.setOutputFile(Fname)
         try {
-            Recorder!!.prepare()
-            Recorder!!.start()
-        } catch (e: IOException){
+            Recorder?.prepare()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
             e.printStackTrace()
         }
+        Recorder?.start()
+        Log.d("Record path",Fname)
+        Log.d("Recorder","started")
     }
-    private fun closeRecord(){
-        if(Recorder != null){
-            Recorder!!.stop()
-            Recorder!!.release()
-            Recorder = null
+    private fun startListener(){
+        try {
+            listener?.prepare()
+        } catch (e: IllegalStateException) {
+            e.printStackTrace()
+        } catch (e: IOException) {
+            e.printStackTrace()
         }
+        listener?.start()
+        Log.d("listener","started")
+    }
+
+    private fun stopListener(){
+        listener?.stop()
+        listener?.release()
+        Log.d("listener","stopped")
     }
 
     private fun stopRecord(){
-        if(Recorder!=null){
-            Recorder!!.stop()
-            Recorder!!.release()
-            audionum++
-            Recorder = null
-        }
-        start()
+        Recorder?.stop()
+        Recorder?.release()
+        audionum++
+        Log.d("recorder","stopped")
     }
 
     fun getAmplitude(): Int? {
         return Recorder?.getMaxAmplitude()
-    }
-    fun start() {
-        closeRecord()
-        if (Recorder == null) {
-            Recorder = MediaRecorder()
-            Recorder!!.setAudioSource(
-                    MediaRecorder.AudioSource.MIC)
-            Recorder!!.setOutputFormat(
-                    MediaRecorder.OutputFormat.THREE_GPP)
-            Recorder!!.setAudioEncoder(
-                    MediaRecorder.AudioEncoder.DEFAULT)
-            Recorder!!.setOutputFile("/dev/null")
-            try {
-                Recorder!!.prepare()
-            } catch (e: IllegalStateException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-            Recorder!!.start()
-        }
     }
 
 
