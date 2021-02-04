@@ -6,6 +6,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.os.Handler
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import kotlinx.android.synthetic.main.activity_mic.*
 import java.io.File
@@ -22,6 +23,7 @@ class MicActivity : AppCompatActivity() {
     private var position : Int = 0
     private var handler : Handler? = null
     private var decibel : Int? = 0
+    private lateinit var audio : File
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,6 +43,12 @@ class MicActivity : AppCompatActivity() {
             stopRecord()
             initListener()
             startListener()
+        }
+        buttonPlay.setOnClickListener {
+            playAudio()
+        }
+        buttonRelease.setOnClickListener {
+            closeAudio()
         }
 
     }
@@ -67,7 +75,7 @@ class MicActivity : AppCompatActivity() {
         Recorder?.setOutputFormat(
                 MediaRecorder.OutputFormat.THREE_GPP)
         Recorder?.setAudioEncoder(
-                MediaRecorder.AudioEncoder.DEFAULT)
+                MediaRecorder.AudioEncoder.AMR_NB)
     }
     private fun initListener(){
         listener?.setAudioSource(
@@ -75,14 +83,14 @@ class MicActivity : AppCompatActivity() {
         listener?.setOutputFormat(
                 MediaRecorder.OutputFormat.THREE_GPP)
         listener?.setAudioEncoder(
-                MediaRecorder.AudioEncoder.DEFAULT)
+                MediaRecorder.AudioEncoder.AMR_NB)
         listener?.setOutputFile("/dev/null")
     }
 
     private fun startRecord(){
         path = Environment.getDataDirectory()
         val newaudio = File(path,"recorded$audionum")
-        Fname = newaudio.absolutePath
+        Fname = newaudio.absolutePath+"3gp"
         Recorder?.setOutputFile(Fname)
         try {
             Recorder?.prepare()
@@ -114,6 +122,7 @@ class MicActivity : AppCompatActivity() {
     }
 
     private fun stopRecord(){
+        audio = File(Fname)
         Recorder?.stop()
         Recorder?.release()
         audionum++
@@ -126,14 +135,17 @@ class MicActivity : AppCompatActivity() {
 
 
     private fun playAudio(){
-        try {
-            closeAudio()
-            player?.setDataSource(Fname)
-            player?.prepare()
-            player?.start()
+        if(audio.exists()){
+            try {
+                player?.setDataSource(Fname)
+                player?.prepare()
+                player?.start()
 
-        } catch (e: Exception){
-            e.printStackTrace()
+            } catch (e: Exception){
+                e.printStackTrace()
+            }
+        } else {
+            Toast.makeText(this,"녹음 진행부터",Toast.LENGTH_SHORT).show()
         }
 
     }
