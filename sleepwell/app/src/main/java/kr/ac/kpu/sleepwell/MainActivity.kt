@@ -18,7 +18,8 @@ class MainActivity : AppCompatActivity() {
         images.add(R.drawable.ic_baseline_today_24)
         images.add(R.drawable.ic_baseline_assessment_24)
         images.add(R.drawable.ic_baseline_person_24)
-        for (i in 0..3) tabs_main.getTabAt(i)!!.setIcon(images[i])
+        images.add(R.drawable.ic_baseline_bedtime_24)
+        for (i in 0..4) tabs_main.getTabAt(i)!!.setIcon(images[i])
     }
 }
 

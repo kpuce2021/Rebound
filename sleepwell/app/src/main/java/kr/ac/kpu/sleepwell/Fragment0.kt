@@ -56,13 +56,13 @@ class Fragment0 : Fragment(), SensorEventListener {
             Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
-    override fun onPause() {
+    /*override fun onPause() {
         super.onPause()
         Log.e("Fragment0", "onPause()")
-    }
+    }*/
 
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
         Log.e("Fragment0", "onDestroy()")
-    }
+    }*/
 }
