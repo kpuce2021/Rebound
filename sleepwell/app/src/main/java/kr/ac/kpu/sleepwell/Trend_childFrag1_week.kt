@@ -228,11 +228,5 @@ class Trend_childFrag1_week : Fragment() {
         set1.setCircleColor(Color.BLACK)
         lineChart.data=data
         lineChart.setVisibleXRange(1.0f,7.0f)
-
-
     }
-
-
-
-
 }

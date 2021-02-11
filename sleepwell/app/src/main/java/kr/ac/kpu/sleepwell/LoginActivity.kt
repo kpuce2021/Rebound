@@ -26,6 +26,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var uname : String
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        setTheme(R.style.Theme_Sleepwell)
         super.onCreate(savedInstanceState)
 
         setContentView(R.layout.activity_login)
@@ -42,6 +43,8 @@ class LoginActivity : AppCompatActivity() {
 
         signingoogle.setOnClickListener {
             signIn()
+            val nextIntent=Intent(this, MainActivity::class.java)
+            startActivity(nextIntent)
         }
 
 
@@ -99,6 +102,7 @@ class LoginActivity : AppCompatActivity() {
     private fun signIn() {
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, RC_SIGN_IN)
+
     }
     private fun signOut() {
         // Firebase sign out
