@@ -17,7 +17,6 @@ class Fragment2 : Fragment() {
     ): View? {
         var v:View=inflater.inflate(R.layout.fragment_2, container, false)
 
-
         childFragmentManager.beginTransaction().replace(R.id.childFragment,Trend_childFrag1_week()).commit()
 
         var btn_week1:Button=v.findViewById(R.id.btn_week) as Button
@@ -35,13 +34,5 @@ class Fragment2 : Fragment() {
         }
         return v
     }
-
-
-
-
-
-
-
-
 }
 
