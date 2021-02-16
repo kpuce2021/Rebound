@@ -168,7 +168,6 @@ class Fragment4 : Fragment() {
         override fun run() {
             isTimerfinished=false
             while(isTimergoOkay){
-                Decibel=SoundDB(32767.0)
                 Log.d("Timerclass Decibel ms",Decibel.toString())
                 if(Decibel!! >-15.0)
                     countnum+=5
@@ -181,6 +180,7 @@ class Fragment4 : Fragment() {
                 else{
                     isStopRecordingOkay=false
                     countnum-=1
+                Decibel=SoundDB(32767.0)
                     Log.d("countnumber",countnum.toString())
                     SystemClock.sleep(1000)
                 }
