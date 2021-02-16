@@ -70,6 +70,7 @@ class Fragment4 : Fragment() {
         }
         if (!permissionToRecordAccepted) finish()
     }*/
+
     private fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionRECORD = ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.RECORD_AUDIO)
@@ -100,10 +101,32 @@ class Fragment4 : Fragment() {
         var btn_start1:Button=v.findViewById(R.id.btn_start) as Button
         var btn_stop1:Button=v.findViewById(R.id.btn_stop) as Button
         //재생파트
-        var playlayout1: LinearLayout =v.findViewById(R.id.noceum1) as LinearLayout
+        /*var playlayout1: LinearLayout =v.findViewById(R.id.noceum1) as LinearLayout
         var btn_play1:Button=v.findViewById(R.id.btn_play) as Button
         var btn_pause1:Button=v.findViewById(R.id.btn_pause) as Button
-        var btn_playagain1:Button=v.findViewById(R.id.btn_playagain) as Button
+        var btn_playagain1:Button=v.findViewById(R.id.btn_playagain) as Button*/
+
+        var playlayoutArray: Array<LinearLayout> = arrayOf(v.findViewById(R.id.noceum1) as LinearLayout,
+        v.findViewById(R.id.noceum2) as LinearLayout,v.findViewById(R.id.noceum3) as LinearLayout,v.findViewById(R.id.noceum4) as LinearLayout,
+        v.findViewById(R.id.noceum5) as LinearLayout,v.findViewById(R.id.noceum6) as LinearLayout,v.findViewById(R.id.noceum7) as LinearLayout,
+        v.findViewById(R.id.noceum8) as LinearLayout,v.findViewById(R.id.noceum9) as LinearLayout,v.findViewById(R.id.noceum10) as LinearLayout)
+
+        var Arrayplaybutton= arrayOf(v.findViewById(R.id.btn_play) as Button,
+                v.findViewById(R.id.btn_play22) as Button,
+                v.findViewById(R.id.btn_play33) as Button,v.findViewById(R.id.btn_play44) as Button,v.findViewById(R.id.btn_play44) as Button,
+                v.findViewById(R.id.btn_play55) as Button,v.findViewById(R.id.btn_play66) as Button,v.findViewById(R.id.btn_play77) as Button,
+                v.findViewById(R.id.btn_play88) as Button,v.findViewById(R.id.btn_play99) as Button,v.findViewById(R.id.btn_play10) as Button)
+
+        var Arraypausebutton: Array<Button> = arrayOf(v.findViewById(R.id.btn_pause) as Button,
+                v.findViewById(R.id.btn_pause22) as Button,v.findViewById(R.id.btn_pause33) as Button,v.findViewById(R.id.btn_pause44) as Button,
+                v.findViewById(R.id.btn_pause55) as Button,v.findViewById(R.id.btn_pause66) as Button,v.findViewById(R.id.btn_pause77) as Button,
+                v.findViewById(R.id.btn_pause88) as Button,v.findViewById(R.id.btn_pause99) as Button,v.findViewById(R.id.btn_pause10) as Button)
+
+        var ArrayPlayAgainbutton: Array<Button> = arrayOf(v.findViewById(R.id.btn_playagain) as Button,
+                v.findViewById(R.id.btn_playagain22) as Button,v.findViewById(R.id.btn_playagain33) as Button,v.findViewById(R.id.btn_playagain44) as Button,
+                v.findViewById(R.id.btn_playagain55) as Button,v.findViewById(R.id.btn_playagain66) as Button,v.findViewById(R.id.btn_playagain77) as Button,
+                v.findViewById(R.id.btn_playagain88) as Button,v.findViewById(R.id.btn_playagain99) as Button,v.findViewById(R.id.btn_playagain10) as Button)
+
         //수면시작
         btn_start1.setOnClickListener {
             btn_stop1.isVisible=true
@@ -125,10 +148,26 @@ class Fragment4 : Fragment() {
             if(amIstartRecording==true){
                 stopRecording()
             }
-            playlayout1.isVisible=true
+            //playlayout1.isVisible=true
+            getsizefile=arraylist.size-1
+            for(i in 0..getsizefile){
+                playlayoutArray[i].isVisible=true
+                Arrayplaybutton[i].setOnClickListener {
+                    playing(arraylist.get(i))
+                    Toast.makeText(activity,"Play",Toast.LENGTH_SHORT).show()
+                }
+                Arraypausebutton[i].setOnClickListener {
+                    pausePlaying()
+                    Toast.makeText(activity,"Stop",Toast.LENGTH_SHORT).show()
+                }
+                ArrayPlayAgainbutton[i].setOnClickListener {
+                    playAgain()
+                    Toast.makeText(activity,"Play Again",Toast.LENGTH_SHORT).show()
+                }
+            }
         }
         //1번
-        btn_play1.setOnClickListener {
+        /*btn_play1.setOnClickListener {
             playing(arraylist.get(0))
             Toast.makeText(activity,"play1", Toast.LENGTH_SHORT).show()
         }
@@ -137,7 +176,7 @@ class Fragment4 : Fragment() {
         }
         btn_playagain1.setOnClickListener {
             playAgain()
-        }
+        }*/
         return v
     }
     inner class getDecibel:Thread(){
@@ -170,7 +209,7 @@ class Fragment4 : Fragment() {
             while(isTimergoOkay){
                 Log.d("Timerclass Decibel ms",Decibel.toString())
                 if(Decibel!! >-15.0)
-                    countnum+=5
+                    countnum=5
                 if(countnum<=0){
                     //isStopRecordingOkay=true
                     stopRecording()
@@ -235,7 +274,7 @@ class Fragment4 : Fragment() {
         var mdate: Date = Date(now)
         return mformat.format(mdate)
     }
-    private fun startRecording() {
+    private fun startRecording(){
         foldername="RecordingFolder"
         directory=File("/mnt/sdcard"+File.separator+foldername)
         if(!(directory!!.exists())) {
@@ -245,7 +284,7 @@ class Fragment4 : Fragment() {
         filename="녹음파일 "+getTime()+".mp3"
         output=File(path,filename)
         output2=output!!.absolutePath
-        arraylist.add(output2.toString())
+        //arraylist.add(output2.toString())
         mrecorder = MediaRecorder().apply {
             //setAudioEncodingBitRate(16)
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -274,6 +313,7 @@ class Fragment4 : Fragment() {
         if(mrecorder!=null){
             mrecorder?.apply {
                 stop()
+                arraylist.add(output2.toString())
                 //release()
             }
         }
