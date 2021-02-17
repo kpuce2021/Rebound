@@ -46,8 +46,6 @@ class LoginActivity : AppCompatActivity() {
             val nextIntent=Intent(this, MainActivity::class.java)
             startActivity(nextIntent)
         }
-
-
     }
 
     override fun onStart() {
