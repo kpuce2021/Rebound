@@ -21,6 +21,8 @@ import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
 
+private const val REQUEST_ALL_PERMISSION=100
+
 
 class Fragment0 : Fragment(), SensorEventListener {
 
@@ -37,6 +39,7 @@ class Fragment0 : Fragment(), SensorEventListener {
         super.onCreate(savedInstanceState)
 
     }
+
     private fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
@@ -48,10 +51,25 @@ class Fragment0 : Fragment(), SensorEventListener {
             listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
         }
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(activity?.applicationContext as Activity, listPermissionsNeeded.toTypedArray(), 100)
+            requestPermissions( listPermissionsNeeded.toTypedArray(), REQUEST_ALL_PERMISSION)
             return false
         }
         return true
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            REQUEST_ALL_PERMISSION->{
+                for((i,permission) in permissions.withIndex()){
+                    if(grantResults[i]!=PackageManager.PERMISSION_GRANTED)
+                        Toast.makeText(activity,"Permission denied! try again",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
     }
 
 
@@ -59,8 +77,10 @@ class Fragment0 : Fragment(), SensorEventListener {
                               savedInstanceState: Bundle?): View? {
         var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
-        //if(!Permissions())
-            //finish()
+
+        if(!Permissions())
+            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
+
         view.sleep_btn.setOnClickListener{
             if(i==0) {
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
@@ -79,11 +99,8 @@ class Fragment0 : Fragment(), SensorEventListener {
     }
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
-    fun finish(){
-        finish()
-    }
 
-    fun WriteTextFile(foldername: String, filename: String, contents: String?) {
+    private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
         try {
             val dir = File("/mnt/sdcard"+File.separator+foldername)
             //디렉토리 폴더가 없으면 생성함
@@ -114,7 +131,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
             var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
             var m = Math.sqrt(x2+y2+z2)//움직임 값
-            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}"
+            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}\n"
             WriteTextFile(foldername,filename,contents)
             Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
