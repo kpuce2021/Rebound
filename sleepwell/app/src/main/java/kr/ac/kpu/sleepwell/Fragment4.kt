@@ -18,6 +18,7 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.multidex.MultiDex
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -29,6 +30,9 @@ import kotlin.collections.ArrayList
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
 private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
+private const val REQUEST_WRITE_EXTERNAL_PERMISSION=300
+private const val REQUEST_READ_EXTERNAL_PERMISSION=400
+private const val REQUEST_ALL_PERMISSION=100
 private const val multiplePermissionscode=100
 class Fragment4 : Fragment() {
     //private var isRunning:Boolean=false
@@ -71,32 +75,56 @@ class Fragment4 : Fragment() {
         if (!permissionToRecordAccepted) finish()
     }*/
 
+
+
     private fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
-        val permissionRECORD = ContextCompat.checkSelfPermission(activity!!.applicationContext, Manifest.permission.RECORD_AUDIO)
+        //val permissionRECORD = ContextCompat.checkSelfPermission(requireActivity().applicationContext, Manifest.permission.RECORD_AUDIO)
+        val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
         val listPermissionsNeeded: MutableList<String> = ArrayList()
         if (permissionWRITE_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            //requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), REQUEST_WRITE_EXTERNAL_PERMISSION)
         }
         if (permissionRECORD != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO)
+            //requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
         }
         if (permissionREAD_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+            //requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), REQUEST_READ_EXTERNAL_PERMISSION)
         }
         if (!listPermissionsNeeded.isEmpty()) {
-            ActivityCompat.requestPermissions(activity?.applicationContext as Activity, listPermissionsNeeded.toTypedArray(), REQUEST_RECORD_AUDIO_PERMISSION)
+           requestPermissions( listPermissionsNeeded.toTypedArray(), REQUEST_ALL_PERMISSION)
             return false
         }
         return true
     }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        when(requestCode){
+            REQUEST_ALL_PERMISSION->{
+                for((i,permission) in permissions.withIndex()){
+                    if(grantResults[i]!=PackageManager.PERMISSION_GRANTED)
+                        Toast.makeText(activity,"Permission denied! try again",Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
+
         var v:View=inflater.inflate(R.layout.fragment_4, container, false)
         if(!Permissions())
-            finish()
+            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
         //수면파트
         var btn_start1:Button=v.findViewById(R.id.btn_start) as Button
         var btn_stop1:Button=v.findViewById(R.id.btn_stop) as Button
@@ -154,15 +182,15 @@ class Fragment4 : Fragment() {
                 playlayoutArray[i].isVisible=true
                 Arrayplaybutton[i].setOnClickListener {
                     playing(arraylist.get(i))
-                    Toast.makeText(activity,"Play",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,"Play${i+1}",Toast.LENGTH_SHORT).show()
                 }
                 Arraypausebutton[i].setOnClickListener {
                     pausePlaying()
-                    Toast.makeText(activity,"Stop",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,"Stop${i+1}",Toast.LENGTH_SHORT).show()
                 }
                 ArrayPlayAgainbutton[i].setOnClickListener {
                     playAgain()
-                    Toast.makeText(activity,"Play Again",Toast.LENGTH_SHORT).show()
+                    Toast.makeText(activity,"Play Again${i+1}",Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -191,7 +219,7 @@ class Fragment4 : Fragment() {
                 Log.d(DECIBEL,Decibel.toString()+" db")
                 if(Decibel>=-15.0 && isTimerfinished){
                     //isStartListeningCheck=true
-                    val decibeltimer=Timerclass(5)
+                    val decibeltimer=Timerclass(3)
                     decibeltimer.start()
                     //stopListening()
                     startRecording()
@@ -209,7 +237,7 @@ class Fragment4 : Fragment() {
             while(isTimergoOkay){
                 Log.d("Timerclass Decibel ms",Decibel.toString())
                 if(Decibel!! >-15.0)
-                    countnum=5
+                    countnum=3
                 if(countnum<=0){
                     //isStopRecordingOkay=true
                     stopRecording()
