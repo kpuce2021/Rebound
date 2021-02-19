@@ -74,9 +74,6 @@ class Fragment4 : Fragment() {
         }
         if (!permissionToRecordAccepted) finish()
     }*/
-
-
-
     private fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         //val permissionRECORD = ContextCompat.checkSelfPermission(requireActivity().applicationContext, Manifest.permission.RECORD_AUDIO)
