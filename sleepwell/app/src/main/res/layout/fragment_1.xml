@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment1">
+    tools:context=".Fragment1"
+    android:id="@+id/Fragment1">
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -103,6 +104,6 @@
                         android:layout_height="wrap_content">
                     </TextView>
                 </LinearLayout>
-                </LinearLayout>
+            </LinearLayout>
         </ScrollView>
 </FrameLayout>

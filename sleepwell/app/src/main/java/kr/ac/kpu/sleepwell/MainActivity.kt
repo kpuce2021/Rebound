@@ -1,8 +1,10 @@
 package kr.ac.kpu.sleepwell
 
+import android.app.Fragment
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.FragmentTransaction
 import androidx.multidex.MultiDex
 import kotlinx.android.synthetic.main.activity_main.*
 

@@ -77,7 +77,7 @@ class Fragment4 : Fragment() {
 
 
 
-    private fun Permissions(): Boolean {
+    /*private fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         //val permissionRECORD = ContextCompat.checkSelfPermission(requireActivity().applicationContext, Manifest.permission.RECORD_AUDIO)
         val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
@@ -116,15 +116,15 @@ class Fragment4 : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         // Inflate the layout for this fragment
 
         var v:View=inflater.inflate(R.layout.fragment_4, container, false)
-        if(!Permissions())
-            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
+        //if(!Permissions())
+           // Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
         //수면파트
         var btn_start1:Button=v.findViewById(R.id.btn_start) as Button
         var btn_stop1:Button=v.findViewById(R.id.btn_stop) as Button
@@ -231,12 +231,12 @@ class Fragment4 : Fragment() {
     }
     inner class Timerclass(val countnumber:Int):Thread(){
         var countnum:Int=countnumber
-        var Decibel:Double?=null
+        var Decibel:Double=-15.0
         override fun run() {
             isTimerfinished=false
             while(isTimergoOkay){
                 Log.d("Timerclass Decibel ms",Decibel.toString())
-                if(Decibel!! >-15.0)
+                if(Decibel >-15.0)
                     countnum=3
                 if(countnum<=0){
                     //isStopRecordingOkay=true
@@ -247,7 +247,7 @@ class Fragment4 : Fragment() {
                 else{
                     isStopRecordingOkay=false
                     countnum-=1
-                Decibel=SoundDB(32767.0)
+                    Decibel=SoundDB(32767.0)
                     Log.d("countnumber",countnum.toString())
                     SystemClock.sleep(1000)
                 }
