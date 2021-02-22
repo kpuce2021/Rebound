@@ -11,11 +11,13 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.fragment_0.view.*
 
 class Fragment0 : Fragment(), SensorEventListener {
+    val user = FirebaseAuth.getInstance()
     private val sensorManager by lazy {
-        activity!!.getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
+        requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,10 +26,13 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+        var startTime = System.currentTimeMillis()
+        var endTime= System.currentTimeMillis()
         var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
         view.sleep_btn.setOnClickListener{
             if(i==0) {
+                startTime = System.currentTimeMillis()
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                         SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
@@ -35,9 +40,14 @@ class Fragment0 : Fragment(), SensorEventListener {
                 view.sleep_btn.setText("수면 중지")
             }
             else{
+                endTime = System.currentTimeMillis()
                 sensorManager.unregisterListener(this)
                 i = 0
                 view.sleep_btn.setText("수면 시작")
+                val time = (endTime - startTime)
+                val sectime = time /1000
+                val mintime = sectime / 60
+                Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
             }
         }
         return view
