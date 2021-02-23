@@ -252,7 +252,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
             var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
             var m = Math.sqrt(x2+y2+z2)//움직임 값
-            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}\n"
+            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
             WriteTextFile(foldername,filename,contents)
             Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
