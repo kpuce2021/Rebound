@@ -5,6 +5,10 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -16,6 +20,28 @@
         android:name="androidx.multidex.MultiDexApplication">
 
         <activity android:name=".MainActivity"></activity>
+
+        <service
+            android:name=".GroundService"
+            android:enabled="true"
+            android:exported="true" />
+        <service
+            android:name=".RestartService"
+            android:enabled="true"
+            android:exported="true" />
+        <receiver android:name=".AlarmReceiver"/>
+        <receiver
+            android:name=".RebootRecever"
+            android:enabled="true"
+            android:exported="false"
+            android:process=":remote">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
+
+
+
 
         <activity
             android:theme="@style/SplashTheme"

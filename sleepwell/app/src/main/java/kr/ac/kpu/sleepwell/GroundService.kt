@@ -1,42 +1,30 @@
 package kr.ac.kpu.sleepwell
 
 import android.Manifest
+import android.app.*
 import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.os.Bundle
-import android.os.SystemClock
+import android.os.*
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
-private const val REQUEST_ALL_PERMISSION=100
-private const val DECIBEL = "Decibel"
-private const val LOG_TAG = "Error"
-
-
-class Fragment0 : Fragment(), SensorEventListener {
+class GroundService : Service(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
     val db = Firebase.firestore
@@ -55,6 +43,10 @@ class Fragment0 : Fragment(), SensorEventListener {
         "midnight_snack" to false,
         "workout" to false
     )
+
+    private val sensorManager by lazy {
+        Activity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
+    }
 
     //private var isRunning:Boolean=false
     private lateinit var mrecorder: MediaRecorder
@@ -84,157 +76,103 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var getsizefile:Int=0
     var arraylist=ArrayList<String>(100)   //녹음파일 이름 저장(output2)
     //RECORD_AUDIO에 퍼미션 요청 변수
-    private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
-    private var permissionToRecordAccepted = false
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
 
-    private var serviceIntent: Intent? = null
+    private var mainThread: Thread? = null
 
-    private val sensorManager by lazy {
-        requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
-    fun Permissions(): Boolean {
-        val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
-        val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
-        val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
-        val permissionBattery=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) }
-        val listPermissionsNeeded: MutableList<String> = ArrayList()
-        if (permissionWRITE_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-        }
-        if (permissionREAD_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE)
-        }
-        if (permissionRECORD != PackageManager.PERMISSION_GRANTED) {
-            listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO)
-            //requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
-        }
-        if(permissionBattery != PackageManager.PERMISSION_GRANTED){
-            listPermissionsNeeded.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
-        }
-        if (!listPermissionsNeeded.isEmpty()) {
-            requestPermissions( listPermissionsNeeded.toTypedArray(), REQUEST_ALL_PERMISSION)
-            return false
-        }
-        return true
-    }
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        //super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when(requestCode){
-            REQUEST_ALL_PERMISSION->{
-                for((i,permission) in permissions.withIndex()){
-                    if(grantResults[i]!=PackageManager.PERMISSION_GRANTED)
-                        Toast.makeText(activity,"Permission denied! try again",Toast.LENGTH_SHORT).show()
+    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+        serviceIntent = intent
+        showToast(application, "Start Service")
+        sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
+            sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
+            SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
+        startListening()
+        isRunning=true
+        isTimergoOkay=true
+        val Decibelcheckandrecording=getDecibel()
+        Decibelcheckandrecording.start()
+        mainThread = Thread(Runnable {
+            val sdf = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+            var run = true
+            while (run) {
+                try {
+                    Thread.sleep(1000 * 60 * 1.toLong()) // 1 minute
+                    val date = Date()
+                    showToast(application, sdf.format(date))
+                    sendNotification(sdf.format(date))
+                } catch (e: InterruptedException) {
+                    run = false
+                    e.printStackTrace()
                 }
             }
+        })
+        mainThread!!.start()
+        return START_NOT_STICKY
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        serviceIntent = null
+        setAlarmTimer()
+        Thread.currentThread().interrupt()
+        if (mainThread != null) {
+            mainThread!!.interrupt()
+            mainThread = null
         }
     }
 
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        var startTime = System.currentTimeMillis()
-        var endTime= System.currentTimeMillis()
-        var i = 0
-        var view = inflater.inflate(R.layout.fragment_0,container,false)
-
-        if(!Permissions())
-            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
-
-
-
-        view.sleep_btn.setOnClickListener{
-            val day = findDate()
-            /*if (GroundService.serviceIntent==null) {
-                serviceIntent = Intent(this, GroundService::class.java)
-                startService(serviceIntent)
-            } else {
-                serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
-            }*/
-
-            if(i==0) {
-                startTime = System.currentTimeMillis()
-                sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
-                        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
-                        SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
-                startListening()
-                isRunning=true
-                isTimergoOkay=true
-                val Decibelcheckandrecording=getDecibel()
-                Decibelcheckandrecording.start()
-                i = 1
-                view.sleep_btn.setText("수면 중지")
-            }
-            else{
-                endTime = System.currentTimeMillis()
-                sensorManager.unregisterListener(this)
-
-                db.collection(userkey).document(day)
-                    .set(data, SetOptions.merge())
-                    .addOnSuccessListener {Log.d("tag", "DocumentSnapshot added successfully") }
-                    .addOnFailureListener { e -> Log.w("tag", "Error adding document", e) }
-
-                isTimerfinished=true
-                isRunning=false
-                isTimergoOkay=false
-                stopListening()
-                if(amIstartRecording==true){
-                    stopRecording()
-                }
-                getsizefile=arraylist.size-1
-                Log.d(LOG_TAG,getsizefile.toString())
-                var bundle:Bundle= Bundle()
-                bundle.putInt("getsizefile",getsizefile)
-                for(i in 0..getsizefile){
-                    bundle.putString("file$i",arraylist.get(i))
-                }
-                var day_result:Fragment=Day_resultFrag()
-                var transaction:FragmentTransaction=requireActivity().supportFragmentManager.beginTransaction()
-                day_result.arguments=bundle
-                transaction.replace(R.id.Fragment0,day_result)
-                transaction.commit()
-
-                i = 0
-                view.sleep_btn.setText("수면 시작")
-                val time = (endTime - startTime)
-                val sectime = time /1000
-                val mintime = sectime / 60
-                Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
-            }
-        }
-        return view
+    override fun onCreate() {
+        super.onCreate()
     }
 
-    fun findDate(): String {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        var ampm = cal.get(Calendar.AM_PM)
-        if(ampm == Calendar.PM){
-            return df.format(cal.time)
+    override fun onBind(intent: Intent): IBinder? {
+        return null
+    }
+
+    override fun onUnbind(intent: Intent): Boolean {
+        return super.onUnbind(intent)
+    }
+
+    fun showToast(application: Application, msg: String?) {
+        val h = Handler(application.mainLooper)
+        h.post { Toast.makeText(application, msg, Toast.LENGTH_LONG).show() }
+    }
+
+    private fun setAlarmTimer() {
+        val c = Calendar.getInstance()
+        c.timeInMillis = System.currentTimeMillis()
+        c.add(Calendar.SECOND, 1)
+        val intent = Intent(this, AlarmReceiver::class.java)
+        val sender = PendingIntent.getBroadcast(this, 0, intent, 0)
+        val mAlarmManager = getSystemService(Context.ALARM_SERVICE) as AlarmManager
+        mAlarmManager[AlarmManager.RTC_WAKEUP, c.timeInMillis] = sender
+    }
+
+    private fun sendNotification(messageBody: String) {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        val pendingIntent = PendingIntent.getActivity(this, 0 /* Request code */, intent, PendingIntent.FLAG_ONE_SHOT)
+        val channelId = "fcm_default_channel" //getString(R.string.default_notification_channel_id)
+        val notificationBuilder: Notification.Builder = Notification.Builder(this, channelId)
+                .setSmallIcon(R.mipmap.ic_launcher) //drawable.splash)
+                .setContentTitle("Sleep Recording")
+                .setContentText(messageBody)
+                .setAutoCancel(true)
+                .setContentIntent(pendingIntent)
+        val notificationManager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+        // Since android Oreo notification channel is needed.
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val channel = NotificationChannel(channelId, "Channel human readable title", NotificationManager.IMPORTANCE_DEFAULT)
+            notificationManager.createNotificationChannel(channel)
         }
-        else{cal.add(Calendar.DATE,-1)
-            return df.format(cal.time) }
+        notificationManager.notify(0 /* ID of notification */, notificationBuilder.build())
     }
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
-    override fun onDestroy() {
-        super.onDestroy()
-        /*if (serviceIntent != null) {
-            stopService(serviceIntent)
-            serviceIntent = null
-        }*/
-    }
+
 
 
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
@@ -258,6 +196,13 @@ class Fragment0 : Fragment(), SensorEventListener {
         }
     }
 
+    private fun getTime():String{
+        var now:Long=System.currentTimeMillis()
+        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        var mdate: Date = Date(now)
+        return mformat.format(mdate)
+    }
+
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
@@ -273,16 +218,6 @@ class Fragment0 : Fragment(), SensorEventListener {
             Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
-    /*override fun onPause() {
-        super.onPause()
-        Log.e("Fragment0", "onPause()")
-    }*/
-
-    /*override fun onDestroy() {
-        super.onDestroy()
-        Log.e("Fragment0", "onDestroy()")
-    }*/
-
     inner class getDecibel:Thread(){
         override fun run() {
             while(isRunning){
@@ -292,7 +227,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 }*/
                 var Decibel:Double=SoundDB(32767.0)
                 SystemClock.sleep(1000)
-                Log.d(DECIBEL,Decibel.toString()+" db")
+                Log.d("DECIBEL",Decibel.toString()+" db")
                 if(Decibel>=-15.0 && isTimerfinished){
                     //isStartListeningCheck=true
                     val decibeltimer=Timerclass(3)
@@ -330,15 +265,12 @@ class Fragment0 : Fragment(), SensorEventListener {
             }
         }
     }
-
-    //added(2021.02.04)
     fun getAmplitude():Int{
         if(mlistener!=null)
             return mlistener!!.maxAmplitude
         else
             return 0
     }
-    //added(2021.02.04)
     fun getAmplitudeEMA():Double{
         var amp:Double=getAmplitude().toDouble()
         mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
@@ -373,21 +305,16 @@ class Fragment0 : Fragment(), SensorEventListener {
             }
         }
     }
-    private fun getTime():String{
-        var now:Long=System.currentTimeMillis()
-        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-        var mdate: Date = Date(now)
-        return mformat.format(mdate)
-    }
+
     private fun startRecording(){
         rfoldername="RecordingFolder"
-        directory=File("/mnt/sdcard"+File.separator+rfoldername)
+        directory= File("/mnt/sdcard"+ File.separator+rfoldername)
         if(!(directory!!.exists())) {
             directory!!.mkdirs()
         }
         path="/mnt/sdcard/"+rfoldername
         rfilename="녹음파일 "+getTime()+".mp3"
-        output=File(path,rfilename)
+        output= File(path,rfilename)
         output2=output!!.absolutePath
         //arraylist.add(output2.toString())
         mrecorder = MediaRecorder().apply {
@@ -408,7 +335,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 amIstartRecording=false
             }catch (e: IOException) {
                 amIstartRecording=false
-                Log.e(LOG_TAG, "prepare() failed")
+                Log.e("LOG_TAG", "prepare() failed")
             }
         }
         mEMA=0.0
@@ -423,14 +350,8 @@ class Fragment0 : Fragment(), SensorEventListener {
             }
         }
     }
-    private fun releaseRecording(){
-        if(mrecorder!=null){
-            mrecorder?.apply {
-                release()
-            }
-        }
-    }
-    fun finish(){
-        finish()
+
+    companion object {
+        var serviceIntent: Intent? = null
     }
 }
