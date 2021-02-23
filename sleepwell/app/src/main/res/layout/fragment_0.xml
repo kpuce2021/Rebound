@@ -5,7 +5,8 @@
     android:background="@color/background2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Fragment0">
+    tools:context=".Fragment0"
+    android:id="@+id/Fragment0">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -30,7 +31,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="70dp"
-            android:layout_marginBsottom="20dp"
             android:textColor="#FFFFFF"
             android:textSize="50dp"
             app:layout_constraintBottom_toTopOf="@+id/sleep_btn"

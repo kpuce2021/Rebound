@@ -16,13 +16,13 @@ class MainAdapter(fm:FragmentManager): FragmentPagerAdapter(fm) {
         items.add(Fragment1())
         items.add(Fragment2())
         items.add(Fragment3())
-        items.add(Fragment4())
+
 
         itext.add("수면 시작")
         itext.add("일일 수면")
         itext.add("트랜드")
         itext.add("마이페이지")
-        itext.add("녹음페이지")
+       
     }
     override fun getItem(position: Int): Fragment {
         return items[position]
