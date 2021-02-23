@@ -1,9 +1,11 @@
 package kr.ac.kpu.sleepwell
 
+import android.app.Fragment
 import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.fragment.app.FragmentTransaction
 import androidx.multidex.MultiDex
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,8 +26,7 @@ class MainActivity : AppCompatActivity() {
         images.add(R.drawable.ic_baseline_today_24)
         images.add(R.drawable.ic_baseline_assessment_24)
         images.add(R.drawable.ic_baseline_person_24)
-        images.add(R.drawable.ic_baseline_bedtime_24)
-        for (i in 0..4) tabs_main.getTabAt(i)!!.setIcon(images[i])
+        for (i in 0..3) tabs_main.getTabAt(i)!!.setIcon(images[i])
     }
 }
 
