@@ -1,5 +1,15 @@
 package kr.ac.kpu.sleepwell
 
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
+import kotlinx.android.synthetic.main.fragment_0.view.*
+import java.io.*
+import java.util.*
+import kotlin.collections.ArrayList
 import android.Manifest
 import android.app.Activity
 import android.content.Context
@@ -17,23 +27,40 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
+import com.google.firebase.auth.FirebaseAuth
+
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_0.view.*
-import java.io.*
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
 
+
 class Fragment0 : Fragment(), SensorEventListener {
+    val user = FirebaseAuth.getInstance()
+    val userkey = user.uid.toString()
+    val db = Firebase.firestore
+    var data = hashMapOf(
+        "sleep_time" to 0,
+        "sleep_deep" to 0,
+        "sleep_light" to 0,
+        "sleep_rem" to 0,
+        "awake" to 0,
+        "go_to_bed" to "pm 11:00",
+        "wake_up" to "am 07:00",
+        "sleep_score" to 0,
+        "alcohol" to false,
+        "caffeine" to false,
+        "smoke" to false,
+        "midnight_snack" to false,
+        "workout" to false
+    )
 
     //private var isRunning:Boolean=false
     private lateinit var mrecorder: MediaRecorder
@@ -65,12 +92,8 @@ class Fragment0 : Fragment(), SensorEventListener {
     //RECORD_AUDIO에 퍼미션 요청 변수
     private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private var permissionToRecordAccepted = false
-
-
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
-
-
 
     private val sensorManager by lazy {
         requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
@@ -78,10 +101,7 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
     }
-
-
         fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
@@ -122,7 +142,8 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
+        var startTime = System.currentTimeMillis()
+        var endTime= System.currentTimeMillis()
         var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
 
@@ -130,7 +151,9 @@ class Fragment0 : Fragment(), SensorEventListener {
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
 
         view.sleep_btn.setOnClickListener{
+            val day = findDate()
             if(i==0) {
+                startTime = System.currentTimeMillis()
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                         SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
@@ -143,7 +166,14 @@ class Fragment0 : Fragment(), SensorEventListener {
                 view.sleep_btn.setText("수면 중지")
             }
             else{
+                endTime = System.currentTimeMillis()
                 sensorManager.unregisterListener(this)
+
+                db.collection(userkey).document(day)
+                    .set(data, SetOptions.merge())
+                    .addOnSuccessListener {Log.d("tag", "DocumentSnapshot added successfully") }
+                    .addOnFailureListener { e -> Log.w("tag", "Error adding document", e) }
+
                 isTimerfinished=true
                 isRunning=false
                 isTimergoOkay=false
@@ -166,10 +196,27 @@ class Fragment0 : Fragment(), SensorEventListener {
 
                 i = 0
                 view.sleep_btn.setText("수면 시작")
+                val time = (endTime - startTime)
+                val sectime = time /1000
+                val mintime = sectime / 60
+                Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
             }
         }
         return view
     }
+
+    fun findDate(): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var ampm = cal.get(Calendar.AM_PM)
+        if(ampm == Calendar.PM){
+            return df.format(cal.time)
+        }
+        else{cal.add(Calendar.DATE,-1)
+            return df.format(cal.time) }
+    }
+
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
 

@@ -43,8 +43,8 @@ class LoginActivity : AppCompatActivity() {
 
         signingoogle.setOnClickListener {
             signIn()
-            val nextIntent=Intent(this, MainActivity::class.java)
-            startActivity(nextIntent)
+            /*val nextIntent=Intent(this, MainActivity::class.java)
+            startActivity(nextIntent)*/
         }
     }
 
@@ -129,7 +129,9 @@ class LoginActivity : AppCompatActivity() {
             uEmail = user.email.toString()
             uname = user.displayName.toString()
             Log.d(TAG,"user data load success")
-
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
             //binding.signInButton.visibility = View.GONE
             //binding.signOutAndDisconnect.visibility = View.VISIBLE
         } else {
