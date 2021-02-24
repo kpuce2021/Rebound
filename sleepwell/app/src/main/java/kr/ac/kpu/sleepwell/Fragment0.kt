@@ -1,18 +1,8 @@
 package kr.ac.kpu.sleepwell
 
-import android.widget.Toast
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
-import kotlinx.android.synthetic.main.fragment_0.view.*
-import java.io.*
-import java.util.*
-import kotlin.collections.ArrayList
 import android.Manifest
-import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -21,20 +11,28 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.SystemClock
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_0.view.*
+import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
@@ -93,6 +91,9 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var permissionToRecordAccepted = false
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
+    private lateinit var wl : PowerManager.WakeLock
+
+    private var serviceIntent: Intent? = null
 
     private val sensorManager by lazy {
         requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
@@ -101,7 +102,7 @@ class Fragment0 : Fragment(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
     }
-        fun Permissions(): Boolean {
+    fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
         val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
@@ -149,8 +150,19 @@ class Fragment0 : Fragment(), SensorEventListener {
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
 
+
+
+
+
         view.sleep_btn.setOnClickListener{
             val day = findDate()
+            /*if (GroundService.serviceIntent==null) {
+                serviceIntent = Intent(activity, GroundService::class.java)
+                startService(serviceIntent)
+            } else {
+                serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
+            }*/
+
             if(i==0) {
                 startTime = System.currentTimeMillis()
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
@@ -163,6 +175,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 Decibelcheckandrecording.start()
                 i = 1
                 view.sleep_btn.setText("수면 중지")
+                wlstart()
             }
             else{
                 endTime = System.currentTimeMillis()
@@ -199,9 +212,24 @@ class Fragment0 : Fragment(), SensorEventListener {
                 val sectime = time /1000
                 val mintime = sectime / 60
                 Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
+                wlrelease()
             }
         }
         return view
+    }
+
+    fun wlstart(){
+        wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE or
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP, "Sleepwell::WakelockTag").apply {
+                acquire()
+            }
+        }
+        Log.d("wakelock","start")
+    }
+    fun wlrelease(){
+        wl.release()
+        Log.d("wakelock","release")
     }
 
     fun findDate(): String {
@@ -218,7 +246,13 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
-
+    override fun onDestroy() {
+        super.onDestroy()
+        /*if (serviceIntent != null) {
+            stopService(serviceIntent)
+            serviceIntent = null
+        }*/
+    }
 
 
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
