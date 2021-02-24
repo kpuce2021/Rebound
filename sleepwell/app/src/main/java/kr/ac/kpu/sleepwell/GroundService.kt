@@ -115,6 +115,11 @@ class GroundService : Service(), SensorEventListener {
         super.onDestroy()
         serviceIntent = null
         setAlarmTimer()
+        sensorManager.unregisterListener(this)
+        stopListening()
+        if(amIstartRecording==true){
+            stopRecording()
+        }
         Thread.currentThread().interrupt()
         if (mainThread != null) {
             mainThread!!.interrupt()
@@ -197,23 +202,23 @@ class GroundService : Service(), SensorEventListener {
     }
 
     private fun getTime():String{
-        var now:Long=System.currentTimeMillis()
-        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
-        var mdate: Date = Date(now)
+        val now:Long=System.currentTimeMillis()
+        val mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        val mdate: Date = Date(now)
         return mformat.format(mdate)
     }
 
 
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
-            var x = event.values[0]
-            var y = event.values[1]
-            var z = event.values[2]
-            var x2 = Math.pow(x.toDouble(), 2.0)//x제곱
-            var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
-            var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
-            var m = Math.sqrt(x2+y2+z2)//움직임 값
-            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
+            val x = event.values[0]
+            val y = event.values[1]
+            val z = event.values[2]
+            val x2 = Math.pow(x.toDouble(), 2.0)//x제곱
+            val y2 = Math.pow(y.toDouble(), 2.0)//y제곱
+            val z2 = Math.pow(z.toDouble(), 2.0)//z제곱
+            val m = Math.sqrt(x2+y2+z2)//움직임 값
+            val contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
             WriteTextFile(foldername,filename,contents)
             Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }

@@ -14,8 +14,8 @@ class RestartService : Service() {
         val notification = notificationBuilder.build();
         startForeground(9, notification);
 
-        val intent = Intent(this, GroundService::class.java)
-        startService(intent)
+        val serviceIntent = Intent(this, GroundService::class.java)
+        startService(serviceIntent)
 
         stopForeground(true)
         stopSelf()

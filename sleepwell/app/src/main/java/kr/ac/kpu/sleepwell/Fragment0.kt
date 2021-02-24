@@ -11,6 +11,7 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
+import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
@@ -18,6 +19,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.getSystemService
+import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
@@ -88,6 +91,7 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var permissionToRecordAccepted = false
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
+    private lateinit var wl : PowerManager.WakeLock
 
     private var serviceIntent: Intent? = null
 
@@ -102,7 +106,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
         val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
-        val permissionBattery=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS) }
         val listPermissionsNeeded: MutableList<String> = ArrayList()
         if (permissionWRITE_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -113,9 +116,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         if (permissionRECORD != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.RECORD_AUDIO)
             //requestPermissions(arrayOf(Manifest.permission.RECORD_AUDIO), REQUEST_RECORD_AUDIO_PERMISSION)
-        }
-        if(permissionBattery != PackageManager.PERMISSION_GRANTED){
-            listPermissionsNeeded.add(Manifest.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS)
         }
         if (!listPermissionsNeeded.isEmpty()) {
             requestPermissions( listPermissionsNeeded.toTypedArray(), REQUEST_ALL_PERMISSION)
@@ -152,10 +152,12 @@ class Fragment0 : Fragment(), SensorEventListener {
 
 
 
+
+
         view.sleep_btn.setOnClickListener{
             val day = findDate()
             /*if (GroundService.serviceIntent==null) {
-                serviceIntent = Intent(this, GroundService::class.java)
+                serviceIntent = Intent(activity, GroundService::class.java)
                 startService(serviceIntent)
             } else {
                 serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
@@ -173,6 +175,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 Decibelcheckandrecording.start()
                 i = 1
                 view.sleep_btn.setText("수면 중지")
+                wlstart()
             }
             else{
                 endTime = System.currentTimeMillis()
@@ -209,9 +212,24 @@ class Fragment0 : Fragment(), SensorEventListener {
                 val sectime = time /1000
                 val mintime = sectime / 60
                 Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
+                wlrelease()
             }
         }
         return view
+    }
+
+    fun wlstart(){
+        wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE or
+                    PowerManager.ACQUIRE_CAUSES_WAKEUP, "Sleepwell::WakelockTag").apply {
+                acquire()
+            }
+        }
+        Log.d("wakelock","start")
+    }
+    fun wlrelease(){
+        wl.release()
+        Log.d("wakelock","release")
     }
 
     fun findDate(): String {
