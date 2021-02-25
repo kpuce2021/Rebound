@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="kr.ac.kpu.sleepwell">
-
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="kr.ac.kpu.sleepwell">
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
@@ -18,7 +16,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sleepwell"
         android:name="androidx.multidex.MultiDexApplication">
-
         <activity android:name=".MainActivity"></activity>
 
         <service
@@ -30,10 +27,6 @@
             android:enabled="true"
             android:exported="true" />
         <receiver android:name=".AlarmReceiver"/>
-
-
-
-
         <activity
             android:theme="@style/SplashTheme"
             android:name=".LoginActivity"
