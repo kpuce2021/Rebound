@@ -13,6 +13,7 @@ import kotlin.collections.ArrayList
 import android.Manifest
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -88,7 +89,7 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     private var getsizefile:Int=0
-    var arraylist=ArrayList<String>(100)   //녹음파일 이름 저장(output2)
+    var arraylist=ArrayList<String>(10)   //녹음파일 이름 저장(output2)
     //RECORD_AUDIO에 퍼미션 요청 변수
     private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private var permissionToRecordAccepted = false
@@ -153,6 +154,11 @@ class Fragment0 : Fragment(), SensorEventListener {
         view.sleep_btn.setOnClickListener{
             val day = findDate()
             if(i==0) {
+                for(i in 0..9){
+                    arraylist.add(i.toString())
+                }
+                arraylist.removeAll(arraylist)
+
                 startTime = System.currentTimeMillis()
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
@@ -182,17 +188,20 @@ class Fragment0 : Fragment(), SensorEventListener {
                     stopRecording()
                 }
                 getsizefile=arraylist.size-1
-                Log.d(LOG_TAG,getsizefile.toString())
+                /*Log.d(LOG_TAG,getsizefile.toString())
                 var bundle:Bundle= Bundle()
                 bundle.putInt("getsizefile",getsizefile)
                 for(i in 0..getsizefile){
                     bundle.putString("file$i",arraylist.get(i))
+                }*/
+                activity?.let {
+                    val intent= Intent(activity,Day_resultAC::class.java)
+                        intent.putExtra("getsizefile",getsizefile.toString())
+                        for(i in 0..getsizefile){
+                            intent.putExtra("file$i",arraylist.get(i))
+                    }
+                    requireActivity().startActivity(intent)
                 }
-                var day_result:Fragment=Day_resultFrag()
-                var transaction:FragmentTransaction=requireActivity().supportFragmentManager.beginTransaction()
-                day_result.arguments=bundle
-                transaction.replace(R.id.Fragment0,day_result)
-                transaction.commit()
 
                 i = 0
                 view.sleep_btn.setText("수면 시작")
@@ -216,12 +225,7 @@ class Fragment0 : Fragment(), SensorEventListener {
         else{cal.add(Calendar.DATE,-1)
             return df.format(cal.time) }
     }
-
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
-
-
-
-
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
         try {
             val dir = File("/mnt/sdcard"+File.separator+foldername)
@@ -242,8 +246,6 @@ class Fragment0 : Fragment(), SensorEventListener {
             e.printStackTrace()
         }
     }
-
-
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
             var x = event.values[0]
@@ -403,7 +405,9 @@ class Fragment0 : Fragment(), SensorEventListener {
         if(mrecorder!=null){
             mrecorder?.apply {
                 stop()
-                arraylist.add(output2.toString())
+                if(arraylist.size<=10){
+                    arraylist.add(output2.toString())
+                }
                 //release()
             }
         }

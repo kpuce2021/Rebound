@@ -33,22 +33,7 @@ class Fragment1 : Fragment() {
     private lateinit var callback: OnBackPressedCallback
 
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                var transaction: FragmentTransaction =requireActivity().supportFragmentManager.beginTransaction()
-                var fragment0:Fragment=Fragment0()
-                transaction.replace(R.id.Day_resultFrag,fragment0)
-                transaction.commit()
-            }
-        }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
-    }
-    override fun onDetach() {
-        super.onDetach()
-        callback.remove()
-    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
