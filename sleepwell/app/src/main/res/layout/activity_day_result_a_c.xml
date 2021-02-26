@@ -172,108 +172,217 @@
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
                android:text="수면 중 발생한 소음"
+               android:id="@+id/text_noise"
                android:textColor="#ffffff"
                android:layout_marginTop="8dp"
                android:layout_marginLeft="8dp"
                android:layout_marginRight="8dp"
                android:padding="5dp"
                android:textSize="20sp"
+               android:visibility="gone"
                />
-
-
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="50dp"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:id="@+id/noceum1"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:visibility="gone"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음1"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
                 android:id="@+id/noceum2"
-                android:visibility="gone"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
+                android:visibility="gone"
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음2"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time2"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play22"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause22"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain22"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum3"
@@ -281,43 +390,98 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음3"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time3"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play33"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause33"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain33"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum4"
@@ -325,43 +489,97 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음4"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time4"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play44"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause44"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain44"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum5"
@@ -369,43 +587,98 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음5"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time5"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play55"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
+
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause55"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain55"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum6"
@@ -413,42 +686,97 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음6"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time6"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play66"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
+
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause66"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain66"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum7"
@@ -456,42 +784,96 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음7"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time7"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play77"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause77"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain77"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum8"
@@ -499,42 +881,96 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음8"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time8"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play88"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause88"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain88"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum9"
@@ -542,43 +978,97 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음9"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time9"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play99"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause99"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain99"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum10"
@@ -586,42 +1076,96 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음10"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time10"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play10"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause10"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain10"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="40dp"
                 android:orientation="horizontal"
-                android:gravity="left"
+                android:gravity="left|center_vertical"
                 android:background="@drawable/roundshape2"
                 android:layout_margin="10dp"
                 android:id="@+id/noceum11"
@@ -629,35 +1173,89 @@
                 >
                 <TextView
                     android:layout_width="wrap_content"
-                    android:layout_height="50dp"
-                    android:text="소음11"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginLeft="5dp"
-                    android:textSize="20sp"
+                    android:layout_height="wrap_content"
+                    android:text="00:00"
+                    android:layout_marginLeft="10dp"
+                    android:textSize="15sp"
                     android:textColor="#ffffff"
+                    android:id="@+id/text_time11"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:id="@+id/btn_play11"
-                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    android:background="@drawable/ic_baseline_play_arrow_24"
                     />
                 <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:id="@+id/btn_pause11"
-                    android:background="@drawable/ic_baseline_stop_circle_24"
-                    />
-                <Button
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
+                    android:layout_width="30dp"
+                    android:layout_height="25dp"
                     android:id="@+id/btn_playagain11"
                     android:background="@drawable/ic_baseline_replay_24"
                     />
                 <ImageView
-                    android:layout_width="200dp"
-                    android:layout_height="50dp"
-                    android:background="@drawable/ic_sound_1781569"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:background="@drawable/graph1"
                     />
             </LinearLayout>
 

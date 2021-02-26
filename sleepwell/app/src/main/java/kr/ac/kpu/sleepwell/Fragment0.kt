@@ -85,7 +85,8 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     private var getsizefile:Int=0
-    var arraylist=ArrayList<String>(11)   //녹음파일 이름 저장(output2)
+    var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
+    var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
     //RECORD_AUDIO에 퍼미션 요청 변수
     private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private var permissionToRecordAccepted = false
@@ -158,10 +159,12 @@ class Fragment0 : Fragment(), SensorEventListener {
                 serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
             }*/
             if(i==0) {
-                for(i in 0..10){
+                for(i in 0..19){
                     arraylist.add(i.toString())
+                    timearraylist.add(i.toString())
                 }
                 arraylist.removeAll(arraylist)
+                timearraylist.removeAll(timearraylist)
 
                 startTime = System.currentTimeMillis()
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
@@ -194,20 +197,18 @@ class Fragment0 : Fragment(), SensorEventListener {
                     stopRecording()
                 }
                 getsizefile=arraylist.size-1  //max 9 min 0
-                /*Log.d(LOG_TAG,getsizefile.toString())
-                var bundle:Bundle= Bundle()
-                bundle.putInt("getsizefile",getsizefile)
-                for(i in 0..getsizefile){
-                    bundle.putString("file$i",arraylist.get(i))
-                }*/
+
                 activity?.let {
                     val intent= Intent(activity,Day_resultAC::class.java)
-                        intent.putExtra("getsizefile",getsizefile.toString())
+                        //intent.putExtra("getsizefile",getsizefile.toString())
                         Log.d("getsizefile",getsizefile.toString())
-                        for(i in 0..getsizefile){
-                            Log.d("filename",arraylist.get(i))
+                        /*for(i in 0..getsizefile){
+                            Log.d("file,time",arraylist.get(i)+" , "+timearraylist.get(i))
                             intent.putExtra("file$i",arraylist.get(i))
-                    }
+                            intent.putExtra("time$i",timearraylist.get(i))
+                        }*/
+                    intent.putExtra("filenames",arraylist)
+                    intent.putExtra("times",timearraylist)
                     requireActivity().startActivity(intent)
                 }
                 i = 0
@@ -222,7 +223,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         }
         return view
     }
-
     fun wlstart(){
         wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
             newWakeLock(PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE or
@@ -398,7 +398,14 @@ class Fragment0 : Fragment(), SensorEventListener {
         var mdate: Date = Date(now)
         return mformat.format(mdate)
     }
+    private fun onlytime():String{
+        var o_now:Long=System.currentTimeMillis()
+        var o_mformat: SimpleDateFormat = SimpleDateFormat("hh:mm")
+        var o_mdate: Date = Date(o_now)
+        return o_mformat.format(o_mdate)
+    }
     private fun startRecording(){
+        timearraylist.add(onlytime())   //시간 저장
         rfoldername="RecordingFolder"
         directory=File("/mnt/sdcard"+File.separator+rfoldername)
         if(!(directory!!.exists())) {
