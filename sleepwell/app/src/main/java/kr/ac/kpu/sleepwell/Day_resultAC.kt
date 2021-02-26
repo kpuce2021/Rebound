@@ -18,7 +18,8 @@ class Day_resultAC : AppCompatActivity() {
     private var mediaPlayer: MediaPlayer?=null
     private var pausePosition:Int?=null
     private var isPaused:Boolean=false
-    var arraylist=ArrayList<String>(10)   //녹음파일 이름 저장(output2)
+    private var getvisiblesize:Int=0
+    var arraylist=ArrayList<String>(11)   //녹음파일 이름 저장(output2)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,37 +29,46 @@ class Day_resultAC : AppCompatActivity() {
         var playlayoutArray: Array<LinearLayout> = arrayOf(findViewById(R.id.noceum1),
             findViewById(R.id.noceum2),findViewById(R.id.noceum3),findViewById(R.id.noceum4) ,
             findViewById(R.id.noceum5),findViewById(R.id.noceum6),findViewById(R.id.noceum7),
-            findViewById(R.id.noceum8),findViewById(R.id.noceum9),findViewById(R.id.noceum10))
+            findViewById(R.id.noceum8),findViewById(R.id.noceum9),findViewById(R.id.noceum10),findViewById(R.id.noceum11))
 
-        var Arrayplaybutton= arrayOf(findViewById(R.id.btn_play),
+        var Arrayplaybutton:Array<Button> = arrayOf(findViewById(R.id.btn_play),
             findViewById(R.id.btn_play22),
             findViewById(R.id.btn_play33),findViewById(R.id.btn_play44),findViewById(R.id.btn_play44),
             findViewById(R.id.btn_play55),findViewById(R.id.btn_play66),findViewById(R.id.btn_play77),
-            findViewById(R.id.btn_play88) as Button,findViewById(R.id.btn_play99),findViewById(R.id.btn_play10))
+            findViewById(R.id.btn_play88),findViewById(R.id.btn_play99),findViewById(R.id.btn_play10),findViewById(R.id.btn_play11))
 
         var Arraypausebutton: Array<Button> = arrayOf(findViewById(R.id.btn_pause),
             findViewById(R.id.btn_pause22) ,findViewById(R.id.btn_pause33) ,findViewById(R.id.btn_pause44),
             findViewById(R.id.btn_pause55) ,findViewById(R.id.btn_pause66) ,findViewById(R.id.btn_pause77),
-            findViewById(R.id.btn_pause88) ,findViewById(R.id.btn_pause99) ,findViewById(R.id.btn_pause10))
+            findViewById(R.id.btn_pause88) ,findViewById(R.id.btn_pause99) ,findViewById(R.id.btn_pause10),findViewById(R.id.btn_pause11))
 
         var ArrayPlayAgainbutton: Array<Button> = arrayOf(findViewById(R.id.btn_playagain),
             findViewById(R.id.btn_playagain22),findViewById(R.id.btn_playagain33),findViewById(R.id.btn_playagain44) ,
             findViewById(R.id.btn_playagain55),findViewById(R.id.btn_playagain66),findViewById(R.id.btn_playagain77),
-            findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10))
-        for(i in 0..9){
+            findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10),findViewById(R.id.btn_playagain11))
+
+        for(i in 0..10){
             arraylist.add(i.toString())
         }
         arraylist.removeAll(arraylist)
         getfilesizestring=intent.getStringExtra("getsizefile").toString()
         getfilesize=getfilesizestring.toInt()
-        if(getfilesize>10)
-            getfilesize=10
+
+        if(getfilesize>=10)
+            getfilesize=9
+        Log.d("igotsize",getfilesize.toString())
+        if(getfilesize==0){
+            getvisiblesize=0
+        }
+        else getvisiblesize=getfilesize-1
+        Log.d("igotgetvisiblesize",getvisiblesize.toString())
         for(i in 0..getfilesize){
             arraylist.add(intent.getStringExtra("file$i").toString())
         }
-        for(i in 0..getfilesize){
-            //Log.d("showlayout","getfile$i")
+        for(i in 0..getvisiblesize){
             playlayoutArray[i].isVisible=true
+        }
+        for(i in 0..getfilesize){
             Arrayplaybutton[i].setOnClickListener {
                 playing(arraylist.get(i))
                 Toast.makeText(this,"Play${i+1}", Toast.LENGTH_SHORT).show()

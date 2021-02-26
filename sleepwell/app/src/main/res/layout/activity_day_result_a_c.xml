@@ -37,8 +37,6 @@
                     android:textColor="#ffffff"
                     android:id="@+id/frag1_title"
                     />
-
-
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -103,7 +101,11 @@
                 android:padding="20dp"
                 android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                >
                 <TextView
                     android:textColor="@color/white"
                     android:text="수면 시간"
@@ -165,6 +167,20 @@
                     android:layout_height="wrap_content">
                 </TextView>
             </LinearLayout>
+
+           <TextView
+               android:layout_width="wrap_content"
+               android:layout_height="wrap_content"
+               android:text="수면 중 발생한 소음"
+               android:textColor="#ffffff"
+               android:layout_marginTop="8dp"
+               android:layout_marginLeft="8dp"
+               android:layout_marginRight="8dp"
+               android:padding="5dp"
+               android:textSize="20sp"
+               />
+
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
@@ -601,9 +617,50 @@
                     android:background="@drawable/ic_sound_1781569"
                     />
             </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="left"
+                android:background="@drawable/roundshape2"
+                android:layout_margin="10dp"
+                android:id="@+id/noceum11"
+                android:visibility="gone"
+                >
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="50dp"
+                    android:text="소음11"
+                    android:layout_marginRight="5dp"
+                    android:layout_marginLeft="5dp"
+                    android:textSize="20sp"
+                    android:textColor="#ffffff"
+                    />
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/btn_play11"
+                    android:background="@drawable/ic_baseline_play_circle_filled_24"
+                    />
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/btn_pause11"
+                    android:background="@drawable/ic_baseline_stop_circle_24"
+                    />
+                <Button
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:id="@+id/btn_playagain11"
+                    android:background="@drawable/ic_baseline_replay_24"
+                    />
+                <ImageView
+                    android:layout_width="200dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/ic_sound_1781569"
+                    />
+            </LinearLayout>
 
         </LinearLayout>
     </ScrollView>
-
-
 </LinearLayout>
