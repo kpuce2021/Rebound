@@ -17,7 +17,6 @@ class MainAdapter(fm:FragmentManager): FragmentPagerAdapter(fm) {
         items.add(Fragment2())
         items.add(Fragment3())
 
-
         itext.add("수면 시작")
         itext.add("일일 수면")
         itext.add("트랜드")
