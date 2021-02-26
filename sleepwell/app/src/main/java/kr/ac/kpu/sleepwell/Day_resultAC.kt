@@ -54,8 +54,10 @@ class Day_resultAC : AppCompatActivity() {
             findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10),findViewById(R.id.btn_playagain11))
 
         for(i in 0..19){
-            arraylist.add(i.toString())
-            timearraylist.add(i.toString())
+            //arraylist[i]=i.toString()
+            //timearraylist[i]=i.toString()
+            arraylist.add(i,i.toString())
+            timearraylist.add(i,i.toString())
         }
         arraylist.removeAll(arraylist)
         timearraylist.removeAll(timearraylist)

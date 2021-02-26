@@ -160,8 +160,10 @@ class Fragment0 : Fragment(), SensorEventListener {
             }*/
             if(i==0) {
                 for(i in 0..19){
-                    arraylist.add(i.toString())
-                    timearraylist.add(i.toString())
+                    //arraylist[i]=i.toString()
+                    //timearraylist[i]=i.toString()
+                    arraylist.add(i,i.toString())
+                    timearraylist.add(i,i.toString())
                 }
                 arraylist.removeAll(arraylist)
                 timearraylist.removeAll(timearraylist)
