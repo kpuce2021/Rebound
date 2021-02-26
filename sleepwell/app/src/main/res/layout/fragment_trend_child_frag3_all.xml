@@ -5,13 +5,16 @@
     android:layout_height="match_parent"
     tools:context=".Trend_childFrag3_all"
     android:id="@+id/childfrag1_all">
-
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="all fragment"
-        android:textColor="#FFFFFF"
-        android:textSize="50sp"/>
-
+        android:layout_height="600dp">
+        <Button
+            android:backgroundTint="@color/background0"
+            android:gravity="center"
+            android:textColor="@color/white"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:textSize="25sp"
+            android:text="데이터를 보기 위한 \n 수면 세션이 부족합니다."/>
+    </LinearLayout>
 </FrameLayout>

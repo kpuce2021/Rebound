@@ -173,6 +173,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 val Decibelcheckandrecording=getDecibel()
                 Decibelcheckandrecording.start()
                 i = 1
+                view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24,0,0,0)
                 view.sleep_btn.setText("수면 중지")
                 wlstart()
             }
@@ -210,6 +211,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                     requireActivity().startActivity(intent)
                 }
                 i = 0
+                view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_play_arrow_24,0,0,0)
                 view.sleep_btn.setText("수면 시작")
                 val time = (endTime - startTime)
                 val sectime = time /1000

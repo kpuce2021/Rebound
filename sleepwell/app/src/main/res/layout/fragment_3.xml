@@ -75,7 +75,6 @@
                       android:layout_height="wrap_content"
                       android:id="@+id/btn_notice"
                       android:text="공지사항"
-                      android:background="@drawable/mypage_buttonlayout"
                       android:textColor="#000000"
                       android:drawableTop="@drawable/ic_baseline_notifications_none_24"
                       android:layout_margin="10dp"
