@@ -1,15 +1,12 @@
 package kr.ac.kpu.sleepwell
 
-import android.app.Fragment
-import android.content.Context
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.FragmentTransaction
-import androidx.multidex.MultiDex
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import kotlinx.android.synthetic.main.activity_main.*
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -26,7 +23,13 @@ class MainActivity : AppCompatActivity() {
         images.add(R.drawable.ic_baseline_today_24)
         images.add(R.drawable.ic_baseline_assessment_24)
         images.add(R.drawable.ic_baseline_person_24)
+        val images2 = ArrayList<Int>()
+        images.add(R.drawable.ic_baseline_bedtime_24_2)
+        images.add(R.drawable.ic_baseline_today_24_2)
+        images.add(R.drawable.ic_baseline_assessment_24_2)
+        images.add(R.drawable.ic_baseline_person_24_2)
         for (i in 0..3) tabs_main.getTabAt(i)!!.setIcon(images[i])
+
     }
 }
 
