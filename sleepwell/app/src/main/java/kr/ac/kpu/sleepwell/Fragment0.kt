@@ -14,9 +14,7 @@ import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.content.ContextCompat.getSystemService
@@ -85,6 +83,7 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     private var getsizefile:Int=0
+    private var recording:Boolean=false
     var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
     var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
     //RECORD_AUDIO에 퍼미션 요청 변수
@@ -181,6 +180,9 @@ class Fragment0 : Fragment(), SensorEventListener {
                 view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24,0,0,0)
                 view.sleep_btn.setText("수면 중지")
                 wlstart()
+                recording=true
+                val renewwakelock=renewwl()
+                renewwakelock.start()
             }
             else{
                 endTime = System.currentTimeMillis()
@@ -221,15 +223,15 @@ class Fragment0 : Fragment(), SensorEventListener {
                 val mintime = sectime / 60
                 Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
                 wlrelease()
+                recording = false
             }
         }
         return view
     }
     fun wlstart(){
         wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK or PowerManager.ON_AFTER_RELEASE or
-                    PowerManager.ACQUIRE_CAUSES_WAKEUP, "Sleepwell::WakelockTag").apply {
-                acquire()
+            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK , "Sleepwell::WakelockTag").apply {
+                acquire(10*60*1000L /*10 minutes*/)
             }
         }
         Log.d("wakelock","start")
@@ -272,7 +274,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             //파일쓰기
             val writer = BufferedWriter(OutputStreamWriter(fos))
             writer.write(contents)
-            //Log.d("savepath",foldername)
+            Log.d("Sensorlog",foldername)
             writer.flush()
             writer.close()
             fos.close()
@@ -291,7 +293,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             var m = Math.sqrt(x2+y2+z2)//움직임 값
             var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
             WriteTextFile(foldername,filename,contents)
-            //Log.d("MainActivity", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
+            Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
     /*override fun onPause() {
@@ -303,6 +305,17 @@ class Fragment0 : Fragment(), SensorEventListener {
         super.onDestroy()
         Log.e("Fragment0", "onDestroy()")
     }*/
+    inner class renewwl():Thread(){
+        override fun run() {
+            while(recording){
+                Log.d("Wakelock","Thread start")
+                wlrelease()
+                wlstart()
+                SystemClock.sleep(10*60*900L)
+                Log.d("Wakelock","renew")
+            }
+        }
+    }
 
     inner class getDecibel:Thread(){
         override fun run() {
