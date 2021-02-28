@@ -9,6 +9,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 import java.io.FileInputStream
 import java.lang.Exception
@@ -17,7 +19,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class Day_resultAC : AppCompatActivity() {
-    private var getfilesizestring:String=""
+
+    private var userEmail:String=""
     private var getfilesize:Int=0
     private var mediaPlayer: MediaPlayer?=null
     private var pausePosition:Int?=null
@@ -31,7 +34,20 @@ class Day_resultAC : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
 
+        //firebase로 이메일 가져오기
+        val user=Firebase.auth.currentUser
+        if(user!=null){
+            user?.let {
+                for(profile in it.providerData){
+                    userEmail=profile.email.toString()
+                }
+            }
+        }
+        else
+            Toast.makeText(this,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
 
+
+        Log.d("userEmail",userEmail)
         var playlayoutArray: Array<LinearLayout> = arrayOf(findViewById(R.id.noceum1),
             findViewById(R.id.noceum2),findViewById(R.id.noceum3),findViewById(R.id.noceum4) ,
             findViewById(R.id.noceum5),findViewById(R.id.noceum6),findViewById(R.id.noceum7),
@@ -98,9 +114,7 @@ class Day_resultAC : AppCompatActivity() {
         }
     }
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-    }
+
     private fun getTime():String{
         var now:Long=System.currentTimeMillis()
         var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")

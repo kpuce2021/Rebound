@@ -138,9 +138,6 @@ class LoginActivity : AppCompatActivity() {
             Log.d(TAG,"user data load fail")
         }
     }
-
-
-
     companion object {
         private const val TAG = "GoogleActivity"
         private const val RC_SIGN_IN = 9001
