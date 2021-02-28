@@ -16,7 +16,7 @@ import org.w3c.dom.Text
 
 class Fragment3 : Fragment() {
 
-    private var userEmail:String=""
+    //private var userEmail:String=""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -34,15 +34,12 @@ class Fragment3 : Fragment() {
         var btn_FAQ:Button=v.findViewById(R.id.btn_FAQ)   //FAQ
         var btn_logout:Button=v.findViewById(R.id.btn_logout)   //로그아웃
 
-
         //firebase로 이메일 가져오기
         val user= Firebase.auth.currentUser
         if(user!=null){
             user?.let {
                 for(profile in it.providerData){
-                    userEmail=profile.email.toString()
-                    textemail.setText(userEmail)
-
+                    textemail.setText(profile.email.toString())
                 }
             }
         }

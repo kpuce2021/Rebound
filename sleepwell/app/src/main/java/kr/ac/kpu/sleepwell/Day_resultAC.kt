@@ -11,15 +11,20 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 import java.io.FileInputStream
-import java.lang.Exception
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class Day_resultAC : AppCompatActivity() {
 
+
+    //rivate lateinit var mFirebaseStorage: FirebaseStorage
+
+    private var daynow:String=""
     private var userEmail:String=""
     private var getfilesize:Int=0
     private var mediaPlayer: MediaPlayer?=null
@@ -34,6 +39,9 @@ class Day_resultAC : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
 
+
+        /*mFirebaseStorage= FirebaseStorage.getInstance()
+        val storageRef: StorageReference = mFirebaseStorage.getReference("gs://sleepwell-8332f.appspot.com")
         //firebase로 이메일 가져오기
         val user=Firebase.auth.currentUser
         if(user!=null){
@@ -44,10 +52,8 @@ class Day_resultAC : AppCompatActivity() {
             }
         }
         else
-            Toast.makeText(this,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
+            Toast.makeText(this,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()*/
 
-
-        Log.d("userEmail",userEmail)
         var playlayoutArray: Array<LinearLayout> = arrayOf(findViewById(R.id.noceum1),
             findViewById(R.id.noceum2),findViewById(R.id.noceum3),findViewById(R.id.noceum4) ,
             findViewById(R.id.noceum5),findViewById(R.id.noceum6),findViewById(R.id.noceum7),
@@ -115,9 +121,9 @@ class Day_resultAC : AppCompatActivity() {
     }
 
 
-    private fun getTime():String{
+    private fun daytime():String{
         var now:Long=System.currentTimeMillis()
-        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         var mdate: Date = Date(now)
         return mformat.format(mdate)
     }

@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
+import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
@@ -19,14 +20,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.content.getSystemService
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
 import java.text.DateFormat
@@ -58,7 +59,11 @@ class Fragment0 : Fragment(), SensorEventListener {
         "midnight_snack" to false,
         "workout" to false
     )
-
+    //firebase
+    private lateinit var storageRef: StorageReference
+    //private lateinit var mFirebaseStorage: FirebaseStorage
+    //private lateinit var storageRef:StorageReference
+    private var userEmail:String=""
     //private var isRunning:Boolean=false
     private lateinit var mrecorder: MediaRecorder
     private lateinit var mlistener: MediaRecorder
@@ -85,8 +90,10 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     private var getsizefile:Int=0
+    private var daynow:String=""
     var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
     var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
+    var Filearraylist=ArrayList<File>(20)   //녹음파일 자체 저장
     //RECORD_AUDIO에 퍼미션 요청 변수
     private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private var permissionToRecordAccepted = false
@@ -100,9 +107,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-    }
     fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
@@ -150,6 +154,21 @@ class Fragment0 : Fragment(), SensorEventListener {
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
 
+
+        //firebase init
+        val user=Firebase.auth.currentUser
+        if(user!=null){
+            user?.let {
+                for(profile in it.providerData){
+                    userEmail=profile.email.toString()
+                }
+            }
+        }
+        else{
+            Toast.makeText(activity,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
+        }
+
+
         view.sleep_btn.setOnClickListener{
             val day = findDate()
             /*if (GroundService.serviceIntent==null) {
@@ -159,6 +178,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
             }*/
             if(i==0) {
+                daynow=daytime()    //시작버튼 누른 시간 저장
                 for(i in 0..19){
                     //arraylist[i]=i.toString()
                     //timearraylist[i]=i.toString()
@@ -200,15 +220,17 @@ class Fragment0 : Fragment(), SensorEventListener {
                 }
                 getsizefile=arraylist.size-1  //max 9 min 0
 
+                storageRef=FirebaseStorage.getInstance().reference
+                val userFileRef=storageRef.child(userEmail).child(daynow)
+                for(i in 0..getsizefile){
+                    val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
+                    filenameRef.putFile(Uri.fromFile(Filearraylist.get(i)))
+                }
                 activity?.let {
                     val intent= Intent(activity,Day_resultAC::class.java)
-                        //intent.putExtra("getsizefile",getsizefile.toString())
-                        Log.d("getsizefile",getsizefile.toString())
-                        /*for(i in 0..getsizefile){
-                            Log.d("file,time",arraylist.get(i)+" , "+timearraylist.get(i))
-                            intent.putExtra("file$i",arraylist.get(i))
-                            intent.putExtra("time$i",timearraylist.get(i))
-                        }*/
+                    //intent.putExtra("getsizefile",getsizefile.toString())
+                    Log.d("getsizefile",getsizefile.toString())
+
                     intent.putExtra("filenames",arraylist)
                     intent.putExtra("times",timearraylist)
                     requireActivity().startActivity(intent)
@@ -406,6 +428,12 @@ class Fragment0 : Fragment(), SensorEventListener {
         var o_mdate: Date = Date(o_now)
         return o_mformat.format(o_mdate)
     }
+    private fun daytime():String{
+        var d_now:Long=System.currentTimeMillis()
+        var d_mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var d_mdate: Date = Date(d_now)
+        return d_mformat.format(d_mdate)
+    }
     private fun startRecording(){
         timearraylist.add(onlytime())   //시간 저장
         rfoldername="RecordingFolder"
@@ -446,6 +474,7 @@ class Fragment0 : Fragment(), SensorEventListener {
         if(mrecorder!=null){
             mrecorder?.apply {
                 stop()
+                Filearraylist.add(output!!)
                 arraylist.add(output2.toString())
                 //release()
             }
