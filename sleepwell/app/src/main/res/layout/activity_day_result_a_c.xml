@@ -13,32 +13,215 @@
         android:background="@color/background">
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:orientation="vertical">
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:padding="5dp"
-                android:gravity="center"
-                >
+                android:layout_height="match_parent"
+                android:orientation="vertical">
                 <TextView
                     android:background="@color/background"
-                    android:layout_width="wrap_content"
-                    android:layout_weight="10"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
                     android:text="일일 수면 결과"
                     android:textStyle="bold"
                     android:textSize="25sp"
                     android:textColor="#ffffff"
-                    android:id="@+id/frag1_title"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:padding="5dp"
+                    android:id="@+id/result_title"
                     />
-            </LinearLayout>
-            <LinearLayout
+                <TextView
+                    android:background="@color/background"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="2021년 2월 27일"
+                    android:textSize="15sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:padding="5dp"
+                    android:id="@+id/day"
+                    />
+                <com.github.mikephil.charting.charts.PieChart
+                    android:id="@+id/day_piechart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp" />
+                <TableLayout
+                    android:stretchColumns="*"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <TableRow>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="수면 시간"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textColor="@color/white"
+                                android:textStyle="bold"
+                                android:text="7시간"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="수면 시작 시간"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:text="오전 01:00"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                    </TableRow>
+                    <TableRow>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="깊은 수면"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:text="3시간 30분"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="뒤척인 수면"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:text="3시간 30분"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                    </TableRow>
+                    <TableRow>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="잠드는데 소요된 시간"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:text="5분"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="10dp"
+                            android:padding="20dp"
+                            android:background="@color/background2">
+                            <TextView
+                                android:textColor="@color/white"
+                                android:text="수면 점수"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                            <TextView
+                                android:textSize="20sp"
+                                android:textStyle="bold"
+                                android:textColor="@color/white"
+                                android:text="80"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content">
+                            </TextView>
+                        </LinearLayout>
+                    </TableRow>
+                </TableLayout>
+                <LinearLayout
+                    android:layout_margin="10dp"
+                    android:background="@color/background2"
+                    android:padding="20dp"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:textColor="@color/white"
+                        android:text="수면 요인"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                    <TextView
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:textColor="@color/white"
+                        android:text="없음"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+                    </TextView>
+                </LinearLayout>
+            <!--<LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="200dp"
                 android:orientation="vertical"
@@ -93,81 +276,7 @@
                         android:textSize="20sp"
                         />
                 </LinearLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_margin="10dp"
-                android:background="@color/background2"
-                android:padding="20dp"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                >
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="수면 시간"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="7시간"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="수면 시작 시간"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="오전 01:00"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="깊은 수면"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="1시간 30분"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="얕은 수면"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="5시간"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="REM"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-                <TextView
-                    android:textColor="@color/white"
-                    android:text="30분"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-                </TextView>
-            </LinearLayout>
-
+            </LinearLayout>-->
            <TextView
                android:layout_width="wrap_content"
                android:layout_height="wrap_content"
@@ -181,6 +290,7 @@
                android:textSize="20sp"
                android:visibility="gone"
                />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="40dp"
@@ -1258,7 +1368,6 @@
                     android:background="@drawable/graph1"
                     />
             </LinearLayout>
-
         </LinearLayout>
     </ScrollView>
 </LinearLayout>

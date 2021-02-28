@@ -9,37 +9,21 @@
            android:layout_width="match_parent"
            android:layout_height="match_parent"
            android:orientation="vertical"
-           android:background="@drawable/mypage_background"
+           android:background="@drawable/silhouette"
+           android:gravity="center"
            >
-
            <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:gravity="center"
-               android:layout_margin="10dp"
-               >
-               <TextView
-                   android:layout_width="wrap_content"
-                   android:layout_height="wrap_content"
-                   android:text="마이페이지"
-                   android:textSize="40sp"
-                   android:textColor="#ffffff"
-                   />
-           </LinearLayout>
-
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
+               android:layout_width="300dp"
+               android:layout_height="150dp"
                android:orientation="vertical"
+               android:background="@drawable/mypage_background"
                android:gravity="center"
-               android:layout_marginTop="10dp"
                >
                <TextView
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
-                   android:id="@+id/text_userid"
                    android:textSize="30sp"
-                   android:text="unknown"
+                   android:text="sleepwell"
                    android:textStyle="bold"
                    android:textColor="#ffffff"
                    />
@@ -48,135 +32,101 @@
                    android:layout_height="wrap_content"
                    android:id="@+id/text_email"
                    android:textSize="15sp"
-                   android:text="hancar2007@naver.com"
+                   android:text="unknown@google.com"
                    android:textColor="#ffffff"
                    />
                <Button
+                   android:background="@drawable/mypage_buttonlayout"
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:text="내 정보"
+                   android:textColor="#ffffff"
                    android:id="@+id/btn_inform"
                    android:textSize="15sp"
                    android:layout_marginTop="10dp"
                    />
            </LinearLayout>
-          <LinearLayout
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-              <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:gravity="center"
-                  >
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/btn_notice"
-                      android:text="공지사항"
-                      android:textColor="#000000"
-                      android:drawableTop="@drawable/ic_baseline_notifications_none_24"
-                      android:layout_margin="10dp"
-                      />
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/btn_alarm"
-                      android:text="수면 알람"
-                      android:layout_margin="10dp"
-                      android:drawableTop="@drawable/ic_baseline_alarm_add_24"
-                      />
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:id="@+id/btn_wakeup"
-                      android:text="깨우기"
-                      android:layout_margin="10dp"
-                      android:drawableTop="@drawable/ic_baseline_hearing_24"
-                      />
-              </LinearLayout>
-              <LinearLayout
-                  android:layout_width="match_parent"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal"
-                  android:gravity="center"
-                  >
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="FAQ"
-                      android:id="@+id/btn_FAQ"
-                      android:drawableTop="@drawable/ic_baseline_question_answer_24"
-                      android:layout_margin="10dp"
-                      />
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="사용법"
-                      android:id="@+id/btn_howtouse"
-                      android:layout_margin="10dp"
-                      android:drawableTop="@drawable/ic_baseline_menu_book_24"
-                      />
-                  <Button
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:text="로그아웃"
-                      android:id="@+id/btn_logout"
-                      android:layout_margin="10dp"
-                      android:drawableTop="@drawable/ic_baseline_exit_to_app_24"
-                      />
-              </LinearLayout>
-          </LinearLayout>
-
            <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="vertical">
-               <Button
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="나의 수면점수?"
-                   android:gravity="left"
-                   android:id="@+id/btn_mysleepscoreis"
-                   android:textSize="25sp"
-                   android:drawableRight="@drawable/ic_baseline_chevron_right_24"
-                   />
-               <Button
-                   android:layout_width="match_parent"
-                   android:layout_height="wrap_content"
-                   android:text="피드백"
-                   android:gravity="left"
-                   android:id="@+id/btn_"
-                   android:textSize="25sp"
-                   android:drawableRight="@drawable/ic_baseline_chevron_right_24"
-                   />
-           </LinearLayout>
-           <LinearLayout
-               android:layout_width="match_parent"
-               android:layout_height="wrap_content"
-               android:orientation="horizontal"
-               android:layout_marginTop="70dp"
+               android:layout_marginTop="30dp"
+               android:layout_width="300dp"
+               android:layout_height="300dp"
+               android:orientation="vertical"
+               android:background="@drawable/mypage_background"
+               android:gravity="center"
                >
-               <Button
-                   android:layout_width="wrap_content"
+               <TableLayout
+                   android:layout_width="match_parent"
                    android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:textSize="15sp"
-                   android:text="고객센터"
-                   android:id="@+id/btn_servicecenter"
-                   android:drawableLeft="@drawable/ic_baseline_call_24"
-                   />
+                   android:gravity="center"
+                   >
+                   <TableRow
+                       android:gravity="center"
+                       android:layout_margin="5dp"
+                       >
+                       <Button
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="공지사항"
+                           android:id="@+id/btn_notice"
+                           android:drawableTop="@drawable/ic_baseline_notifications_none_24"
+                           />
+                       <Button
+                           android:layout_marginLeft="5dp"
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="수면알람"
+                           android:id="@+id/btn_sleepstart"
+                           android:drawableTop="@drawable/ic_baseline_alarm_add_24"
+                           />
+                       <Button
+                           android:layout_marginLeft="5dp"
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="사용법"
+                           android:id="@+id/btn_howtouse"
+                           android:drawableTop="@drawable/ic_baseline_menu_book_24"
+                           />
+                   </TableRow>
+                   <TableRow
+                       android:gravity="center"
+                       android:layout_margin="5dp"
+                       >
+                       <Button
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="사용법"
+                           android:id="@+id/btn_FAQ"
+                           android:drawableTop="@drawable/ic_baseline_question_answer_24"
+                           />
+                       <Button
+                           android:layout_marginLeft="5dp"
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="피드백"
+                           android:id="@+id/btn_feedback"
+                           android:drawableTop="@drawable/ic_baseline_question_answer_24"
+                           />
+                       <Button
+                           android:layout_marginLeft="5dp"
+                           android:background="@drawable/mypage_buttonlayout"
+                           android:textColor="#ffffff"
+                           android:text="고객센터"
+                           android:id="@+id/btn_call"
+                           android:drawableTop="@drawable/ic_baseline_call_24"
+                           />
+                   </TableRow>
+               </TableLayout>
+
                <Button
-                   android:layout_width="wrap_content"
+                   android:background="@drawable/mypage_buttonlayout"
+                   android:textColor="#ffffff"
+                   android:layout_marginTop="20dp"
+                   android:layout_width="150dp"
                    android:layout_height="wrap_content"
-                   android:layout_weight="1"
-                   android:textSize="15sp"
-                   android:text="권한 설정"
-                   android:id="@+id/btn_permission"
-                   android:drawableLeft="@drawable/ic_baseline_perm_device_information_24"
+                   android:text="로그아웃"
+                   android:drawableLeft="@drawable/ic_baseline_exit_to_app_24"
+                   android:id="@+id/btn_logout"
                    />
            </LinearLayout>
-
        </LinearLayout>
 </FrameLayout>

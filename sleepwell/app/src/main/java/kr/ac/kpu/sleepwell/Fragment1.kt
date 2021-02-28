@@ -32,9 +32,6 @@ class Fragment1 : Fragment() {
     var arraylist=ArrayList<String>(100)   //녹음파일 이름 저장(output2)
     private lateinit var callback: OnBackPressedCallback
 
-
-
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,40 +46,40 @@ class Fragment1 : Fragment() {
 
 
 fun SleepcycleCheck(v:View){
+
     var pieChart: PieChart
     pieChart=v.findViewById<PieChart>(R.id.day_piechart)
+
     pieChart.setUsePercentValues(true)
     val entries=ArrayList<PieEntry>()
-    entries.add(PieEntry(508f,"Awake(during Sleep)"))
-    entries.add(PieEntry(600f,"light Sleep"))
-    entries.add(PieEntry(750f,"Deep Sleep"))
-    entries.add(PieEntry(508f,"REM"))
-    entries.add(PieEntry(670f,"Sleep"))
+    entries.add(PieEntry(0f,"Awake"))
+    entries.add(PieEntry(0f,"Light Sleep"))
+    entries.add(PieEntry(0f,"Deep Sleep"))
 
     val colorItems=ArrayList<Int>()
     for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
-    for(c in ColorTemplate.JOYFUL_COLORS) colorItems.add(c)
-    for(c in ColorTemplate.COLORFUL_COLORS) colorItems.add(c)
-    for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
     for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
+    for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
     colorItems.add(ColorTemplate.getHoloBlue())
 
     val pieDataSet= PieDataSet(entries,"")
+
     pieDataSet.apply {
         colors=colorItems
         valueTextColor= Color.BLACK
         valueTextSize=16f
     }
+
     val pieData= PieData(pieDataSet)
     pieChart.apply {
         data=pieData
         description.isEnabled=false
         isRotationEnabled=false
-        centerText="Sleep Cycle"
+        centerText="수면 비율"
+        setCenterTextSize(20f)
         setEntryLabelColor(Color.BLACK)
         animateY(1400, Easing.EaseInOutQuad)
         animate()
     }
-    //다시재생(멈춘순간부터)
 
 }
