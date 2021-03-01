@@ -88,7 +88,6 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     private var getsizefile:Int=0
-    private var recording:Boolean=false
     private var daynow:String=""
     var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
     var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
@@ -98,9 +97,6 @@ class Fragment0 : Fragment(), SensorEventListener {
     private var permissionToRecordAccepted = false
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
-    private lateinit var wl : PowerManager.WakeLock
-
-    private var serviceIntent: Intent? = null
 
     private val sensorManager by lazy {
         requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
@@ -199,10 +195,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 i = 1
                 view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24,0,0,0)
                 view.sleep_btn.setText("수면 중지")
-                wlstart()
-                recording=true
-                val renewwakelock=renewwl()
-                renewwakelock.start()
+                RenewWL().start()
             }
             else{
                 endTime = System.currentTimeMillis()
@@ -244,24 +237,12 @@ class Fragment0 : Fragment(), SensorEventListener {
                 val sectime = time /1000
                 val mintime = sectime / 60
                 Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
-                wlrelease()
-                recording = false
+                RenewWL().interrupt()
             }
         }
         return view
     }
-    fun wlstart(){
-        wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
-            newWakeLock(PowerManager.PARTIAL_WAKE_LOCK , "Sleepwell::WakelockTag").apply {
-                acquire(10*60*1000L /*10 minutes*/)
-            }
-        }
-        Log.d("wakelock","start")
-    }
-    fun wlrelease(){
-        wl.release()
-        Log.d("wakelock","release")
-    }
+
 
     fun findDate(): String {
         val cal = Calendar.getInstance()
@@ -327,12 +308,31 @@ class Fragment0 : Fragment(), SensorEventListener {
         super.onDestroy()
         Log.e("Fragment0", "onDestroy()")
     }*/
-    inner class renewwl():Thread(){
+    inner class RenewWL():Thread(){
+        lateinit var wl : PowerManager.WakeLock
+        var recording = false
+        fun wlstart(){
+            wl = (requireActivity().getSystemService(Context.POWER_SERVICE) as PowerManager).run {
+                newWakeLock(PowerManager.PARTIAL_WAKE_LOCK , "Sleepwell::WakelockTag").apply {
+                    acquire(10*60*1000L /*10 minutes*/)
+                }
+            }
+            Log.d("wakelock","start")
+            recording = true
+        }
+        fun wlrelease(){
+            wl.release()
+            Log.d("wakelock","release")
+        }
         override fun run() {
-            while(recording){
+            while(!isInterrupted){
                 Log.d("Wakelock","Thread start")
-                wlrelease()
-                wlstart()
+                if(!recording){
+                    wlstart()
+                }else{
+                    wlrelease()
+                    wlstart()
+                }
                 SystemClock.sleep(10*60*900L)
                 Log.d("Wakelock","renew")
             }
