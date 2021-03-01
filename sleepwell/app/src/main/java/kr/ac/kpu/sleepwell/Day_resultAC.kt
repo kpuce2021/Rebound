@@ -119,8 +119,6 @@ class Day_resultAC : AppCompatActivity() {
             }
         }
     }
-
-
     private fun daytime():String{
         var now:Long=System.currentTimeMillis()
         var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")

@@ -1,6 +1,7 @@
 package kr.ac.kpu.sleepwell
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -32,18 +33,18 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
-
 
 class Fragment0 : Fragment(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
     val db = Firebase.firestore
     var data = hashMapOf(
-        "sleep_time" to 0,
+        "sleep_time" to 0, //분을 단위로 사용
         "sleep_deep" to 0,
         "sleep_light" to 0,
         "sleep_rem" to 0,
@@ -142,14 +143,13 @@ class Fragment0 : Fragment(), SensorEventListener {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         var startTime = System.currentTimeMillis()
+        val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
+
         var endTime= System.currentTimeMillis()
         var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
-
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
-
-
         //firebase init
         val user=Firebase.auth.currentUser
         if(user!=null){
@@ -162,8 +162,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         else{
             Toast.makeText(activity,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
         }
-
-
         view.sleep_btn.setOnClickListener{
             val day = findDate()
             /*if (GroundService.serviceIntent==null) {
@@ -182,8 +180,15 @@ class Fragment0 : Fragment(), SensorEventListener {
                 }
                 arraylist.removeAll(arraylist)
                 timearraylist.removeAll(timearraylist)
-
                 startTime = System.currentTimeMillis()
+                val date = Date(startTime)
+                val sttime = format.format(date)
+                val dbRef = db.collection(userkey).document(day)
+                dbRef.set(data, SetOptions.merge())
+                dbRef.update("go_to_bed", sttime)
+                        .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
+
                 sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                         sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                         SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
@@ -200,12 +205,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             else{
                 endTime = System.currentTimeMillis()
                 sensorManager.unregisterListener(this)
-
-                db.collection(userkey).document(day)
-                    .set(data, SetOptions.merge())
-                    .addOnSuccessListener {Log.d("tag", "DocumentSnapshot added successfully") }
-                    .addOnFailureListener { e -> Log.w("tag", "Error adding document", e) }
-
+                val deRef = db.collection(userkey).document(day)
                 isTimerfinished=true
                 isRunning=false
                 isTimergoOkay=false
@@ -213,30 +213,39 @@ class Fragment0 : Fragment(), SensorEventListener {
                 if(amIstartRecording==true){
                     stopRecording()
                 }
-                getsizefile=arraylist.size-1  //max 9 min 0
-
-                storageRef=FirebaseStorage.getInstance().reference
-                val userFileRef=storageRef.child(userEmail).child(daynow)
-                for(i in 0..getsizefile){
-                    val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
-                    filenameRef.putFile(Uri.fromFile(Filearraylist.get(i)))
-                }
-                activity?.let {
-                    val intent= Intent(activity,Day_resultAC::class.java)
-                    //intent.putExtra("getsizefile",getsizefile.toString())
-                    Log.d("getsizefile",getsizefile.toString())
-
-                    intent.putExtra("filenames",arraylist)
-                    intent.putExtra("times",timearraylist)
-                    requireActivity().startActivity(intent)
-                }
                 i = 0
                 view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_play_arrow_24,0,0,0)
                 view.sleep_btn.setText("수면 시작")
                 val time = (endTime - startTime)
                 val sectime = time /1000
-                val mintime = sectime / 60
-                Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
+                val mintime = (sectime/60).toInt() //몇분 잤는지
+                if (mintime < 0) { //수면 시간이 x분 미만일 경우
+                    val alertDialog = AlertDialog.Builder(activity)
+                            .setTitle("수면 분석을 위한 수면 시간이 충분하지 않습니다.")
+                            .setNegativeButton("닫기",null)
+                            .create()
+                    alertDialog.show()
+                }
+                else{
+                    getsizefile=arraylist.size-1  //max 9 min 0
+                    storageRef=FirebaseStorage.getInstance().reference
+                    val userFileRef=storageRef.child(userEmail).child(daynow)
+                    for(i in 0..getsizefile){
+                        val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
+                        filenameRef.putFile(Uri.fromFile(Filearraylist.get(i))) }
+                    deRef.update("sleep_time", mintime)
+                            .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
+                            .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
+                    Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
+                    activity?.let {
+                        val intent = Intent(activity, Day_resultAC::class.java)
+                        //intent.putExtra("getsizefile",getsizefile.toString())
+                        Log.d("getsizefile", getsizefile.toString())
+                        intent.putExtra("filenames", arraylist)
+                        intent.putExtra("times", timearraylist)
+                        requireActivity().startActivity(intent)
+                    }
+                }
                 RenewWL().interrupt()
             }
         }
@@ -361,6 +370,7 @@ class Fragment0 : Fragment(), SensorEventListener {
             }
         }
     }
+
     inner class Timerclass(val countnumber:Int):Thread(){
         var countnum:Int=countnumber
         var Decibel:Double=-20.0

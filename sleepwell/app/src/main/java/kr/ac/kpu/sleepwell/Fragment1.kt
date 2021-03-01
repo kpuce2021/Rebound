@@ -21,10 +21,14 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.utils.ColorTemplate
+import com.google.firebase.auth.FirebaseAuth
 import java.io.FileInputStream
 import java.lang.Exception
 private const val LOG_TAG = "Error"
+
 class Fragment1 : Fragment() {
+    val user = FirebaseAuth.getInstance()
+    val userkey = user.uid.toString()
     private var getfilesize:Int=0
     private var mediaPlayer: MediaPlayer?=null
     private var pausePosition:Int?=null
@@ -37,7 +41,10 @@ class Fragment1 : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         var v:View=inflater.inflate(R.layout.fragment_1, container, false)
+        /*val Ref = db.collection("")*/
 
+       /* if(){
+        }*/
 
         SleepcycleCheck(v)
         return v
