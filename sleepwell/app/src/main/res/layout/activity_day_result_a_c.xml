@@ -46,7 +46,7 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:padding="5dp"
-                    android:id="@+id/day"
+                    android:id="@+id/day_a"
                     />
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/day_piechart"
@@ -75,6 +75,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_t_a"
                                 android:textSize="20sp"
                                 android:textColor="@color/white"
                                 android:textStyle="bold"
@@ -97,6 +98,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_st_a"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -121,6 +123,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_d_a"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -143,6 +146,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_m_a"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -167,10 +171,11 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/go_sleep_a"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="5분"
+                                android:text="0분"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -192,7 +197,7 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="80"
+                                android:text="측정 불가"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -207,6 +212,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
+                        android:id="@+id/sleep_score_a"
                         android:textColor="@color/white"
                         android:text="수면 요인"
                         android:layout_width="wrap_content"

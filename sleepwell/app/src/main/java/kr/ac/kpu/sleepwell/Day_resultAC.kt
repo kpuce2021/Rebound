@@ -3,25 +3,33 @@ package kr.ac.kpu.sleepwell
 import android.media.MediaPlayer
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
+import kotlinx.android.synthetic.main.fragment_1.*
 import java.io.FileInputStream
+import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class Day_resultAC : AppCompatActivity() {
-
-
+    val db = Firebase.firestore
+    val user = FirebaseAuth.getInstance()
+    val userkey = user.uid.toString()
     //rivate lateinit var mFirebaseStorage: FirebaseStorage
 
     private var daynow:String=""
@@ -38,6 +46,39 @@ class Day_resultAC : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
+
+        val day2 = findDate2()
+        day_a.setText(day2)
+
+
+        val Ref = db.collection(userkey)
+        val day = findDate()
+        val Ref_day = db.collection(userkey).document(day)
+        Ref_day.addSnapshotListener(EventListener<DocumentSnapshot>{snapshot, e->
+            if(e != null){
+                Log.w("tag", "Listen failed.", e)
+            }
+            if(snapshot != null && snapshot.exists()){
+                var sleep_time = snapshot?.data!!["sleep_time"].toString()
+                var sleep_start = snapshot?.data!!["go_to_bed"].toString()
+                var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
+                var sleep_light = snapshot?.data!!["sleep_light"].toString()
+
+                var sleep_h = sleep_time.toInt()/60
+                var sleep_h2 = ((sleep_time.toDouble()/60 - sleep_h.toDouble())*60).toInt()
+
+                if(sleep_h==0){
+                    sleep_t_a.setText(sleep_time+"분")
+                }
+                else{
+                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분" )
+                }
+
+                sleep_st_a.setText(sleep_start)
+                sleep_d_a.setText(sleep_deep+"시간")
+                sleep_m_a.setText(sleep_light+"시간")
+            }
+        })
 
 
         /*mFirebaseStorage= FirebaseStorage.getInstance()
@@ -175,5 +216,24 @@ class Day_resultAC : AppCompatActivity() {
                 Log.d("pause check",":"+pausePosition)
             }
         }
+    }
+    fun findDate(): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var ampm = cal.get(Calendar.AM_PM)
+        if(ampm == Calendar.PM){
+            return df.format(cal.time)
+        }
+        else{cal.add(Calendar.DATE,-1)
+            return df.format(cal.time) }
+    }
+
+    fun findDate2(): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val df: DateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
+        cal.add(Calendar.DATE,-1)
+        return df.format(cal.time)
     }
 }

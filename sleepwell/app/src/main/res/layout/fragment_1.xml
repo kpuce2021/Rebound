@@ -13,6 +13,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
                 <Button
+                    android:id="@+id/block_btn"
                     android:backgroundTint="@color/background0"
                     android:gravity="center"
                     android:textColor="@color/white"
@@ -40,6 +41,7 @@
                     android:id="@+id/frag1_title"
                     />
                 <TextView
+                    android:id="@+id/today"
                     android:background="@color/background"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -51,7 +53,6 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginRight="8dp"
                     android:padding="5dp"
-                    android:id="@+id/day"
                     />
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/day_piechart"
@@ -80,6 +81,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_t"
                                 android:textSize="20sp"
                                 android:textColor="@color/white"
                                 android:textStyle="bold"
@@ -102,6 +104,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_st"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -126,6 +129,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_d"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -148,6 +152,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_m"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
@@ -172,10 +177,11 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/go_sleep"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="5분"
+                                android:text="0분"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -194,10 +200,11 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
+                                android:id="@+id/sleep_score"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="80"
+                                android:text="측정 불가"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
