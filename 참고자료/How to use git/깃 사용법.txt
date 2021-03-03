@@ -140,6 +140,14 @@ Root 폴더 연결
 
 3. 잘 바뀌었는지 push로 올림
 
+<github사용시, 원격저장소랑 내 코드랑 다른데, pull하면 already up to date라고 뜨는 현상 해결법>
+
+--> git fetch --all
+--> git reset --hard origin/master
+
+원격저장소 전부 fetch이후, --hard옵션을 주어 reset시킴
+※현재 로컬에만 있는 코드들은 삭제될 수 있으니 조심!!!!!※
+
     
 
   
