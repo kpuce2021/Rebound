@@ -246,6 +246,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                         requireActivity().startActivity(intent)
                     }
                 }
+                renameFile()
                 RenewWL().interrupt()
             }
         }
@@ -293,6 +294,11 @@ class Fragment0 : Fragment(), SensorEventListener {
         } catch (e: IOException) {
             e.printStackTrace()
         }
+    }
+    private fun renameFile(){
+        val file = File("/mnt/sdcard/$foldername/$filename")
+        val rename = File("/mnt/sdcard/$foldername/$filename-${findDate()}")
+        file.renameTo(rename)
     }
     override fun onSensorChanged(event: SensorEvent?) {
         event?.let {
