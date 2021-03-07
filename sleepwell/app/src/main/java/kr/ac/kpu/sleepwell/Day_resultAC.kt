@@ -1,6 +1,8 @@
 package kr.ac.kpu.sleepwell
 
+import android.content.Intent
 import android.media.MediaPlayer
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -40,16 +42,17 @@ class Day_resultAC : AppCompatActivity() {
     private var isPaused:Boolean=false
     private var getvisiblesize:Int=0
     private var btn_pressedcheck: Array<Boolean> = arrayOf(false,false,false,false,false,false,false,false,false,false,false)
-    var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
-    var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
+    private lateinit var storageRef: StorageReference
+    //var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
+    //var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
 
+        val myapp:MyglobalArraylist=application as MyglobalArraylist
         val day2 = findDate2()
         day_a.setText(day2)
-
 
         val Ref = db.collection(userkey)
         val day = findDate()
@@ -80,9 +83,6 @@ class Day_resultAC : AppCompatActivity() {
             }
         })
 
-
-        /*mFirebaseStorage= FirebaseStorage.getInstance()
-        val storageRef: StorageReference = mFirebaseStorage.getReference("gs://sleepwell-8332f.appspot.com")
         //firebase로 이메일 가져오기
         val user=Firebase.auth.currentUser
         if(user!=null){
@@ -93,7 +93,7 @@ class Day_resultAC : AppCompatActivity() {
             }
         }
         else
-            Toast.makeText(this,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()*/
+            Toast.makeText(this,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
 
         var playlayoutArray: Array<LinearLayout> = arrayOf(findViewById(R.id.noceum1),
             findViewById(R.id.noceum2),findViewById(R.id.noceum3),findViewById(R.id.noceum4) ,
@@ -116,25 +116,24 @@ class Day_resultAC : AppCompatActivity() {
             findViewById(R.id.btn_playagain55),findViewById(R.id.btn_playagain66),findViewById(R.id.btn_playagain77),
             findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10),findViewById(R.id.btn_playagain11))
 
-        for(i in 0..19){
-            //arraylist[i]=i.toString()
-            //timearraylist[i]=i.toString()
-            arraylist.add(i,i.toString())
-            timearraylist.add(i,i.toString())
-        }
-        arraylist.removeAll(arraylist)
-        timearraylist.removeAll(timearraylist)
-
-        arraylist=intent.getSerializableExtra("filenames") as ArrayList<String>
-        timearraylist=intent.getSerializableExtra("times") as ArrayList<String>
-        if(arraylist.size>0)
+        //firebase storage start
+        daynow=daytime()
+        if(myapp.arraylist.size>0)
             text_noise.isVisible=true
-        getfilesize=arraylist.size-1
-        if(arraylist.size>3){
+        getfilesize=myapp.arraylist.size-1
+        storageRef= FirebaseStorage.getInstance().reference
+        val userFileRef=storageRef.child(userEmail).child(daynow)
+        Log.d("fiearraylist_size",getfilesize.toString())
+        for(i in 0..getfilesize){
+            val filenameRef: StorageReference =userFileRef.child(" 녹음파일$i.mp3")
+            filenameRef.putFile(Uri.fromFile(myapp.filearraylist.get(i))) }
+        //firebase storage finish
+
+        if(myapp.arraylist.size>3){
             getfilesize-=1
         }
         for(i in 0..getfilesize){
-            timeArray[i].setText(timearraylist.get(i))
+            timeArray[i].setText(myapp.timearraylist.get(i))
         }
         for(i in 0..getfilesize){
             playlayoutArray[i].isVisible=true
@@ -143,7 +142,7 @@ class Day_resultAC : AppCompatActivity() {
             //playlayoutArray[i].isVisible=true
             Arrayplaybutton[i].setOnClickListener {
                 if(!btn_pressedcheck[i]){
-                    playing(arraylist.get(i))
+                    playing(myapp.arraylist.get(i))
                     Log.d("number i",i.toString())
                     Arrayplaybutton[i].setBackgroundResource(R.drawable.ic_baseline_pause_24)
                     btn_pressedcheck[i]=true
@@ -163,6 +162,12 @@ class Day_resultAC : AppCompatActivity() {
     private fun daytime():String{
         var now:Long=System.currentTimeMillis()
         var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var mdate: Date = Date(now)
+        return mformat.format(mdate)
+    }
+    private fun getTime():String{
+        var now:Long=System.currentTimeMillis()
+        var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
         var mdate: Date = Date(now)
         return mformat.format(mdate)
     }
@@ -236,4 +241,5 @@ class Day_resultAC : AppCompatActivity() {
         cal.add(Calendar.DATE,-1)
         return df.format(cal.time)
     }
+
 }

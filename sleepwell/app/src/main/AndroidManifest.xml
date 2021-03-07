@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="kr.ac.kpu.sleepwell">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="kr.ac.kpu.sleepwell">
+
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <application
-        android:name="androidx.multidex.MultiDexApplication"
+        android:name=".MyglobalArraylist"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-
         android:theme="@style/Theme.Sleepwell">
-        <activity android:name=".Day_resultAC"></activity>
+        <service
+            android:name=".backgroundservice"
+            android:enabled="true"
+            android:exported="true"></service>
+        <activity android:name=".SleepStart" />
+        <activity android:name=".Day_resultAC" />
         <activity android:name=".MainActivity" />
         <activity
             android:name=".LoginActivity"
