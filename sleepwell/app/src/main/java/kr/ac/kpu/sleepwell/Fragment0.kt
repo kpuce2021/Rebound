@@ -252,7 +252,6 @@ class Fragment0 : Fragment(), SensorEventListener {
         return view
     }
 
-
     fun findDate(): String {
         val cal = Calendar.getInstance()
         cal.time = Date()
@@ -264,16 +263,17 @@ class Fragment0 : Fragment(), SensorEventListener {
         else{cal.add(Calendar.DATE,-1)
             return df.format(cal.time) }
     }
+
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
-
-    override fun onDestroy() {
+    /*override fun onDestroy() {
         super.onDestroy()
-        /*if (serviceIntent != null) {
+        if (serviceIntent != null) {
             stopService(serviceIntent)
             serviceIntent = null
-        }*/
-    }
+        }
+    }*/
+
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
         try {
             val dir = File("/mnt/sdcard"+File.separator+foldername)
@@ -308,15 +308,21 @@ class Fragment0 : Fragment(), SensorEventListener {
             Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
-    /*override fun onPause() {
+    override fun onPause() {
         super.onPause()
         Log.e("Fragment0", "onPause()")
-    }*/
+    }
 
-    /*override fun onDestroy() {
+    override fun onStop() {
+        super.onStop()
+        Log.e("Fragment0", "onStop()")
+    }
+
+    override fun onDestroy() {
         super.onDestroy()
         Log.e("Fragment0", "onDestroy()")
-    }*/
+    }
+
     inner class RenewWL():Thread(){
         lateinit var wl : PowerManager.WakeLock
         var recording = false
