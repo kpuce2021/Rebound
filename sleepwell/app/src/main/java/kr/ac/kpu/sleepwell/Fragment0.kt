@@ -163,14 +163,16 @@ class Fragment0 : Fragment(), SensorEventListener {
             Toast.makeText(activity,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
         }
         view.sleep_btn.setOnClickListener{
-            val day = findDate()
+            //val day = findDate()
             /*if (GroundService.serviceIntent==null) {
                 serviceIntent = Intent(activity, GroundService::class.java)
                 startService(serviceIntent)
             } else {
                 serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
             }*/
-            if(i==0) {
+            val intent=Intent(activity,SleepStart::class.java)      //background2에서 자동실행
+            startActivity(intent)
+            /*if(i==0) {
                 daynow=daytime()    //시작버튼 누른 시간 저장
                 for(i in 0..19){
                     //arraylist[i]=i.toString()
@@ -201,8 +203,10 @@ class Fragment0 : Fragment(), SensorEventListener {
                 view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24,0,0,0)
                 view.sleep_btn.setText("수면 중지")
                 RenewWL().start()
+
             }
             else{
+
                 endTime = System.currentTimeMillis()
                 sensorManager.unregisterListener(this)
                 val deRef = db.collection(userkey).document(day)
@@ -247,7 +251,8 @@ class Fragment0 : Fragment(), SensorEventListener {
                     }
                 }
                 RenewWL().interrupt()
-            }
+
+            } */
         }
         return view
     }
@@ -347,98 +352,6 @@ class Fragment0 : Fragment(), SensorEventListener {
             }
         }
     }
-
-    inner class getDecibel:Thread(){
-        override fun run() {
-            while(isRunning){
-                /*if(isStartListeningCheck==true){
-                    startListening()
-                    isStartListeningCheck=false
-                }*/
-                var Decibel:Double=SoundDB(32767.0)
-                SystemClock.sleep(1000)
-                Log.d(DECIBEL,Decibel.toString()+" db")
-                if(Decibel>=-15.0 && isTimerfinished && arraylist.size<11){
-                    //isStartListeningCheck=true
-                    val decibeltimer=Timerclass(3)
-                    decibeltimer.start()
-                    //stopListening()
-                    startRecording()
-                    //if(isStopRecordingOkay)
-                    //  stopRecording()
-                }
-            }
-        }
-    }
-
-    inner class Timerclass(val countnumber:Int):Thread(){
-        var countnum:Int=countnumber
-        var Decibel:Double=-20.0
-        override fun run() {
-            isTimerfinished=false
-            while(isTimergoOkay){
-                Log.d("Timerclass Decibel ms",Decibel.toString())
-                if(Decibel >-15.0)
-                    countnum=3
-                if(countnum<=0){
-                    //isStopRecordingOkay=true
-                    stopRecording()
-                    isTimerfinished=true
-                    break
-                }
-                else{
-                    isStopRecordingOkay=false
-                    countnum-=1
-                    Decibel=SoundDB(32767.0)
-                    Log.d("countnumber",countnum.toString())
-                    SystemClock.sleep(1000)
-                }
-            }
-        }
-    }
-
-    //added(2021.02.04)
-    fun getAmplitude():Int{
-        if(mlistener!=null)
-            return mlistener!!.maxAmplitude
-        else
-            return 0
-    }
-    //added(2021.02.04)
-    fun getAmplitudeEMA():Double{
-        var amp:Double=getAmplitude().toDouble()
-        mEMA = EMA_FILTER * amp + (1.0 - EMA_FILTER) * mEMA
-        return mEMA
-    }
-    fun SoundDB(ampl:Double):Double{
-        return 20*Math.log10(getAmplitudeEMA()/ampl)
-    }
-    private fun startListening(){
-        mlistener=MediaRecorder().apply {
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFile("/dev/null")
-            try {
-                prepare()
-                start()
-            }catch (e:IllegalArgumentException) {
-                e.printStackTrace();
-            }catch (e: IllegalStateException) {
-                e.printStackTrace()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-        }
-    }
-    private fun stopListening(){
-        if(mlistener!=null){
-            mlistener?.apply {
-                stop()
-                release()
-            }
-        }
-    }
     private fun getTime():String{
         var now:Long=System.currentTimeMillis()
         var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
@@ -456,61 +369,5 @@ class Fragment0 : Fragment(), SensorEventListener {
         var d_mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
         var d_mdate: Date = Date(d_now)
         return d_mformat.format(d_mdate)
-    }
-    private fun startRecording(){
-        timearraylist.add(onlytime())   //시간 저장
-        rfoldername="RecordingFolder"
-        directory=File("/mnt/sdcard"+File.separator+rfoldername)
-        if(!(directory!!.exists())) {
-            directory!!.mkdirs()
-        }
-        path="/mnt/sdcard/"+rfoldername
-        rfilename="녹음파일 "+getTime()+".mp3"
-        output=File(path,rfilename)
-        output2=output!!.absolutePath
-        //arraylist.add(output2.toString())
-        mrecorder = MediaRecorder().apply {
-            //setAudioEncodingBitRate(16)
-            setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFile(output2)
-            try {
-                prepare()
-                start()
-                amIstartRecording=true
-            } catch (e:IllegalArgumentException) {
-                e.printStackTrace()
-                amIstartRecording=false
-            } catch (e:IllegalStateException ) {
-                e.printStackTrace()
-                amIstartRecording=false
-            }catch (e: IOException) {
-                amIstartRecording=false
-                Log.e(LOG_TAG, "prepare() failed")
-            }
-        }
-        mEMA=0.0
-    }
-    private fun stopRecording() {
-        amIstartRecording=false
-        if(mrecorder!=null){
-            mrecorder?.apply {
-                stop()
-                Filearraylist.add(output!!)
-                arraylist.add(output2.toString())
-                //release()
-            }
-        }
-    }
-    private fun releaseRecording(){
-        if(mrecorder!=null){
-            mrecorder?.apply {
-                release()
-            }
-        }
-    }
-    fun finish(){
-        finish()
     }
 }
