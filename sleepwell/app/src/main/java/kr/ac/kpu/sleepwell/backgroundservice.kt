@@ -101,7 +101,6 @@ class backgroundservice : Service() {
         builder.setContentIntent(pendingintent)
         builder.setAutoCancel(true)
 
-
         val manager: NotificationManager =getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             manager.createNotificationChannel(
