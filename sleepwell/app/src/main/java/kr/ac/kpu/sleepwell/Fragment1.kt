@@ -66,7 +66,7 @@ class Fragment1 : Fragment() {
         day.setText(daily)//하루 치 결과를 보여줌*/
 
         val Ref = db.collection(userkey)
-        val day = findDate()
+        val day = findDate1()
         val Ref_day = db.collection(userkey).document(day)
         Ref_day.get().addOnSuccessListener { result ->
             if (result != null){
@@ -169,7 +169,7 @@ fun findDate2(): String {
     return df.format(cal.time)
 }
 
-fun findDate(): String {
+fun findDate1(): String {
     val cal = Calendar.getInstance()
     cal.time = Date()
     val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
