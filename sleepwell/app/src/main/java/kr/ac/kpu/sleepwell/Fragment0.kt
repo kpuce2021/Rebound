@@ -1,17 +1,11 @@
 package kr.ac.kpu.sleepwell
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.hardware.Sensor
-import android.hardware.SensorEvent
-import android.hardware.SensorEventListener
-import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.net.Uri
 import android.os.Bundle
 import android.os.PowerManager
 import android.os.SystemClock
@@ -22,10 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
@@ -33,31 +24,13 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
 
-class Fragment0 : Fragment(), SensorEventListener {
+class Fragment0 : Fragment() {
     val user = FirebaseAuth.getInstance()
-    val userkey = user.uid.toString()
-    val db = Firebase.firestore
-    var data = hashMapOf(
-        "sleep_time" to 0, //분을 단위로 사용
-        "sleep_deep" to 0,
-        "sleep_light" to 0,
-        "sleep_rem" to 0,
-        "awake" to 0,
-        "go_to_bed" to "pm 11:00",
-        "wake_up" to "am 07:00",
-        "sleep_score" to 0,
-        "alcohol" to false,
-        "caffeine" to false,
-        "smoke" to false,
-        "midnight_snack" to false,
-        "workout" to false
-    )
     //firebase
     private lateinit var storageRef: StorageReference
     //private lateinit var mFirebaseStorage: FirebaseStorage
@@ -99,10 +72,6 @@ class Fragment0 : Fragment(), SensorEventListener {
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
 
-    private val sensorManager by lazy {
-        requireActivity().getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
-    }
-
     fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
@@ -142,11 +111,7 @@ class Fragment0 : Fragment(), SensorEventListener {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        var startTime = System.currentTimeMillis()
-        val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
 
-        var endTime= System.currentTimeMillis()
-        var i = 0
         var view = inflater.inflate(R.layout.fragment_0,container,false)
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
@@ -163,7 +128,6 @@ class Fragment0 : Fragment(), SensorEventListener {
             Toast.makeText(activity,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
         }
         view.sleep_btn.setOnClickListener{
-            //val day = findDate()
             /*if (GroundService.serviceIntent==null) {
                 serviceIntent = Intent(activity, GroundService::class.java)
                 startService(serviceIntent)
@@ -182,34 +146,15 @@ class Fragment0 : Fragment(), SensorEventListener {
                 }
                 arraylist.removeAll(arraylist)
                 timearraylist.removeAll(timearraylist)
-                startTime = System.currentTimeMillis()
-                val date = Date(startTime)
-                val sttime = format.format(date)
-                val dbRef = db.collection(userkey).document(day)
-                dbRef.set(data, SetOptions.merge())
-                dbRef.update("go_to_bed", sttime)
-                        .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
-                        .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
-
-                sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
-                        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
-                        SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
                 startListening()
                 isRunning=true
                 isTimergoOkay=true
                 val Decibelcheckandrecording=getDecibel()
                 Decibelcheckandrecording.start()
-                i = 1
-                view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_stop_24,0,0,0)
-                view.sleep_btn.setText("수면 중지")
                 RenewWL().start()
 
             }
             else{
-
-                endTime = System.currentTimeMillis()
-                sensorManager.unregisterListener(this)
-                val deRef = db.collection(userkey).document(day)
                 isTimerfinished=true
                 isRunning=false
                 isTimergoOkay=false
@@ -217,9 +162,7 @@ class Fragment0 : Fragment(), SensorEventListener {
                 if(amIstartRecording==true){
                     stopRecording()
                 }
-                i = 0
-                view.sleep_btn.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_baseline_play_arrow_24,0,0,0)
-                view.sleep_btn.setText("수면 시작")
+
                 val time = (endTime - startTime)
                 val sectime = time /1000
                 val mintime = (sectime/60).toInt() //몇분 잤는지
@@ -237,10 +180,6 @@ class Fragment0 : Fragment(), SensorEventListener {
                     for(i in 0..getsizefile){
                         val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
                         filenameRef.putFile(Uri.fromFile(Filearraylist.get(i))) }
-                    deRef.update("sleep_time", mintime)
-                            .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
-                            .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
-                    Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
                     activity?.let {
                         val intent = Intent(activity, Day_resultAC::class.java)
                         //intent.putExtra("getsizefile",getsizefile.toString())
@@ -252,33 +191,11 @@ class Fragment0 : Fragment(), SensorEventListener {
                 }
                 renameFile()
                 RenewWL().interrupt()
-
             } */
         }
         return view
     }
 
-    fun findDate(): String {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        var ampm = cal.get(Calendar.AM_PM)
-        if(ampm == Calendar.PM){
-            return df.format(cal.time)
-        }
-        else{cal.add(Calendar.DATE,-1)
-            return df.format(cal.time) }
-    }
-
-    override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
-
-    /*override fun onDestroy() {
-        super.onDestroy()
-        if (serviceIntent != null) {
-            stopService(serviceIntent)
-            serviceIntent = null
-        }
-    }*/
 
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
         try {
@@ -300,25 +217,24 @@ class Fragment0 : Fragment(), SensorEventListener {
             e.printStackTrace()
         }
     }
+    private fun findDate(): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var ampm = cal.get(Calendar.AM_PM)
+        if(ampm == Calendar.PM){
+            return df.format(cal.time)
+        }
+        else{cal.add(Calendar.DATE,-1)
+            return df.format(cal.time) }
+    }
+
     private fun renameFile(){
         val file = File("/mnt/sdcard/$foldername/$filename")
         val rename = File("/mnt/sdcard/$foldername/$filename-${findDate()}")
         file.renameTo(rename)
     }
-    override fun onSensorChanged(event: SensorEvent?) {
-        event?.let {
-            var x = event.values[0]
-            var y = event.values[1]
-            var z = event.values[2]
-            var x2 = Math.pow(x.toDouble(), 2.0)//x제곱
-            var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
-            var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
-            var m = Math.sqrt(x2+y2+z2)//움직임 값
-            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
-            WriteTextFile(foldername,filename,contents)
-            Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
-        }
-    }
+
     override fun onPause() {
         super.onPause()
         Log.e("Fragment0", "onPause()")

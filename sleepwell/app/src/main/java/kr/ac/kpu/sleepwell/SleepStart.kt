@@ -21,7 +21,6 @@ class SleepStart : AppCompatActivity() {
         setContentView(R.layout.activity_sleep_start)
 
         val myapp=application as MyglobalArraylist
-
         val intent= Intent(this,backgroundservice::class.java)
         intent.setAction("startForeground")
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
