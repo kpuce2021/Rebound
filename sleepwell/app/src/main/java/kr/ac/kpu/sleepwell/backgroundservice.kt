@@ -134,6 +134,7 @@ class backgroundservice : Service(), SensorEventListener {
                 .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
                 .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
         Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
+        renameFile()
 
 
         isTimerfinished=true
@@ -145,6 +146,11 @@ class backgroundservice : Service(), SensorEventListener {
         }
         Log.d("is Stop?","YES!!")
         super.onDestroy()
+    }
+    private fun renameFile(){
+        val file = File("/mnt/sdcard/$foldername/$filename")
+        val rename = File("/mnt/sdcard/$foldername/$filename-${getTime()}")
+        file.renameTo(rename)
     }
 
     private fun startForegroundService(){
