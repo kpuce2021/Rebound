@@ -102,7 +102,6 @@ class backgroundservice : Service(), SensorEventListener {
                     sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                     SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
 
-
             /*for(i in 0..19){
                 //arraylist[i]=i.toString()
                 //timearraylist[i]=i.toString()
