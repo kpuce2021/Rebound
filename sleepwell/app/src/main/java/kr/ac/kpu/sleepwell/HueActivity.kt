@@ -78,7 +78,7 @@ class HueActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
 
-        button.setOnclickListener{
+        /*button.setOnclickListener{
             api.getuserid(huenm).enqueue(object :Callback<Response> {
                 override fun onFailure(call: Call<Response>, t: Throwable) {
                     Log.d("userid","failed to get userid")
@@ -95,6 +95,6 @@ class HueActivity : AppCompatActivity() {
                     }
                 }
             })
-        }
+        }*/
     }
 }
