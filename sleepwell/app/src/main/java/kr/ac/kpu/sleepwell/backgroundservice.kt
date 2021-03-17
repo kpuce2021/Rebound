@@ -145,8 +145,9 @@ class backgroundservice : Service(), SensorEventListener {
         super.onDestroy()
     }
     private fun renameFile(){
+        val newfilename = "sensorlog ${getTime()}.txt"
         val file = File("/mnt/sdcard/$foldername/$filename")
-        val rename = File("/mnt/sdcard/$foldername/$filename-${getTime()}")
+        val rename = File("/mnt/sdcard/$foldername/$newfilename")
         file.renameTo(rename)
     }
 
