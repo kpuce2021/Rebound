@@ -141,7 +141,7 @@
                             android:background="@color/background2">
                             <TextView
                                 android:textColor="@color/white"
-                                android:text="뒤척인 수면"
+                                android:text="얕은 수면"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -189,7 +189,7 @@
                             android:background="@color/background2">
                             <TextView
                                 android:textColor="@color/white"
-                                android:text="수면 점수"
+                                android:text="REM 수면"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
