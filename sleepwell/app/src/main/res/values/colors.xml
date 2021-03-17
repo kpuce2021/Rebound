@@ -10,4 +10,6 @@
     <color name="background">#3A3E46</color>
     <color name="background2">#555B67</color>
     <color name="background0">#55000000</color>
+    <color name="lightgreen">#aaffaa</color>
+    <color name="Transparency">#00000000</color>
 </resources>
