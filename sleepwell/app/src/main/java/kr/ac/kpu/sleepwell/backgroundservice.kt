@@ -1,7 +1,9 @@
 package kr.ac.kpu.sleepwell
 
-import android.app.*
-import android.content.ComponentName
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.hardware.Sensor
@@ -10,24 +12,20 @@ import android.hardware.SensorEventListener
 import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
-import android.net.Uri
 import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
-import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
 import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
@@ -159,7 +157,7 @@ class backgroundservice : Service(), SensorEventListener {
         builder.setContentText("SleepWell 수면 진행중입니다.")
 
         val notificationintent:Intent= Intent(this, SleepStart::class.java)
-        val pendingintent: PendingIntent = PendingIntent.getActivity(this,0,notificationintent,0)
+        val pendingintent: PendingIntent = PendingIntent.getActivity(this,0,notificationintent,PendingIntent.FLAG_UPDATE_CURRENT)
         builder.setContentIntent(pendingintent)
         builder.setAutoCancel(true)
 
@@ -185,7 +183,7 @@ class backgroundservice : Service(), SensorEventListener {
             //파일쓰기
             val writer = BufferedWriter(OutputStreamWriter(fos))
             writer.write(contents)
-            Log.d("Sensorlog",foldername)
+            //Log.d("Sensorlog",foldername)
             writer.flush()
             writer.close()
             fos.close()
@@ -207,7 +205,7 @@ class backgroundservice : Service(), SensorEventListener {
             var m = Math.sqrt(x2+y2+z2)//움직임 값
             var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
             WriteTextFile(foldername,filename,contents)
-            Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
+            //Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
 
@@ -277,8 +275,10 @@ class backgroundservice : Service(), SensorEventListener {
     private fun startListening(){
         mlistener= MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            //setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            //setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile("/dev/null")
             try {
                 prepare()
@@ -335,8 +335,10 @@ class backgroundservice : Service(), SensorEventListener {
         mrecorder = MediaRecorder().apply {
             //setAudioEncodingBitRate(16)
             setAudioSource(MediaRecorder.AudioSource.MIC)
-            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            //setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            //setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
+            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
             setOutputFile(output2)
             try {
                 prepare()

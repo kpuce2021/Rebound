@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.LineChart
@@ -149,6 +150,7 @@ class Trend_childFrag1_week : Fragment() {
                 isGranularityEnabled=false
                 valueFormatter=IndexAxisValueFormatter(type)
                 textSize=12f
+                textColor= context?.let { ContextCompat.getColor(it,R.color.white) }!!
             }
 
             //y축 설정
