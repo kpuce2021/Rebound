@@ -31,6 +31,7 @@ import java.util.*
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
+
 class backgroundservice : Service(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
@@ -148,7 +149,7 @@ class backgroundservice : Service(), SensorEventListener {
         super.onDestroy()
     }
     private fun renameFile(){
-        val newfilename = "sensorlog ${getTime()}.txt"
+        val newfilename = "sensorlog-${getTime()}.txt"
         val file = File("/mnt/sdcard/$foldername/$filename")
         val rename = File("/mnt/sdcard/$foldername/$newfilename")
         file.renameTo(rename)
@@ -157,6 +158,7 @@ class backgroundservice : Service(), SensorEventListener {
     private fun startForegroundService(){
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "default")
         builder.setSmallIcon(R.mipmap.ic_launcher_round)
+        builder.setPriority(2)
         builder.setContentTitle("SleepWell")
         builder.setContentText("SleepWell 수면 진행중입니다.")
 
