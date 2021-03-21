@@ -13,6 +13,7 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
+import android.os.Environment
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
@@ -280,8 +281,9 @@ class backgroundservice : Service(), SensorEventListener {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             //setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             //setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            //setAudioSamplingRate(8000)
+            setOutputFormat(MediaRecorder.OutputFormat.AMR_WB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
             setOutputFile("/dev/null")
             try {
                 prepare()
@@ -322,15 +324,16 @@ class backgroundservice : Service(), SensorEventListener {
         return d_mformat.format(d_mdate)
     }
     private fun startRecording(){
+        Log.d("isStart?","Started!!")
         myapp!!.timearraylist.add(onlytime())   //시간 저장
         rfoldername="RecordingFolder"
-        directory= File("/mnt/sdcard"+ File.separator+rfoldername)
+        directory= File(filesDir, File.separator+rfoldername)
         if(!(directory!!.exists())) {
             directory!!.mkdirs()
         }
-        path="/mnt/sdcard/"+rfoldername
+        //path="/mnt/sdcard/"+rfoldername
         rfilename="녹음파일 "+getTime()+".mp3"
-        output= File(path,rfilename)
+        output= File(directory,rfilename)
         output2=output!!.absolutePath
         //arraylist.add(output2.toString())
         //myapp!!.filearraylist.add(output!!)
@@ -340,8 +343,9 @@ class backgroundservice : Service(), SensorEventListener {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             //setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             //setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-            setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AAC)
+            //setAudioSamplingRate(8000)
+            setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
             setOutputFile(output2)
             try {
                 prepare()
@@ -363,13 +367,18 @@ class backgroundservice : Service(), SensorEventListener {
     private fun stopRecording() {
         amIstartRecording=false
         if(mrecorder!=null){
-            mrecorder?.apply {
-                stop()
-                myapp!!.filearraylist.add(output!!)
-                myapp!!.arraylist.add(output2.toString())
-                Log.d("filearraylist_size",myapp!!.filearraylist.size.toString())
-                //release()
-            }
+           try {
+               Log.d("isStop?","stop!!")
+               mrecorder?.apply {
+                   stop()
+                   myapp!!.filearraylist.add(output!!)
+                   myapp!!.arraylist.add(output2.toString())
+                   Log.d("filearraylist_size",myapp!!.filearraylist.size.toString())
+                   //release()
+               }
+           }catch (e:IllegalStateException){
+               e.printStackTrace()
+           }
         }
     }
     private fun releaseRecording(){
@@ -382,7 +391,6 @@ class backgroundservice : Service(), SensorEventListener {
     fun finish(){
         finish()
     }
-
     fun findDate(): String {
         val cal = Calendar.getInstance()
         cal.time = Date()

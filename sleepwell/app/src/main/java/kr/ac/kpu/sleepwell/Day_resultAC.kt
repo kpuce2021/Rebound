@@ -92,7 +92,7 @@ class Day_resultAC : AppCompatActivity() {
                     sleep_t_a.setText(sleep_time+"분")
                 }
                 else{
-                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분" )
+                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분")
                 }
 
                 sleep_st_a.setText(sleep_start)
@@ -124,7 +124,7 @@ class Day_resultAC : AppCompatActivity() {
             findViewById(R.id.noceum8),findViewById(R.id.noceum9),findViewById(R.id.noceum10),findViewById(R.id.noceum11))
 
         var timeArray: Array<TextView> = arrayOf(findViewById(R.id.text_time),
-                findViewById(R.id.text_time2),findViewById(R.id.text_time3),findViewById(R.id.text_time4) ,
+                findViewById(R.id.text_time2),findViewById(R.id.text_time3),findViewById(R.id.text_time4),
                 findViewById(R.id.text_time5),findViewById(R.id.text_time6),findViewById(R.id.text_time7),
                 findViewById(R.id.text_time8),findViewById(R.id.text_time9),findViewById(R.id.text_time10),findViewById(R.id.text_time11))
 
@@ -135,7 +135,7 @@ class Day_resultAC : AppCompatActivity() {
             findViewById(R.id.btn_play88),findViewById(R.id.btn_play99),findViewById(R.id.btn_play10),findViewById(R.id.btn_play11))
 
         var ArrayPlayAgainbutton: Array<Button> = arrayOf(findViewById(R.id.btn_playagain),
-            findViewById(R.id.btn_playagain22),findViewById(R.id.btn_playagain33),findViewById(R.id.btn_playagain44) ,
+            findViewById(R.id.btn_playagain22),findViewById(R.id.btn_playagain33),findViewById(R.id.btn_playagain44),
             findViewById(R.id.btn_playagain55),findViewById(R.id.btn_playagain66),findViewById(R.id.btn_playagain77),
             findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10),findViewById(R.id.btn_playagain11))
 
