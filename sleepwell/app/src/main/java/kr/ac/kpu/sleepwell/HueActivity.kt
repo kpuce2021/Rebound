@@ -4,11 +4,14 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.google.gson.annotations.SerializedName
+import kotlinx.android.synthetic.main.activity_hue.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.http.*
+import retrofit2.http.Field
+import retrofit2.http.FormUrlEncoded
+import retrofit2.http.POST
 
 
 data class Response(
@@ -56,45 +59,48 @@ data class ResBody(
 
 interface HueService{
     @FormUrlEncoded
-    @POST("/api")
+    @POST("api")
     fun getuserid(
-            @Field("devicetype") huename:String
+            @Field("devicetype") huenm:String
     ):Call<Response>
 }
 
 
 class HueActivity : AppCompatActivity() {
 
-    private val bridge = "https://브릿지ip주소"
+    private val bridge = "https://192.168.0.3/"
     private lateinit var hueid : String
-    val retrofitsetting = Retrofit.Builder()
-            .baseUrl(bridge)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    val api = retrofitsetting.create(HueService::class.java)
     val huenm : String = "test"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
 
-        /*button.setOnclickListener{
-            api.getuserid(huenm).enqueue(object :Callback<Response> {
-                override fun onFailure(call: Call<Response>, t: Throwable) {
-                    Log.d("userid","failed to get userid")
-                }
-
-                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                    Log.d("Response:: ", response.body().toString())
-                    Log.d("Res error:: ",response.body()?.error.toString())
-                    Log.d("Res success:: ",response.body()?.success.toString())
-                    val idget : List<ResBody>? = response.body()?.success
-                    if (idget != null) {
-                        hueid = idget[0].userid
-                        Log.d("username",hueid)
+        useridBtn.setOnClickListener{
+            val retrofitsetting = Retrofit.Builder()
+                    .baseUrl(bridge)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+            val api = retrofitsetting.create(HueService::class.java)
+            Runnable {
+                api.getuserid(huenm).enqueue(object : Callback<Response> {
+                    override fun onFailure(call: Call<Response>, t: Throwable) {
+                        Log.d("userid", "failed to get userid "+huenm)
                     }
-                }
-            })
-        }*/
+
+                    override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                        Log.d("Response:: ", response.body().toString())
+                        Log.d("Res error:: ", response.body()?.error.toString())
+                        Log.d("Res success:: ", response.body()?.success.toString())
+                        val idget: List<ResBody>? = response.body()?.success
+                        if (idget != null) {
+                            hueid = idget[0].userid
+                            Log.d("username", hueid)
+                            testTV.text = hueid
+                        }
+                    }
+                })
+            }.run()
+        }
     }
 }
