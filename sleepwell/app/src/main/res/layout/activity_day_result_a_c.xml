@@ -48,15 +48,49 @@
                     android:padding="5dp"
                     android:id="@+id/day_a"
                     />
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/day_piechart"
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/awake_barchart"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
                     android:layout_marginTop="20sp"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
-                    android:padding="10dp" />
+                    android:padding="10dp"
+                    android:background="@color/background2"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    android:orientation="horizontal"
+                    android:background="@color/background2"
+                    >
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/awake_state"
+                        android:layout_weight="1"
+                        />
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/light_state"
+                        android:layout_weight="1"
+                        />
+                    <com.github.mikephil.charting.charts.PieChart
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:id="@+id/deep_state"
+                        android:layout_weight="1"
+                        />
+                </LinearLayout>
+
                 <TableLayout
+                    android:layout_marginTop="20sp"
                     android:stretchColumns="*"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent">
@@ -102,7 +136,7 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="오전 01:00"
+                                android:text="오전 12:00"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -141,7 +175,7 @@
                             android:background="@color/background2">
                             <TextView
                                 android:textColor="@color/white"
-                                android:text="뒤척인 수면"
+                                android:text="얕은 수면"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -150,7 +184,7 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="3시간 30분"
+                                android:text="30분"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -175,7 +209,7 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="0분"
+                                android:text="31분"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -189,7 +223,7 @@
                             android:background="@color/background2">
                             <TextView
                                 android:textColor="@color/white"
-                                android:text="수면 점수"
+                                android:text="REM 수면"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>
@@ -197,7 +231,7 @@
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"
-                                android:text="측정 불가"
+                                android:text="5.9/10"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content">
                             </TextView>

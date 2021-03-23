@@ -1,17 +1,29 @@
 package kr.ac.kpu.sleepwell
 
-import android.content.Intent
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import com.github.mikephil.charting.animation.Easing
+import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.charts.PieChart
+import com.github.mikephil.charting.components.AxisBase
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.formatter.ValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
@@ -21,7 +33,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
-import kotlinx.android.synthetic.main.fragment_1.*
+import kotlinx.android.synthetic.main.fragment_trend_child_frag1_week.*
 import java.io.FileInputStream
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -34,6 +46,7 @@ class Day_resultAC : AppCompatActivity() {
     val userkey = user.uid.toString()
     //rivate lateinit var mFirebaseStorage: FirebaseStorage
 
+    private val random=Random()
     private var daynow:String=""
     private var userEmail:String=""
     private var getfilesize:Int=0
@@ -43,8 +56,13 @@ class Day_resultAC : AppCompatActivity() {
     private var getvisiblesize:Int=0
     private var btn_pressedcheck: Array<Boolean> = arrayOf(false,false,false,false,false,false,false,false,false,false,false)
     private lateinit var storageRef: StorageReference
-    //var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
-    //var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
+    private var REM_values=ArrayList<BarEntry>()
+    private var deepSleep_values=ArrayList<BarEntry>()
+    private var lightSleep_values=ArrayList<BarEntry>()
+    private var Awake_values=ArrayList<BarEntry>()
+    private val colorlist=ArrayList<Int>()
+
+    private lateinit var Arrayplaybutton:Array<Button>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,14 +92,19 @@ class Day_resultAC : AppCompatActivity() {
                     sleep_t_a.setText(sleep_time+"분")
                 }
                 else{
-                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분" )
+                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분")
                 }
 
                 sleep_st_a.setText(sleep_start)
-                sleep_d_a.setText(sleep_deep+"시간")
-                sleep_m_a.setText(sleep_light+"시간")
+                //sleep_d_a.setText(sleep_deep+"시간")
+                //sleep_m_a.setText(sleep_light+"시간")
             }
         })
+
+        AwakeDrawingGraph(awake_barchart)
+        awakestatepiechartDrawing(awake_state)
+        lightsleeppiechartDrawing(light_state)
+        deepsleepstatepiechartDrawing(deep_state)
 
         //firebase로 이메일 가져오기
         val user=Firebase.auth.currentUser
@@ -101,18 +124,18 @@ class Day_resultAC : AppCompatActivity() {
             findViewById(R.id.noceum8),findViewById(R.id.noceum9),findViewById(R.id.noceum10),findViewById(R.id.noceum11))
 
         var timeArray: Array<TextView> = arrayOf(findViewById(R.id.text_time),
-                findViewById(R.id.text_time2),findViewById(R.id.text_time3),findViewById(R.id.text_time4) ,
+                findViewById(R.id.text_time2),findViewById(R.id.text_time3),findViewById(R.id.text_time4),
                 findViewById(R.id.text_time5),findViewById(R.id.text_time6),findViewById(R.id.text_time7),
                 findViewById(R.id.text_time8),findViewById(R.id.text_time9),findViewById(R.id.text_time10),findViewById(R.id.text_time11))
 
-        var Arrayplaybutton:Array<Button> = arrayOf(findViewById(R.id.btn_play),
+        Arrayplaybutton = arrayOf(findViewById(R.id.btn_play),
             findViewById(R.id.btn_play22),
             findViewById(R.id.btn_play33),findViewById(R.id.btn_play44),findViewById(R.id.btn_play44),
             findViewById(R.id.btn_play55),findViewById(R.id.btn_play66),findViewById(R.id.btn_play77),
             findViewById(R.id.btn_play88),findViewById(R.id.btn_play99),findViewById(R.id.btn_play10),findViewById(R.id.btn_play11))
 
         var ArrayPlayAgainbutton: Array<Button> = arrayOf(findViewById(R.id.btn_playagain),
-            findViewById(R.id.btn_playagain22),findViewById(R.id.btn_playagain33),findViewById(R.id.btn_playagain44) ,
+            findViewById(R.id.btn_playagain22),findViewById(R.id.btn_playagain33),findViewById(R.id.btn_playagain44),
             findViewById(R.id.btn_playagain55),findViewById(R.id.btn_playagain66),findViewById(R.id.btn_playagain77),
             findViewById(R.id.btn_playagain88),findViewById(R.id.btn_playagain99),findViewById(R.id.btn_playagain10),findViewById(R.id.btn_playagain11))
 
@@ -142,7 +165,7 @@ class Day_resultAC : AppCompatActivity() {
             //playlayoutArray[i].isVisible=true
             Arrayplaybutton[i].setOnClickListener {
                 if(!btn_pressedcheck[i]){
-                    playing(myapp.arraylist.get(i))
+                    playing(myapp.arraylist.get(i),i)
                     Log.d("number i",i.toString())
                     Arrayplaybutton[i].setBackgroundResource(R.drawable.ic_baseline_pause_24)
                     btn_pressedcheck[i]=true
@@ -181,7 +204,7 @@ class Day_resultAC : AppCompatActivity() {
             }
         }
     }
-    private fun playing(path:String){
+    private fun playing(path:String,index:Int){
         /*if(mediaPlayer!=null){
             mediaPlayer!!.release()
         }
@@ -202,6 +225,9 @@ class Day_resultAC : AppCompatActivity() {
         }
         try{
             mediaPlayer= MediaPlayer().apply {
+                setOnCompletionListener {
+                    Arrayplaybutton[index].setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
+                }
                 setDataSource(fis.fd)
                 prepare()
                 start()
@@ -242,4 +268,206 @@ class Day_resultAC : AppCompatActivity() {
         return df.format(cal.time)
     }
 
+    private fun AwakeDrawingGraph(barChart: BarChart){
+        barChart.apply {
+            description.isEnabled=false
+            setMaxVisibleValueCount(30) //최대 보이는 그래프 개수
+            setPinchZoom(false) //zoom in out
+            setDrawBarShadow(false) //그래프 그림자
+            setDrawGridBackground(false)    //격자구조 넣을껀지
+            //setDrawBorders(false)
+            legend.isEnabled=true
+            setTouchEnabled(false)
+            isDoubleTapToZoomEnabled=false
+            animateY(1000)
+        }
+        //val values=ArrayList<BarEntry>()
+        val type=ArrayList<String>()
+        var REM_set: BarDataSet
+        var lightSleep_set:BarDataSet
+        var deepSleep_set:BarDataSet
+        var Awake_set:BarDataSet
+        //values.add(BarEntry(0.0f,7.0f))
+
+        REM_values.add(BarEntry(0.0f,7.0f))
+        lightSleep_values.add(BarEntry(1.0f,5.6f))
+        deepSleep_values.add(BarEntry(2.0f,6.5f))
+        Awake_values.add(BarEntry(3.0f,4.7f))
+        REM_values.add(BarEntry(4.0f,7.0f))
+        REM_values.add(BarEntry(5.0f,7.0f))
+
+        //var i:String="12:00"
+        type.add("12:00")
+        type.add("")
+        type.add("")
+        type.add("")
+        type.add("7:00")
+
+        colorlist.add(Color.parseColor("#FFFF88"))  //light
+        colorlist.add(Color.parseColor("#FFFA8072"))    //deep
+        colorlist.add(Color.parseColor("#88ff88"))  //REM
+        colorlist.add(Color.parseColor("#88ffff"))  //Awake
+
+
+        if(barChart.data!=null && barChart.data.dataSetCount>1){
+            val chartData=barChart.data
+            REM_set=chartData?.getDataSetByIndex(0) as BarDataSet
+            lightSleep_set=chartData?.getDataSetByIndex(1) as BarDataSet
+            deepSleep_set=chartData?.getDataSetByIndex(2) as BarDataSet
+            Awake_set=chartData?.getDataSetByIndex(3) as BarDataSet
+            REM_set.values=REM_values
+            lightSleep_set.values=lightSleep_values
+            deepSleep_set.values=deepSleep_values
+            Awake_set.values=Awake_values
+            chartData.notifyDataChanged()
+            barChart.notifyDataSetChanged()
+        }
+        else{
+            REM_set= BarDataSet(REM_values,"REM")
+            REM_set.setColor(colorlist.get(2))
+            REM_set.setDrawValues(false)
+
+            lightSleep_set= BarDataSet(lightSleep_values,"lightsleep")
+            //lightSleep_set.colors=colorlist
+            lightSleep_set.setColor(colorlist.get(0))
+            lightSleep_set.setDrawValues(false)
+
+            deepSleep_set= BarDataSet(deepSleep_values,"deepsleep")
+            //deepSleep_set.colors=colorlist
+            deepSleep_set.setColor(colorlist.get(1))
+            deepSleep_set.setDrawValues(false)
+
+            Awake_set= BarDataSet(Awake_values,"Awake")
+            //Awake_set.colors=colorlist
+            Awake_set.setColor(colorlist.get(3))
+            Awake_set.setDrawValues(false)
+
+            val dataSets=ArrayList<IBarDataSet>()
+            dataSets.add(REM_set)
+            dataSets.add(lightSleep_set)
+            dataSets.add(deepSleep_set)
+            dataSets.add(Awake_set)
+
+            val data= BarData(dataSets)
+            barChart.data=data
+            barChart.setVisibleXRange(0f,120f)
+            barChart.setFitBars(false)
+
+            //x축 설정
+            val xAxis=barChart.xAxis
+            xAxis.apply{
+                setDrawGridLines(false)
+                isEnabled=true
+                position=XAxis.XAxisPosition.BOTTOM
+                setDrawAxisLine(true)
+                granularity=1f
+                isGranularityEnabled=true
+                valueFormatter=IndexAxisValueFormatter(type)
+                textSize=12f
+                textColor=ContextCompat.getColor(applicationContext,R.color.white)
+            }
+            //y축 설정
+            val yAxis_l=barChart.axisLeft
+            yAxis_l.apply {
+                setDrawLabels(false)
+                isEnabled = false
+                axisMinimum = 0f // 최소값
+                axisMaximum = 15f // 최대값
+                granularity = 1f // 값 만큼 라인선 설정
+                textColor = Color.RED // 색상 설정
+                axisLineColor = Color.BLACK // 축 색상 설정
+                //gridColor = Color.BLUE // 격자 색상 설정
+            }
+            val yAxis_R=barChart.axisRight
+            yAxis_R.apply {
+                setDrawLabels(false)
+                isEnabled = false
+                axisMinimum = 0f // 최소값
+                axisMaximum = 15f // 최대값
+                granularity = 1f // 값 만큼 라인선 설정
+                textColor = Color.RED // 색상 설정
+                axisLineColor = Color.BLACK // 축 색상 설정
+                //gridColor = Color.BLUE // 격자 색상 설정
+            }
+            barChart.invalidate()
+        }
+    }
+    private fun awakestatepiechartDrawing(pieChart: PieChart){
+        pieChart.setUsePercentValues(true)
+        val entries=ArrayList<PieEntry>()
+
+        entries.add(PieEntry(20f,"Awake State"))
+        val pieDataSet= PieDataSet(entries,"")
+
+        val colorItems=ArrayList<Int>()
+        colorItems.add(colorlist.get(3))
+        colorItems.add(R.color.background2)
+        pieDataSet.apply {
+            colors=colorItems
+            valueTextColor= Color.BLACK
+            valueTextSize=12f
+        }
+        val pieData= PieData(pieDataSet)
+        pieChart.apply {
+            data=pieData
+            description.isEnabled=false
+            isRotationEnabled=false
+            centerText="Awake"
+            setEntryLabelColor(Color.BLACK)
+            setEntryLabelTextSize(20f)
+            animateY(1400, Easing.EaseInOutQuad)
+            animate()
+        }
+    }
+    private fun lightsleeppiechartDrawing(pieChart: PieChart){
+        pieChart.setUsePercentValues(true)
+        val entries=ArrayList<PieEntry>()
+        entries.add(PieEntry(60f))
+        entries.add(PieEntry(40f))
+
+        val colorItems=ArrayList<Int>()
+        colorItems.add(colorlist.get(0))
+        colorItems.add(R.color.background2)
+
+        val pieDataSet= PieDataSet(entries,"")
+        pieDataSet.apply {
+            colors=colorItems
+            valueTextColor= Color.BLACK
+            valueTextSize=12f
+        }
+        val pieData= PieData(pieDataSet)
+        pieChart.apply {
+            data=pieData
+            description.isEnabled=false
+            isRotationEnabled=false
+            centerText="light"
+            setEntryLabelColor(Color.BLACK)
+            setEntryLabelTextSize(20f)
+            animateY(1400, Easing.EaseInOutQuad)
+            animate()
+        }
+    }
+    private fun deepsleepstatepiechartDrawing(pieChart: PieChart){
+        pieChart.setUsePercentValues(true)
+        val entries=ArrayList<PieEntry>()
+        entries.add(PieEntry(40f))
+
+        val pieDataSet= PieDataSet(entries,"")
+        pieDataSet.apply {
+            setColor(colorlist.get(1))  //그래프 색이랑 그래프안의 글자색 및 크기 조절
+            valueTextColor= Color.BLACK
+            valueTextSize=12f
+        }
+        val pieData= PieData(pieDataSet)
+        pieChart.apply {
+            data=pieData
+            description.isEnabled=false
+            isRotationEnabled=false
+            centerText="deep"
+            setEntryLabelColor(Color.WHITE)
+            setEntryLabelTextSize(20f)
+            animateY(1400, Easing.EaseInOutQuad)
+            animate()
+        }
+    }
 }

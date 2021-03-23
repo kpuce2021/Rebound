@@ -104,7 +104,7 @@
                            android:textColor="#ffffff"
                            android:text="피드백"
                            android:id="@+id/btn_feedback"
-                           android:drawableTop="@drawable/ic_baseline_question_answer_24"
+                           android:drawableTop="@drawable/ic_baseline_feedback_24"
                            />
                        <Button
                            android:layout_marginLeft="5dp"

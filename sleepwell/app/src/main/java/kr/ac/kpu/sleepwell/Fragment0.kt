@@ -1,6 +1,7 @@
 package kr.ac.kpu.sleepwell
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -18,6 +19,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.fragment_0.*
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
 import java.text.DateFormat
@@ -111,8 +113,22 @@ class Fragment0 : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
         var view = inflater.inflate(R.layout.fragment_0,container,false)
+
+        //수면 요소
+        view.factorbox.setOnClickListener {
+            val builder = AlertDialog.Builder(activity)
+            val dialogView = layoutInflater.inflate(R.layout.sleepcheck_dialog,null)
+            builder.setView(dialogView)
+                .setNegativeButton("취소"){ dialogInterface, i ->
+
+                }
+                .setPositiveButton("완료"){ dialogInterface, i ->
+
+                }
+                .show()
+        }
+
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
         //firebase init
