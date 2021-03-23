@@ -12,6 +12,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.POST
+import java.io.IOException
+import java.net.MalformedURLException
+import java.net.URL
+import java.security.SecureRandom
+import java.security.cert.CertificateException
+import java.security.cert.X509Certificate
+import javax.net.ssl.*
 
 
 data class Response(
@@ -59,7 +66,7 @@ data class ResBody(
 
 interface HueService{
     @FormUrlEncoded
-    @POST("api")
+    @POST("/api")
     fun getuserid(
             @Field("devicetype") huenm:String
     ):Call<Response>
@@ -68,7 +75,7 @@ interface HueService{
 
 class HueActivity : AppCompatActivity() {
 
-    private val bridge = "https://192.168.0.3/"
+    private val bridge = "http://192.168.0.3"
     private lateinit var hueid : String
     val huenm : String = "test"
 
@@ -76,7 +83,10 @@ class HueActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
 
+
         useridBtn.setOnClickListener{
+
+
             val retrofitsetting = Retrofit.Builder()
                     .baseUrl(bridge)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -85,7 +95,8 @@ class HueActivity : AppCompatActivity() {
             Runnable {
                 api.getuserid(huenm).enqueue(object : Callback<Response> {
                     override fun onFailure(call: Call<Response>, t: Throwable) {
-                        Log.d("userid", "failed to get userid "+huenm)
+                        Log.d("fail", "failed to get userid : "+ "$t")
+                        Log.d("failresponse","$call")
                     }
 
                     override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
