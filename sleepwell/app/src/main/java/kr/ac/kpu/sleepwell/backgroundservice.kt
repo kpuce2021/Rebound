@@ -26,10 +26,21 @@ import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.timer
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
+var cycleList = mutableListOf<String>()
+var timeList = mutableListOf<Long>()
+var scount = 0
+var ccount = 0
+var total = 0.0
+var awake = 0
+var sleep_light = 0
+var sleep_deep = 0
+var sleep_rem = 0
+
 
 class backgroundservice : Service(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
@@ -86,6 +97,8 @@ class backgroundservice : Service(), SensorEventListener {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        timeList.add(0, startTime)
+        cycleList.add(0, "awake")
         if("startForeground".equals(intent!!.action)){
             startForegroundService()
 
@@ -195,22 +208,97 @@ class backgroundservice : Service(), SensorEventListener {
             e.printStackTrace()
         }
     }
-
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
+
+
     override fun onSensorChanged(event: SensorEvent?) {
+        var x = 0.toFloat()
+        var y = 0.toFloat()
+        var z = 0.toFloat()
+        var avg = 0.0
         event?.let {
-            var x = event.values[0]
-            var y = event.values[1]
-            var z = event.values[2]
+            var ftime = System.currentTimeMillis()
+            var xtime = timeList.get(ccount)
+            x = event.values[0]
+            y = event.values[1]
+            z = event.values[2]
             var x2 = Math.pow(x.toDouble(), 2.0)//x제곱
             var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
             var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
             var m = Math.sqrt(x2+y2+z2)//움직임 값
-            var contents = "x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m} ${getTime()}\n"
+            if (((ftime-startTime)/1000/60)<5){
+                avg = sensorAverage(m)
+            }
+            var contents = "${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycleList.get(ccount)}\n"
             WriteTextFile(foldername,filename,contents)
+            checkCycle(m, avg)
+            if (ftime-xtime>=300000){
+                ccount += 1
+                timeList.add(ccount, ftime)
+                if (awake > 0)
+                {
+                    cycleList.add(ccount, "awake")
+                }
+                else{
+                    if(sleep_light > 0 ){
+                        cycleList.add(ccount, "sleep_light")
+                    }
+                    else {
+                        if (sleep_deep > 0) {
+                            cycleList.add(ccount, "sleep_deep")
+                        }
+                        else{
+                            if(sleep_rem > 0){
+                                cycleList.add(ccount, "sleep_rem")
+                            }
+                            else{Log.d(DECIBEL,"checkcycle error") }
+                        }
+                    }
+                }
+                awake = 0
+                sleep_light = 0
+                sleep_rem = 0
+                sleep_deep = 0
+            }
             //Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
+    }
+
+    fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 1
+        var v0 = Math.abs(x - avg) * 1000
+        if (ccount > 0) {
+            if (cycleList.get(ccount)=="awake") {
+                if (v0 > 20) {
+                    awake += 1
+                } else
+                { sleep_light += 1 }
+            }
+            else if (ccount<43){
+                if (v0>25){
+                    awake += 1
+                }
+                else if(v0 <25 && v0>10){
+                    sleep_light += 1
+                }
+                else {sleep_deep += 1}
+            }
+            else{
+                if (v0>25){
+                    awake += 1
+                }
+                else if(v0 <25 && v0>10){
+                    sleep_light += 1
+                }
+                else { sleep_rem += 1}
+            }
+        }
+    }
+
+    fun sensorAverage(x: Double) : Double { // 시작 5분동안 센서값 평균 구하는 함수
+        total += x
+        scount+=1
+        return total/(scount.toDouble())
     }
 
     inner class getDecibel:Thread(){
