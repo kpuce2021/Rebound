@@ -13,7 +13,6 @@ import android.hardware.SensorManager
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Build
-import android.os.Environment
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
@@ -26,7 +25,6 @@ import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.concurrent.timer
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
@@ -230,67 +228,85 @@ class backgroundservice : Service(), SensorEventListener {
             if (((ftime-startTime)/1000/60)<5){
                 avg = sensorAverage(m)
             }
-            var contents = "${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycleList.get(ccount)}\n"
-            WriteTextFile(foldername,filename,contents)
-            checkCycle(m, avg)
             if (ftime-xtime>=300000){
                 ccount += 1
                 timeList.add(ccount, ftime)
+                checkCycle(m, avg)
                 if (awake > 0)
                 {
                     cycleList.add(ccount, "awake")
+                    initcycle()
                 }
                 else{
                     if(sleep_light > 0 ){
                         cycleList.add(ccount, "sleep_light")
+                        initcycle()
                     }
                     else {
                         if (sleep_deep > 0) {
                             cycleList.add(ccount, "sleep_deep")
+                            initcycle()
                         }
                         else{
                             if(sleep_rem > 0){
                                 cycleList.add(ccount, "sleep_rem")
+                                initcycle()
                             }
                             else{Log.d(DECIBEL,"checkcycle error") }
                         }
                     }
                 }
-                awake = 0
-                sleep_light = 0
-                sleep_rem = 0
-                sleep_deep = 0
             }
+            else{checkCycle(m, avg)}
+            var cycle0 = cycleList.get(ccount)
+            var contents = "${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycle0}\n"
+            WriteTextFile(foldername,filename,contents)
             //Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
+    }
+    fun initcycle(){
+        awake = 0
+        sleep_light = 0
+        sleep_rem = 0
+        sleep_deep = 0
     }
 
     fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 1
         var v0 = Math.abs(x - avg) * 1000
         if (ccount > 0) {
-            if (cycleList.get(ccount)=="awake") {
-                if (v0 > 20) {
+            if (cycleList.get(ccount-1)=="awake") {
+                if (v0 > 200) {
                     awake += 1
+                    Log.d(DECIBEL,"awake+1")
                 } else
-                { sleep_light += 1 }
+                { sleep_light += 1
+                    Log.d(DECIBEL,"sleep_light+1") }
             }
             else if (ccount<43){
-                if (v0>25){
+                if (v0>250){
                     awake += 1
+                    Log.d(DECIBEL,"awake+1")
                 }
-                else if(v0 <25 && v0>10){
+                else if(v0 <250 && v0>100){
                     sleep_light += 1
+                    Log.d(DECIBEL,"sleep_light+1")
                 }
-                else {sleep_deep += 1}
+                else {sleep_deep += 1
+                    Log.d(DECIBEL,"sleep_deep+1")
+                }
             }
             else{
-                if (v0>25){
+                if (v0>250){
                     awake += 1
+                    Log.d(DECIBEL,"awake+1")
                 }
-                else if(v0 <25 && v0>10){
+                else if(v0 <250 && v0>100){
+                    Log.d(DECIBEL,"sleep_light+1")
                     sleep_light += 1
                 }
-                else { sleep_rem += 1}
+                else { sleep_rem += 1
+                    Log.d(DECIBEL,"sleep_rem+1")
+                }
             }
         }
     }
