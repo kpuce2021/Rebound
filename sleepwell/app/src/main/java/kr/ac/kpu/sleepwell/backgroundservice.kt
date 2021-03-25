@@ -133,7 +133,7 @@ class backgroundservice : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
-
+        super.onDestroy()
         var endTime = System.currentTimeMillis()
         sensorManager.unregisterListener(this)
         val deRef = db.collection(userkey).document(day)
@@ -154,8 +154,9 @@ class backgroundservice : Service(), SensorEventListener {
         if(amIstartRecording==true){
             stopRecording()
         }
+        stopForeground(true)
+        stopSelf()
         Log.d("is Stop?","YES!!")
-        super.onDestroy()
     }
     private fun renameFile(){
         val newfilename = "sensorlog-${getTime()}.txt"
