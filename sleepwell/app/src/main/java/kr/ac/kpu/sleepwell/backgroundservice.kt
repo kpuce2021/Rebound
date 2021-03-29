@@ -167,6 +167,7 @@ class backgroundservice : Service(), SensorEventListener {
     }
 
     override fun onDestroy() {
+        super.onDestroy()
         var endTime = System.currentTimeMillis()
         sensorManager.unregisterListener(this)
         val deRef = db.collection(userkey).document(day)
@@ -192,14 +193,9 @@ class backgroundservice : Service(), SensorEventListener {
         if(amIstartRecording==true){
             stopRecording()
         }
+        stopForeground(true)
+        stopSelf()
         Log.d("is Stop?","YES!!")
-        super.onDestroy()
-    }
-    private fun renameFile(){
-        val newfilename = "sensorlog-${getTime()}.txt"
-        val file = File("/mnt/sdcard/$foldername/$filename")
-        val rename = File("/mnt/sdcard/$foldername/$newfilename")
-        file.renameTo(rename)
     }
 
     private fun startForegroundService(){
@@ -223,16 +219,25 @@ class backgroundservice : Service(), SensorEventListener {
         }
         startForeground(1,builder.build())
     }
+    private fun renameFile(){
+        val filedir = File(filesDir,File.separator+foldername)
+        val newfilename = "sensorlog-${getTime()}.txt"
+        val file = File("$filedir/$filename")
+        val rename = File("$filedir/$newfilename")
+        file.renameTo(rename)
+        Log.d("filedir",filedir.toString()+"/$newfilename")
+    }
 
     private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
         try {
-            val dir = File("/mnt/sdcard"+File.separator+foldername)
+            val dir = File(filesDir, File.separator+foldername)
             //디렉토리 폴더가 없으면 생성함
             if (!dir.exists()) {
                 dir.mkdir()
             }
             //파일 output stream 생성
-            val fos = FileOutputStream("/mnt/sdcard/$foldername/$filename", true)
+            val logoutput = File(dir,filename).absolutePath
+            val fos = FileOutputStream(logoutput, true)
             //파일쓰기
             val writer = BufferedWriter(OutputStreamWriter(fos))
             writer.write(contents)
