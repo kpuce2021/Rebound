@@ -35,10 +35,14 @@ var scount = 0
 var ccount = 0
 var total = 0.0
 var awake = 0
+var go_to_sleep = 0
 var sleep_light = 0
 var sleep_deep = 0
 var sleep_rem = 0
-
+var REM = 0
+var DEEP = 0
+var AWAKE = 0
+var LIGHT = 0
 
 class backgroundservice : Service(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
@@ -51,14 +55,8 @@ class backgroundservice : Service(), SensorEventListener {
             "sleep_rem" to 0,
             "awake" to 0,
             "go_to_bed" to "pm 11:00",
-            "wake_up" to "am 07:00",
-            "sleep_score" to 0,
-            "alcohol" to false,
-            "caffeine" to false,
-            "smoke" to false,
-            "midnight_snack" to false,
-            "workout" to false
-    )
+            "go_to_sleep" to 0,
+            "wake_up" to "am 07:00")
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
     val day = findDate()
@@ -105,9 +103,12 @@ class backgroundservice : Service(), SensorEventListener {
             val sttime = format.format(date)
             val dbRef = db.collection(userkey).document(day)
             dbRef.set(data, SetOptions.merge())
+                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
+                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
+
             dbRef.update("go_to_bed", sttime)
-                    .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
-                    .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
+                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
+                    .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
 
             sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                     sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
@@ -132,20 +133,57 @@ class backgroundservice : Service(), SensorEventListener {
         return START_STICKY
     }
 
-    override fun onDestroy() {
+    fun gotoSleep(i :Int, x :String){
+        if(i<cycleList.size-1){
+            if(cycleList[i] == x) {
+                go_to_sleep += 5
+                if (cycleList[i + 1] == x) {
+                    gotoSleep(i + 1, x)
+                }
+            }
+        }
+        else if(i== cycleList.size-1){
+            if(cycleList[i] == x) {
+                go_to_sleep += 5
+            }
+        }
+    }
 
+    fun addCycleTime(){
+        for(i in 0..cycleList.size-1){
+            if (cycleList[i]=="sleep_rem"){
+                REM += 5
+            }
+            else if(cycleList[i]=="sleep_deep"){
+                DEEP += 5
+            }
+            else if(cycleList[i]=="sleep_light"){
+                LIGHT += 5
+            }
+            else if(cycleList[i]=="awake"){
+                AWAKE += 5
+            }
+        }
+    }
+
+    override fun onDestroy() {
         var endTime = System.currentTimeMillis()
         sensorManager.unregisterListener(this)
         val deRef = db.collection(userkey).document(day)
         val time = (endTime - startTime)
         val sectime = time /1000
         val mintime = (sectime/60).toInt() //몇분 잤는지
+        addCycleTime()
+        gotoSleep(0,"awake")
         deRef.update("sleep_time", mintime)
-                .addOnSuccessListener { Log.d("tag", "DocumentSnapshot successfully updated!") }
-                .addOnFailureListener { e -> Log.w("tag", "Error updating document", e) }
+        deRef.update("go_to_sleep", go_to_sleep)
+        deRef.update("awake", AWAKE)
+        deRef.update("sleep_deep", DEEP)
+        deRef.update("sleep_light", LIGHT)
+        deRef.update("sleep_rem", REM)
+
         Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
         renameFile()
-
 
         isTimerfinished=true
         isRunning=false
@@ -277,36 +315,27 @@ class backgroundservice : Service(), SensorEventListener {
             if (cycleList.get(ccount-1)=="awake") {
                 if (v0 > 200) {
                     awake += 1
-                    Log.d(DECIBEL,"awake+1")
-                } else
-                { sleep_light += 1
-                    Log.d(DECIBEL,"sleep_light+1") }
+                }
+                else { sleep_light += 1 }
             }
             else if (ccount<43){
                 if (v0>250){
                     awake += 1
-                    Log.d(DECIBEL,"awake+1")
                 }
                 else if(v0 <250 && v0>100){
                     sleep_light += 1
-                    Log.d(DECIBEL,"sleep_light+1")
                 }
                 else {sleep_deep += 1
-                    Log.d(DECIBEL,"sleep_deep+1")
                 }
             }
             else{
                 if (v0>250){
                     awake += 1
-                    Log.d(DECIBEL,"awake+1")
                 }
                 else if(v0 <250 && v0>100){
-                    Log.d(DECIBEL,"sleep_light+1")
                     sleep_light += 1
                 }
-                else { sleep_rem += 1
-                    Log.d(DECIBEL,"sleep_rem+1")
-                }
+                else { sleep_rem += 1 }
             }
         }
     }

@@ -61,7 +61,6 @@ class Day_resultAC : AppCompatActivity() {
     private var lightSleep_values=ArrayList<BarEntry>()
     private var Awake_values=ArrayList<BarEntry>()
     private val colorlist=ArrayList<Int>()
-
     private lateinit var Arrayplaybutton:Array<Button>
 
     override fun onCreate(savedInstanceState: Bundle?) {
