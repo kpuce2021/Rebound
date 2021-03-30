@@ -245,7 +245,6 @@ class Day_resultAC : AppCompatActivity() {
             }
         })
     }
-
     private fun changeSleep(x :String){
         var hour = x.toInt()/60
         var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
