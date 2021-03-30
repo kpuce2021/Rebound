@@ -110,6 +110,8 @@ class backgroundservice : Service(), SensorEventListener {
                     .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
 
+
+
             sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                     sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                     SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
@@ -182,6 +184,14 @@ class backgroundservice : Service(), SensorEventListener {
         deRef.update("sleep_deep", DEEP)
         deRef.update("sleep_light", LIGHT)
         deRef.update("sleep_rem", REM)
+
+        val cycleRef = db.collection(userkey).document(day).collection("cycle").document("cycle")
+        for(i in 0..cycleList.size-1){
+            var thisCycle = hashMapOf(i.toString() to cycleList[i],"size" to (i+1).toString())
+            cycleRef.set(thisCycle, SetOptions.merge())
+                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
+                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
+        }
 
         Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
         renameFile()

@@ -54,6 +54,17 @@
                     android:layout_marginRight="8dp"
                     android:padding="5dp"
                     />
+
+                <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/sleep_graph"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    android:background="@color/background2"/>
+
                 <com.github.mikephil.charting.charts.PieChart
                     android:id="@+id/day_piechart"
                     android:layout_width="match_parent"
