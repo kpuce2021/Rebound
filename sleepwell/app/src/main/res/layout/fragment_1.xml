@@ -200,7 +200,7 @@
                                 android:layout_height="wrap_content">
                             </TextView>
                             <TextView
-                                android:id="@+id/sleep_score"
+                                android:id="@+id/sleep_r"
                                 android:textSize="20sp"
                                 android:textStyle="bold"
                                 android:textColor="@color/white"

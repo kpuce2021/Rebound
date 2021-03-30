@@ -27,6 +27,7 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 import kotlinx.android.synthetic.main.fragment_1.*
 import java.io.FileInputStream
 import java.lang.Exception
@@ -65,13 +66,8 @@ class Fragment1 : Fragment() {
         daily= dfx.format(calx.time)
         day.setText(daily)//하루 치 결과를 보여줌*/
 
-        val Ref = db.collection(userkey)
         val day = findDate1()
         val Ref_day = db.collection(userkey).document(day)
-        Ref_day.get().addOnSuccessListener { result ->
-            if (result != null){
-                block_btn.visibility = View.GONE}
-        }
         Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
             if(e != null){
             Log.w(tag, "Listen failed.", e)
@@ -85,19 +81,15 @@ class Fragment1 : Fragment() {
                 var sleep_start = snapshot?.data!!["go_to_bed"].toString()
                 var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
                 var sleep_light = snapshot?.data!!["sleep_light"].toString()
+                var sleep_rem = snapshot?.data!!["sleep_rem"].toString()
+                var go_to_sleep = snapshot?.data!!["go_to_sleep"].toString()
 
-                var sleep_h = sleep_time.toInt()/60
-                var sleep_h2 = ((sleep_time.toDouble()/60 - sleep_h.toDouble())*60).toInt()
-
-                if(sleep_h==0){
-                    sleep_t.setText(sleep_time+"분")
-                }
-                else{
-                    sleep_t.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분" )
-                }
+                changeSleep(sleep_time)
+                changeDeep(sleep_deep)
+                changeLight(sleep_light)
+                changeRem(sleep_rem)
+                changeGotoSleep(go_to_sleep)
                 sleep_st.setText(sleep_start)
-                sleep_d.setText(sleep_deep+"시간")
-                sleep_m.setText(sleep_light+"시간")
             }
         })
 
@@ -120,46 +112,133 @@ class Fragment1 : Fragment() {
         SleepcycleCheck(v)
         return v
     }
-}
 
 
-fun SleepcycleCheck(v:View){
-
-    var pieChart: PieChart
-    pieChart=v.findViewById<PieChart>(R.id.day_piechart)
-
-    pieChart.setUsePercentValues(true)
-    val entries=ArrayList<PieEntry>()
-    entries.add(PieEntry(0f,"Awake"))
-    entries.add(PieEntry(0f,"Light Sleep"))
-    entries.add(PieEntry(0f,"Deep Sleep"))
-
-    val colorItems=ArrayList<Int>()
-    for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
-    for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
-    for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
-    colorItems.add(ColorTemplate.getHoloBlue())
-
-    val pieDataSet= PieDataSet(entries,"")
-
-    pieDataSet.apply {
-        colors=colorItems
-        valueTextColor= Color.BLACK
-        valueTextSize=16f
+    private fun changeSleep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_t.setText(x+"분")
+        }
+        else{
+            sleep_t.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
     }
 
-    val pieData= PieData(pieDataSet)
-    pieChart.apply {
-        data=pieData
-        description.isEnabled=false
-        isRotationEnabled=false
-        centerText="수면 비율"
-        setCenterTextSize(20f)
-        setEntryLabelColor(Color.BLACK)
-        animateY(1400, Easing.EaseInOutQuad)
-        animate()
+    private fun changeGotoSleep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            go_sleep.setText(x+"분")
+        }
+        else{
+            go_sleep.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeRem(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_r.setText(x+"분")
+        }
+        else{
+            sleep_r.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeDeep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_d.setText(x+"분")
+        }
+        else{
+            sleep_d.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeLight(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_m.setText(x+"분")
+        }
+        else{
+            sleep_m.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    fun SleepcycleCheck(v:View){
+        var awak = 0f
+        var rem = 0f
+        var deep = 0f
+        var light = 0f
+        val day = findDate1()
+        val Ref_day = db.collection(userkey).document(day)
+        Ref_day.get().addOnSuccessListener { result ->
+            if (result != null){
+                block_btn.visibility = View.GONE}
+        }
+        Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
+            if(e != null){
+                Log.w(tag, "Listen failed.", e)
+                return@EventListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                val day2 = findDate2()
+                today.setText(day2)
+
+                var awake = snapshot?.data!!["awake"].toString().toInt()
+                var sleep_deep = snapshot?.data!!["sleep_deep"].toString().toInt()
+                var sleep_light = snapshot?.data!!["sleep_light"].toString().toInt()
+                var sleep_rem = snapshot?.data!!["sleep_rem"].toString().toInt()
+
+                awak = awake.toFloat()
+                rem = sleep_rem.toFloat()
+                deep = sleep_deep.toFloat()
+                light = sleep_light.toFloat()
+
+                var pieChart: PieChart
+                pieChart=v.findViewById<PieChart>(R.id.day_piechart)
+                pieChart.setUsePercentValues(true)
+                val entries=ArrayList<PieEntry>()
+                if(rem > 0f){entries.add(PieEntry(rem,"REM"))}
+                if(deep > 0f){entries.add(PieEntry(deep,"Deep Sleep"))}
+                if(light > 0f){entries.add(PieEntry(light,"Light Sleep"))}
+                if(awake > 0f){ entries.add(PieEntry(awak,"Awake"))}
+
+                val colorItems=ArrayList<Int>()
+                for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.MATERIAL_COLORS) colorItems.add(c)
+                colorItems.add(ColorTemplate.getHoloBlue())
+
+                val pieDataSet= PieDataSet(entries,"")
+
+                pieDataSet.apply {
+                    colors=colorItems
+                    valueTextColor= Color.BLACK
+                    valueTextSize=12f
+                }
+
+                val pieData= PieData(pieDataSet)
+                pieChart.apply {
+                    data=pieData
+                    description.isEnabled=false
+                    isRotationEnabled=false
+                    centerText="수면 비율"
+                    setCenterTextSize(20f)
+                    setEntryLabelColor(Color.BLACK)
+                    animateY(1400, Easing.EaseInOutQuad)
+                    animate()
+                }
+            }
+        })
     }
 }
+
 
 fun findDate2(): String {
     val cal = Calendar.getInstance()

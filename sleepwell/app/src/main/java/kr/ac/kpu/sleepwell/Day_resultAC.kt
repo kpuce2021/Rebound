@@ -5,6 +5,7 @@ import android.media.MediaPlayer
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -33,6 +34,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
+import kotlinx.android.synthetic.main.fragment_1.*
 import kotlinx.android.synthetic.main.fragment_trend_child_frag1_week.*
 import java.io.FileInputStream
 import java.text.DateFormat
@@ -63,6 +65,7 @@ class Day_resultAC : AppCompatActivity() {
     private val colorlist=ArrayList<Int>()
     private lateinit var Arrayplaybutton:Array<Button>
 
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
@@ -83,17 +86,14 @@ class Day_resultAC : AppCompatActivity() {
                 var sleep_start = snapshot?.data!!["go_to_bed"].toString()
                 var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
                 var sleep_light = snapshot?.data!!["sleep_light"].toString()
+                var sleep_rem = snapshot?.data!!["sleep_rem"].toString()
+                var go_to_sleep = snapshot?.data!!["go_to_sleep"].toString()
 
-                var sleep_h = sleep_time.toInt()/60
-                var sleep_h2 = ((sleep_time.toDouble()/60 - sleep_h.toDouble())*60).toInt()
-
-                if(sleep_h==0){
-                    sleep_t_a.setText(sleep_time+"분")
-                }
-                else{
-                    sleep_t_a.setText(sleep_h.toString()+"시간 "+ sleep_h2.toString()+"분")
-                }
-
+                changeSleep(sleep_time)
+                changeDeep(sleep_deep)
+                changeLight(sleep_light)
+                changeRem(sleep_rem)
+                changeGotoSleep(go_to_sleep)
                 sleep_st_a.setText(sleep_start)
                 //sleep_d_a.setText(sleep_deep+"시간")
                 //sleep_m_a.setText(sleep_light+"시간")
@@ -101,9 +101,11 @@ class Day_resultAC : AppCompatActivity() {
         })
 
         AwakeDrawingGraph(awake_barchart)
+        SleepcycleCheck(day_result_piechart)
+        /*필요 없어 보여서 주석 처리
         awakestatepiechartDrawing(awake_state)
         lightsleeppiechartDrawing(light_state)
-        deepsleepstatepiechartDrawing(deep_state)
+        deepsleepstatepiechartDrawing(deep_state)*/
 
         //firebase로 이메일 가져오기
         val user=Firebase.auth.currentUser
@@ -181,6 +183,124 @@ class Day_resultAC : AppCompatActivity() {
             }
         }
     }
+    fun SleepcycleCheck(pieChart: PieChart){
+        var awak = 0f
+        var rem = 0f
+        var deep = 0f
+        var light = 0f
+        val day = findDate1()
+        val Ref_day = db.collection(userkey).document(day)
+        Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
+            if(e != null){
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                val day2 = findDate2()
+                day_a.setText(day2)
+
+                var awake = snapshot?.data!!["awake"].toString().toInt()
+                var sleep_deep = snapshot?.data!!["sleep_deep"].toString().toInt()
+                var sleep_light = snapshot?.data!!["sleep_light"].toString().toInt()
+                var sleep_rem = snapshot?.data!!["sleep_rem"].toString().toInt()
+
+                awak = awake.toFloat()
+                rem = sleep_rem.toFloat()
+                deep = sleep_deep.toFloat()
+                light = sleep_light.toFloat()
+
+                pieChart.setUsePercentValues(true)
+                val entries=ArrayList<PieEntry>()
+                if(rem > 0f){entries.add(PieEntry(rem,"REM"))}
+                if(deep > 0f){entries.add(PieEntry(deep,"Deep Sleep"))}
+                if(light > 0f){entries.add(PieEntry(light,"Light Sleep"))}
+                if(awake > 0f){ entries.add(PieEntry(awak,"Awake"))}
+
+                val colorItems=ArrayList<Int>()
+                for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
+                for(c in ColorTemplate.MATERIAL_COLORS) colorItems.add(c)
+                colorItems.add(ColorTemplate.getHoloBlue())
+
+                val pieDataSet= PieDataSet(entries,"")
+
+                pieDataSet.apply {
+                    colors=colorItems
+                    valueTextColor= Color.BLACK
+                    valueTextSize=10f
+                }
+
+                val pieData= PieData(pieDataSet)
+                pieChart.apply {
+                    data=pieData
+                    description.isEnabled=false
+                    isRotationEnabled=false
+                    centerText="수면 비율"
+                    setCenterTextSize(15f)
+                    setEntryLabelColor(Color.BLACK)
+                    animateY(1400, Easing.EaseInOutQuad)
+                    animate()
+                }
+            }
+        })
+    }
+
+    private fun changeSleep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_t_a.setText(x+"분")
+        }
+        else{
+            sleep_t_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeGotoSleep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            go_sleep_a.setText(x+"분")
+        }
+        else{
+            go_sleep_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeRem(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_r_a.setText(x+"분")
+        }
+        else{
+            sleep_r_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeDeep(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_d_a.setText(x+"분")
+        }
+        else{
+            sleep_d_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
+    private fun changeLight(x :String){
+        var hour = x.toInt()/60
+        var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            sleep_m_a.setText(x+"분")
+        }
+        else{
+            sleep_m_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+    }
+
     private fun daytime():String{
         var now:Long=System.currentTimeMillis()
         var mformat: SimpleDateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -391,6 +511,9 @@ class Day_resultAC : AppCompatActivity() {
             barChart.invalidate()
         }
     }
+
+
+    /*이거 왜 한지 몰라서 주석 처리
     private fun awakestatepiechartDrawing(pieChart: PieChart){
         pieChart.setUsePercentValues(true)
         val entries=ArrayList<PieEntry>()
@@ -468,5 +591,5 @@ class Day_resultAC : AppCompatActivity() {
             animateY(1400, Easing.EaseInOutQuad)
             animate()
         }
-    }
+    }*/
 }
