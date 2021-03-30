@@ -66,11 +66,27 @@ data class ResBody(
         var address:String
 )
 
-interface HueService{
+interface Hueuserid{
     @POST("/api")
     fun getuserid(
             @Body request: okhttp3.RequestBody
     ):Call<List<Response>>
+}
+
+interface Huelink{
+    @GET("/lights/new")
+    fun findnewlight():Call<Response>
+    @GET("/lights")
+    fun getlightsid():Call<Response>
+}
+
+interface HueLight{
+    @GET("")
+    fun getlightstate():Call<Response>
+    @PUT("/state")
+    fun lightservice(
+            @Body request: okhttp3.RequestBody
+    )
 }
 
 
@@ -91,11 +107,11 @@ class HueActivity : AppCompatActivity() {
 
         useridBtn.setOnClickListener{
             bridge=http+ipET.text.toString()
-            val retrofitsetting = Retrofit.Builder()
+            val huesetting = Retrofit.Builder()
                     .baseUrl(bridge)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
-            val api = retrofitsetting.create(HueService::class.java)
+            val api = huesetting.create(Hueuserid::class.java)
             val newuser =JSONObject()
             newuser.put("devicetype",huenm)
             val newuserString = newuser.toString()
