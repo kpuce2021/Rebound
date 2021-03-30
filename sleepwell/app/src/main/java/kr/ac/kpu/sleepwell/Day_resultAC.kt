@@ -436,6 +436,11 @@ class Day_resultAC : AppCompatActivity() {
                     }
                 }
                // type.add("12:00")
+                type.add("01:00")
+                for(i in 0..cycles.size-3){
+                    type.add("")
+                }
+                type.add("09:00")
 
                 colorlist.add(Color.parseColor("#FFFF88"))  //light
                 colorlist.add(Color.parseColor("#88ffff"))    //deep

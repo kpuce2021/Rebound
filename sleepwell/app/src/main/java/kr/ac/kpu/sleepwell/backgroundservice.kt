@@ -171,6 +171,9 @@ class backgroundservice : Service(), SensorEventListener {
     override fun onDestroy() {
         super.onDestroy()
         var endTime = System.currentTimeMillis()
+        val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
+        val date = Date(endTime)
+        val edtime = format.format(date)
         sensorManager.unregisterListener(this)
         val deRef = db.collection(userkey).document(day)
         val time = (endTime - startTime)
@@ -184,6 +187,7 @@ class backgroundservice : Service(), SensorEventListener {
         deRef.update("sleep_deep", DEEP)
         deRef.update("sleep_light", LIGHT)
         deRef.update("sleep_rem", REM)
+        deRef.update("wake_up", edtime)
 
         val cycleRef = db.collection(userkey).document(day).collection("cycle").document("cycle")
         for(i in 0..cycleList.size-1){
@@ -281,7 +285,7 @@ class backgroundservice : Service(), SensorEventListener {
             if (((ftime-startTime)/1000/60)<5){
                 avg = sensorAverage(m)
             }
-            if (ftime-xtime>=300000){
+            if (ftime-xtime>=1000){
                 ccount += 1
                 timeList.add(ccount, ftime)
                 checkCycle(m, avg)

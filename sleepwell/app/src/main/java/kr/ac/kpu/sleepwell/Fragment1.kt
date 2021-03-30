@@ -270,6 +270,7 @@ class Fragment1 : Fragment() {
         //values.add(BarEntry(0.0f,7.0f))
 
         val day = findDate1()
+        val Ref_day = db.collection(userkey).document(day)
         val cycleRef = db.collection(userkey).document(day).collection("cycle").document("cycle")
 
         cycleRef.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
@@ -297,6 +298,12 @@ class Fragment1 : Fragment() {
                         deepSleep_values.add(BarEntry(i.toFloat(),1f))
                     }
                 }
+                type.add("01:00")
+                for(i in 0..cycles.size-3){
+                    type.add("")
+                }
+                type.add("09:00")
+
 
                 colorlist.add(Color.parseColor("#FFFF88"))  //light
                 colorlist.add(Color.parseColor("#88ffff"))    //deep
