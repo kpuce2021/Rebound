@@ -27,7 +27,7 @@
                 android:orientation="vertical"
                 >
                 <TextView
-                    android:background="@drawable/tag_background_design"
+                    android:background="@color/background"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -40,139 +40,80 @@
                     android:padding="15dp"
                     android:id="@+id/textview_trend"
                     />
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
-                    android:layout_height="200dp"
-                    android:orientation="vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Sleep cycle(week)"
+                    android:textSize="25sp"
+                    android:textColor="#ffffff"
                     android:layout_marginTop="20sp"
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:padding="10dp"
+                    />
+                <com.github.mikephil.charting.charts.RadarChart
+                    android:background="@color/background2"
+                    android:id="@+id/radar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="소음 분포도(db)"
+                    android:textSize="25sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    />
+                <LinearLayout
+                    android:layout_marginTop="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
                     >
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:background="@color/background2"
+                        android:id="@+id/sound_linechart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_weight="9"
+                        />
                     <LinearLayout
+                        android:layout_weight="1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal"
-                        android:layout_weight="1"
+                        android:background="@color/background2"
+                        android:gravity="center_vertical"
                         >
-                        <Button
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/tag_background_design"
-                            android:text="평균 수면시간"
-                            android:textSize="20sp"
+                       <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="잠든 시간 12:00"
+                            android:textColor="#ffffff"
                             />
-                        <Button
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/tag_background_design"
-                            android:text="평균 일어난 시간"
-                            android:textSize="15sp"
-                            />
-                    </LinearLayout>
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_weight="1"
-                        >
-                        <Button
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/tag_background_design"
-                            android:text="평균 수면 점수"
-                            android:textSize="20sp"
-                            />
-                        <Button
-                            android:layout_width="0dp"
-                            android:layout_height="match_parent"
-                            android:layout_weight="1"
-                            android:background="@drawable/tag_background_design"
-                            android:text="평균 잠든시간"
-                            android:textSize="20sp"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="190dp"
+                            android:text="일어난 시간 7:00"
+                            android:textColor="#ffffff"
                             />
                     </LinearLayout>
                 </LinearLayout>
-
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="슬립 사이클"
-                    android:textSize="25sp"
-                    android:textColor="#ffffff"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:background="@drawable/tag_background_design"
-                    android:id="@+id/piechart"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
-
-                <TextView
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="수면 시간"
-                    android:textSize="25sp"
-                    android:textColor="#ffffff"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
-
-                <com.github.mikephil.charting.charts.BarChart
-                    android:visibility="gone"
-                    android:background="@drawable/tag_background_design"
-                    android:id="@+id/barchart"
-                    android:layout_width="match_parent"
-                    android:layout_height="350dp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
-
-                <TextView
-                    android:visibility="gone"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="잠든 시간"
-                    android:textSize="25sp"
-                    android:textColor="#ffffff"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
-
-                <com.github.mikephil.charting.charts.LineChart
-                    android:visibility="gone"
-                    android:background="@drawable/tag_background_design"
-                    android:id="@+id/linechart"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    />
             </LinearLayout>
         </FrameLayout>
     </ScrollView>

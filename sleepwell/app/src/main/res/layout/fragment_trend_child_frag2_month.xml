@@ -5,16 +5,117 @@
     android:layout_height="match_parent"
     tools:context=".Trend_childFrag2_month"
     android:id="@+id/childfrag1_month">
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="600dp">
-        <Button
-            android:backgroundTint="@color/background0"
-            android:gravity="center"
-            android:textColor="@color/white"
+        android:layout_height="match_parent"
+        android:background="@color/background"
+        >
+        <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:textSize="25sp"
-            android:text="데이터를 보기 위한 \n 수면 세션이 부족합니다."/>
-    </LinearLayout>
+            android:layout_height="match_parent">
+            <Button
+                android:backgroundTint="@color/background0"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:textSize="20sp"
+                android:text="데이터를 보기 위한 \n 수면 세션이 부족합니다."/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                >
+                <TextView
+                    android:background="@color/background"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="트렌드/추세"
+                    android:textSize="30sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="10sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="15dp"
+                    android:id="@+id/textview_trend"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="Sleep cycle(month)"
+                    android:textSize="25sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    />
+                <com.github.mikephil.charting.charts.RadarChart
+                    android:background="@color/background2"
+                    android:id="@+id/radar_chart"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left"
+                    android:text="소음 분포도(db)"
+                    android:textSize="25sp"
+                    android:textColor="#ffffff"
+                    android:layout_marginTop="20sp"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    android:padding="10dp"
+                    />
+                <LinearLayout
+                    android:layout_marginTop="20sp"
+                    android:layout_width="match_parent"
+                    android:layout_height="300dp"
+                    android:layout_gravity="center"
+                    android:orientation="vertical"
+                    android:layout_marginLeft="10sp"
+                    android:layout_marginRight="10sp"
+                    >
+                    <com.github.mikephil.charting.charts.LineChart
+                        android:background="@color/background2"
+                        android:id="@+id/sound_linechart"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="10dp"
+                        android:layout_weight="9"
+                        />
+                    <LinearLayout
+                        android:layout_weight="1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@color/background2"
+                        android:gravity="center_vertical"
+                        >
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="잠든 시간 12:00"
+                            android:textColor="#ffffff"
+                            />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="190dp"
+                            android:text="일어난 시간 7:00"
+                            android:textColor="#ffffff"
+                            />
+                    </LinearLayout>
+                </LinearLayout>
+
+            </LinearLayout>
+        </FrameLayout>
+    </ScrollView>
 </FrameLayout>
