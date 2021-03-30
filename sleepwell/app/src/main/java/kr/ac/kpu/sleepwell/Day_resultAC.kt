@@ -188,7 +188,7 @@ class Day_resultAC : AppCompatActivity() {
         var rem = 0f
         var deep = 0f
         var light = 0f
-        val day = findDate1()
+        val day = findDate()
         val Ref_day = db.collection(userkey).document(day)
         Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
             if(e != null){
@@ -389,7 +389,7 @@ class Day_resultAC : AppCompatActivity() {
     private fun AwakeDrawingGraph(barChart: BarChart){
         barChart.apply {
             description.isEnabled=false
-            setMaxVisibleValueCount(30) //최대 보이는 그래프 개수
+           // setMaxVisibleValueCount(30) //최대 보이는 그래프 개수
             setPinchZoom(false) //zoom in out
             setDrawBarShadow(false) //그래프 그림자
             setDrawGridBackground(false)    //격자구조 넣을껀지
@@ -407,109 +407,130 @@ class Day_resultAC : AppCompatActivity() {
         var Awake_set:BarDataSet
         //values.add(BarEntry(0.0f,7.0f))
 
-        REM_values.add(BarEntry(0.0f,7.0f))
-        lightSleep_values.add(BarEntry(1.0f,5.6f))
-        deepSleep_values.add(BarEntry(2.0f,6.5f))
-        Awake_values.add(BarEntry(3.0f,4.7f))
-        REM_values.add(BarEntry(4.0f,7.0f))
-        REM_values.add(BarEntry(5.0f,7.0f))
-
-        //var i:String="12:00"
-        type.add("12:00")
-        type.add("")
-        type.add("")
-        type.add("")
-        type.add("7:00")
-
-        colorlist.add(Color.parseColor("#FFFF88"))  //light
-        colorlist.add(Color.parseColor("#FFFA8072"))    //deep
-        colorlist.add(Color.parseColor("#88ff88"))  //REM
-        colorlist.add(Color.parseColor("#88ffff"))  //Awake
-
-
-        if(barChart.data!=null && barChart.data.dataSetCount>1){
-            val chartData=barChart.data
-            REM_set=chartData?.getDataSetByIndex(0) as BarDataSet
-            lightSleep_set=chartData?.getDataSetByIndex(1) as BarDataSet
-            deepSleep_set=chartData?.getDataSetByIndex(2) as BarDataSet
-            Awake_set=chartData?.getDataSetByIndex(3) as BarDataSet
-            REM_set.values=REM_values
-            lightSleep_set.values=lightSleep_values
-            deepSleep_set.values=deepSleep_values
-            Awake_set.values=Awake_values
-            chartData.notifyDataChanged()
-            barChart.notifyDataSetChanged()
-        }
-        else{
-            REM_set= BarDataSet(REM_values,"REM")
-            REM_set.setColor(colorlist.get(2))
-            REM_set.setDrawValues(false)
-
-            lightSleep_set= BarDataSet(lightSleep_values,"lightsleep")
-            //lightSleep_set.colors=colorlist
-            lightSleep_set.setColor(colorlist.get(0))
-            lightSleep_set.setDrawValues(false)
-
-            deepSleep_set= BarDataSet(deepSleep_values,"deepsleep")
-            //deepSleep_set.colors=colorlist
-            deepSleep_set.setColor(colorlist.get(1))
-            deepSleep_set.setDrawValues(false)
-
-            Awake_set= BarDataSet(Awake_values,"Awake")
-            //Awake_set.colors=colorlist
-            Awake_set.setColor(colorlist.get(3))
-            Awake_set.setDrawValues(false)
-
-            val dataSets=ArrayList<IBarDataSet>()
-            dataSets.add(REM_set)
-            dataSets.add(lightSleep_set)
-            dataSets.add(deepSleep_set)
-            dataSets.add(Awake_set)
-
-            val data= BarData(dataSets)
-            barChart.data=data
-            barChart.setVisibleXRange(0f,120f)
-            barChart.setFitBars(false)
-
-            //x축 설정
-            val xAxis=barChart.xAxis
-            xAxis.apply{
-                setDrawGridLines(false)
-                isEnabled=true
-                position=XAxis.XAxisPosition.BOTTOM
-                setDrawAxisLine(true)
-                granularity=1f
-                isGranularityEnabled=true
-                valueFormatter=IndexAxisValueFormatter(type)
-                textSize=12f
-                textColor=ContextCompat.getColor(applicationContext,R.color.white)
+        val day = findDate()
+        val cycleRef = db.collection(userkey).document(day).collection("cycle").document("cycle")
+        cycleRef.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
+            if(e != null){
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
             }
-            //y축 설정
-            val yAxis_l=barChart.axisLeft
-            yAxis_l.apply {
-                setDrawLabels(false)
-                isEnabled = false
-                axisMinimum = 0f // 최소값
-                axisMaximum = 15f // 최대값
-                granularity = 1f // 값 만큼 라인선 설정
-                textColor = Color.RED // 색상 설정
-                axisLineColor = Color.BLACK // 축 색상 설정
-                //gridColor = Color.BLUE // 격자 색상 설정
+            if(snapshot != null && snapshot.exists()){
+                var cycles = mutableListOf<String>()
+                var size = snapshot?.data!!["size"].toString().toInt()
+                for(i in 0..size-1){
+                    cycles.add(snapshot?.data!![i.toString()].toString())
+                }
+                for(i in 0..cycles.size-1){
+                    if(cycles[i]=="awake"){
+                        Awake_values.add(BarEntry(i.toFloat(),10f))
+                    }
+                    if(cycles[i]=="sleep_rem"){
+                        REM_values.add(BarEntry(i.toFloat(),4f))
+                    }
+                    if(cycles[i]=="sleep_light"){
+                        lightSleep_values.add(BarEntry(i.toFloat(),6f))
+                    }
+                    if(cycles[i]=="sleep_deep"){
+                        deepSleep_values.add(BarEntry(i.toFloat(),1f))
+                    }
+                }
+               // type.add("12:00")
+                type.add("01:00")
+                for(i in 0..cycles.size-3){
+                    type.add("")
+                }
+                type.add("09:00")
+
+                colorlist.add(Color.parseColor("#FFFF88"))  //light
+                colorlist.add(Color.parseColor("#88ffff"))    //deep
+                colorlist.add(Color.parseColor("#88ff88"))  //REM
+                colorlist.add(Color.parseColor("#FFFA8072"))  //Awake
+
+                if(barChart.data!=null && barChart.data.dataSetCount>1){
+                    val chartData=barChart.data
+                    REM_set=chartData?.getDataSetByIndex(0) as BarDataSet
+                    lightSleep_set=chartData?.getDataSetByIndex(1) as BarDataSet
+                    deepSleep_set=chartData?.getDataSetByIndex(2) as BarDataSet
+                    Awake_set=chartData?.getDataSetByIndex(3) as BarDataSet
+                    REM_set.values=REM_values
+                    lightSleep_set.values=lightSleep_values
+                    deepSleep_set.values=deepSleep_values
+                    Awake_set.values=Awake_values
+                    chartData.notifyDataChanged()
+                    barChart.notifyDataSetChanged()
+                }
+                else{
+                    REM_set= BarDataSet(REM_values,"REM")
+                    REM_set.setColor(colorlist.get(2))
+                    REM_set.setDrawValues(false)
+
+                    lightSleep_set= BarDataSet(lightSleep_values,"lightsleep")
+                    //lightSleep_set.colors=colorlist
+                    lightSleep_set.setColor(colorlist.get(0))
+                    lightSleep_set.setDrawValues(false)
+
+                    deepSleep_set= BarDataSet(deepSleep_values,"deepsleep")
+                    //deepSleep_set.colors=colorlist
+                    deepSleep_set.setColor(colorlist.get(1))
+                    deepSleep_set.setDrawValues(false)
+
+                    Awake_set= BarDataSet(Awake_values,"Awake")
+                    //Awake_set.colors=colorlist
+                    Awake_set.setColor(colorlist.get(3))
+                    Awake_set.setDrawValues(false)
+
+                    val dataSets=ArrayList<IBarDataSet>()
+                    dataSets.add(REM_set)
+                    dataSets.add(lightSleep_set)
+                    dataSets.add(deepSleep_set)
+                    dataSets.add(Awake_set)
+
+                    val data= BarData(dataSets)
+                    barChart.data=data
+                    barChart.setFitBars(false)
+
+                    //x축 설정
+                    val xAxis=barChart.xAxis
+                    xAxis.apply{
+                        setDrawGridLines(false)
+                        isEnabled=true
+                        position=XAxis.XAxisPosition.BOTTOM
+                        setDrawAxisLine(true)
+                        granularity=1f
+                        isGranularityEnabled=true
+                        valueFormatter=IndexAxisValueFormatter(type)
+                        textSize=12f
+                        textColor=ContextCompat.getColor(applicationContext,R.color.white)
+                    }
+                    //y축 설정
+                    val yAxis_l=barChart.axisLeft
+                    yAxis_l.apply {
+                        setDrawLabels(false)
+                        isEnabled = false
+                        axisMinimum = 0f // 최소값
+                        axisMaximum = 10f // 최대값
+                        granularity = 1f // 값 만큼 라인선 설정
+                        textColor = Color.RED // 색상 설정
+                        axisLineColor = Color.BLACK // 축 색상 설정
+                        //gridColor = Color.BLUE // 격자 색상 설정
+                    }
+                    val yAxis_R=barChart.axisRight
+                    yAxis_R.apply {
+                        setDrawLabels(false)
+                        isEnabled = false
+                        axisMinimum = 0f // 최소값
+                        axisMaximum = 10f // 최대값
+                        granularity = 1f // 값 만큼 라인선 설정
+                        textColor = Color.RED // 색상 설정
+                        axisLineColor = Color.BLACK // 축 색상 설정
+                        //gridColor = Color.BLUE // 격자 색상 설정
+                    }
+                    barChart.invalidate()
+                }
             }
-            val yAxis_R=barChart.axisRight
-            yAxis_R.apply {
-                setDrawLabels(false)
-                isEnabled = false
-                axisMinimum = 0f // 최소값
-                axisMaximum = 15f // 최대값
-                granularity = 1f // 값 만큼 라인선 설정
-                textColor = Color.RED // 색상 설정
-                axisLineColor = Color.BLACK // 축 색상 설정
-                //gridColor = Color.BLUE // 격자 색상 설정
-            }
-            barChart.invalidate()
-        }
+        })
     }
+}
 
 
     /*이거 왜 한지 몰라서 주석 처리
@@ -591,4 +612,3 @@ class Day_resultAC : AppCompatActivity() {
             animate()
         }
     }*/
-}
