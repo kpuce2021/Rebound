@@ -240,6 +240,22 @@ class HueActivity : AppCompatActivity() {
             override fun onStopTrackingTouch(seekBar: SeekBar?) {
                 lightbri = seekBar!!.progress
                 testTV.text = lightbri.toString()
+                val bri = JSONObject()
+                bri.put("bri",lightbri)
+                val briString = bri.toString()
+                val brirequest = briString.toRequestBody("application/json".toMediaTypeOrNull())
+                Runnable {
+                    huelightremote[0]?.lightservice(brirequest)?.enqueue(object : Callback<List<Response>>{
+                        override fun onFailure(call: Call<List<Response>>, t: Throwable) {
+                            Log.d("bri","failed : "+t)
+                        }
+
+                        override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
+                            Log.d("bri","success : "+response.body().toString())
+                        }
+
+                    })
+                }.run()
             }
 
         })
