@@ -235,10 +235,16 @@ class backgroundservice : Service(), SensorEventListener {
         startForeground(1,builder.build())
     }
     private fun renameFile(){
+        var num = 0
         val filedir = File(filesDir,File.separator+foldername)
-        val newfilename = "sensorlog-${getTime()}.txt"
+        var newfilename = "sensorlog-${daytime()}-$num.txt"
         val file = File("$filedir/$filename")
-        val rename = File("$filedir/$newfilename")
+        var rename = File("$filedir/$newfilename")
+        while(rename.exists()){
+            num += 1
+            newfilename = "sensorlog-${daytime()}-$num.txt"
+            rename = File("$filedir/$newfilename")
+        }
         file.renameTo(rename)
         Log.d("filedir",filedir.toString()+"/$newfilename")
     }
