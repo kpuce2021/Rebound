@@ -98,6 +98,7 @@ class backgroundservice : Service(), SensorEventListener {
         if("startForeground".equals(intent!!.action)){
             startForegroundService()
 
+
             val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
             val date = Date(startTime)
             val sttime = format.format(date)
@@ -285,7 +286,7 @@ class backgroundservice : Service(), SensorEventListener {
             if (((ftime-startTime)/1000/60)<5){
                 avg = sensorAverage(m)
             }
-            if (ftime-xtime>=300000){
+            if (ftime-xtime>=1000){
                 ccount += 1
                 timeList.add(ccount, ftime)
                 checkCycle(m, avg)
@@ -318,7 +319,7 @@ class backgroundservice : Service(), SensorEventListener {
             var cycle0 = cycleList.get(ccount)
             var contents = "${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycle0}\n"
             WriteTextFile(foldername,filename,contents)
-            //Log.d("Sensorlog", " x:${event.values[0]}, y:${event.values[1]}, z:${event.values[2]}, m:${m}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
+            Log.d("Sensorlog", "time :${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycle0}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
         }
     }
     fun initcycle(){

@@ -298,11 +298,11 @@ class Fragment1 : Fragment() {
                         deepSleep_values.add(BarEntry(i.toFloat(),1f))
                     }
                 }
-                type.add("01:00")
-                for(i in 0..cycles.size-3){
-                    type.add("")
-                }
-                type.add("09:00")
+                type.add("04:00")
+                type.add("05:00")
+                type.add("06:00")
+                type.add("07:00")
+                type.add("08:00")
 
 
                 colorlist.add(Color.parseColor("#FFFF88"))  //light
