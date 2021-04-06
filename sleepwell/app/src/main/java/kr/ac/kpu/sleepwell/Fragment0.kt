@@ -3,6 +3,7 @@ package kr.ac.kpu.sleepwell
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.media.MediaPlayer
@@ -19,7 +20,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.fragment_0.*
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import java.io.*
 import java.text.DateFormat
@@ -115,19 +115,35 @@ class Fragment0 : Fragment() {
                               savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_0,container,false)
 
-        //수면 요소
         view.factorbox.setOnClickListener {
+            val items = arrayOf("알코올", "카페인", "흡연", "야식", "운동", "감기", "수면 보조제", "샤워", "다른 침대")
+            val selectedItemIndex = ArrayList<Int>()
+
             val builder = AlertDialog.Builder(activity)
-            val dialogView = layoutInflater.inflate(R.layout.sleepcheck_dialog,null)
-            builder.setView(dialogView)
-                .setNegativeButton("취소"){ dialogInterface, i ->
-
-                }
-                .setPositiveButton("완료"){ dialogInterface, i ->
-
-                }
-                .show()
+                    .setTitle("수면 전 요소들을 추가하세요.")
+                    .setMultiChoiceItems(items, null) { dialogInterface: DialogInterface, i: Int, b: Boolean
+                        ->
+                        if (b) {
+                            selectedItemIndex.add(i)
+                        } else if (selectedItemIndex.contains(i)) {
+                            selectedItemIndex.remove(i)
+                        }
+                    }
+                    .setPositiveButton("완료") { dialogInterface: DialogInterface, i: Int ->
+                        var selected = ArrayList<String>()
+                        var strFactor = ""
+                        for (j in selectedItemIndex) {
+                            selected.add(items[j])
+                            for(i in 0..selected.size-1) {
+                                var x = selected.get(i)
+                                strFactor = strFactor.plus(x+"/")
+                                view.factor.setText(strFactor)
+                            }
+                        }
+                    }
+                    .show()
         }
+
 
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
@@ -152,62 +168,6 @@ class Fragment0 : Fragment() {
             }*/
             val intent=Intent(activity,SleepStart::class.java)      //background2에서 자동실행
             startActivity(intent)
-            /*if(i==0) {
-                daynow=daytime()    //시작버튼 누른 시간 저장
-                for(i in 0..19){
-                    //arraylist[i]=i.toString()
-                    //timearraylist[i]=i.toString()
-                    arraylist.add(i,i.toString())
-                    timearraylist.add(i,i.toString())
-                }
-                arraylist.removeAll(arraylist)
-                timearraylist.removeAll(timearraylist)
-                startListening()
-                isRunning=true
-                isTimergoOkay=true
-                val Decibelcheckandrecording=getDecibel()
-                Decibelcheckandrecording.start()
-                RenewWL().start()
-
-            }
-            else{
-                isTimerfinished=true
-                isRunning=false
-                isTimergoOkay=false
-                stopListening()
-                if(amIstartRecording==true){
-                    stopRecording()
-                }
-
-                val time = (endTime - startTime)
-                val sectime = time /1000
-                val mintime = (sectime/60).toInt() //몇분 잤는지
-                if (mintime < 0) { //수면 시간이 x분 미만일 경우
-                    val alertDialog = AlertDialog.Builder(activity)
-                            .setTitle("수면 분석을 위한 수면 시간이 충분하지 않습니다.")
-                            .setNegativeButton("닫기",null)
-                            .create()
-                    alertDialog.show()
-                }
-                else{
-                    getsizefile=arraylist.size-1  //max 9 min 0
-                    storageRef=FirebaseStorage.getInstance().reference
-                    val userFileRef=storageRef.child(userEmail).child(daynow)
-                    for(i in 0..getsizefile){
-                        val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
-                        filenameRef.putFile(Uri.fromFile(Filearraylist.get(i))) }
-                    activity?.let {
-                        val intent = Intent(activity, Day_resultAC::class.java)
-                        //intent.putExtra("getsizefile",getsizefile.toString())
-                        Log.d("getsizefile", getsizefile.toString())
-                        intent.putExtra("filenames", arraylist)
-                        intent.putExtra("times", timearraylist)
-                        requireActivity().startActivity(intent)
-                    }
-                }
-                renameFile()
-                RenewWL().interrupt()
-            } */
         }
         return view
     }

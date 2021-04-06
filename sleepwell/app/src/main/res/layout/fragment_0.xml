@@ -60,9 +60,11 @@
 
             <TextView
                 android:id="@+id/factor"
-                android:layout_width="wrap_content"
+                android:layout_width="83dp"
                 android:layout_height="wrap_content"
                 android:padding="5dp"
+                android:ellipsize="marquee"
+                android:singleLine="true"
                 android:text="설정 없음"
                 android:textColor="#969696" />
         </LinearLayout>
