@@ -110,8 +110,6 @@ class backgroundservice : Service(), SensorEventListener {
                     .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
 
-
-
             sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
                     sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
                     SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
@@ -264,8 +262,6 @@ class backgroundservice : Service(), SensorEventListener {
         }
     }
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
-
-
 
     override fun onSensorChanged(event: SensorEvent?) {
         var x = 0.toFloat()
