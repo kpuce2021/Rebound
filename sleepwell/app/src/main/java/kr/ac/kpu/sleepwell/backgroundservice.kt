@@ -292,7 +292,7 @@ class backgroundservice : Service(), SensorEventListener {
             if (((ftime-startTime)/1000/60)<5){
                 avg = sensorAverage(m)
             }
-            if (ftime-xtime>=1000){
+            if (ftime-xtime>=300000){
                 ccount += 1
                 timeList.add(ccount, ftime)
                 checkCycle(m, avg)
