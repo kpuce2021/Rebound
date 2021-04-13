@@ -84,22 +84,22 @@ class Fragment1 : Fragment() {
             return@EventListener
             }
             if(snapshot != null && snapshot.exists()){
-                val day2 = findDate2()
-                today.setText(day2)
-
-                var sleep_time = snapshot?.data!!["sleep_time"].toString()
-                var sleep_start = snapshot?.data!!["go_to_bed"].toString()
-                var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
-                var sleep_light = snapshot?.data!!["sleep_light"].toString()
-                var sleep_rem = snapshot?.data!!["sleep_rem"].toString()
-                var go_to_sleep = snapshot?.data!!["go_to_sleep"].toString()
-
-                changeSleep(sleep_time)
-                changeDeep(sleep_deep)
-                changeLight(sleep_light)
-                changeRem(sleep_rem)
-                changeGotoSleep(go_to_sleep)
-                sleep_st.setText(sleep_start)
+                if(snapshot?.data!!["sleep_time"] != null){
+                    val day2 = findDate2()
+                    today.setText(day2)
+                    var sleep_time = snapshot?.data!!["sleep_time"].toString()
+                    var sleep_start = snapshot?.data!!["go_to_bed"].toString()
+                    var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
+                    var sleep_light = snapshot?.data!!["sleep_light"].toString()
+                    var sleep_rem = snapshot?.data!!["sleep_rem"].toString()
+                    var go_to_sleep = snapshot?.data!!["go_to_sleep"].toString()
+                    changeSleep(sleep_time)
+                    changeDeep(sleep_deep)
+                    changeLight(sleep_light)
+                    changeRem(sleep_rem)
+                    changeGotoSleep(go_to_sleep)
+                    sleep_st.setText(sleep_start)
+                }
             }
         })
         /*document 전체 읽을 때 주석 품
@@ -195,53 +195,55 @@ class Fragment1 : Fragment() {
                 return@EventListener
             }
             if(snapshot != null && snapshot.exists()){
-                val day2 = findDate2()
-                today.setText(day2)
+                if(snapshot?.data!!["awake"] != null){
+                    val day2 = findDate2()
+                    today.setText(day2)
 
-                var awake = snapshot?.data!!["awake"].toString().toInt()
-                var sleep_deep = snapshot?.data!!["sleep_deep"].toString().toInt()
-                var sleep_light = snapshot?.data!!["sleep_light"].toString().toInt()
-                var sleep_rem = snapshot?.data!!["sleep_rem"].toString().toInt()
+                    var awake = snapshot?.data!!["awake"].toString().toInt()
+                    var sleep_deep = snapshot?.data!!["sleep_deep"].toString().toInt()
+                    var sleep_light = snapshot?.data!!["sleep_light"].toString().toInt()
+                    var sleep_rem = snapshot?.data!!["sleep_rem"].toString().toInt()
 
-                awak = awake.toFloat()
-                rem = sleep_rem.toFloat()
-                deep = sleep_deep.toFloat()
-                light = sleep_light.toFloat()
+                    awak = kr.ac.kpu.sleepwell.awake.toFloat()
+                    rem = kr.ac.kpu.sleepwell.sleep_rem.toFloat()
+                    deep = kr.ac.kpu.sleepwell.sleep_deep.toFloat()
+                    light = kr.ac.kpu.sleepwell.sleep_light.toFloat()
 
-                var pieChart: PieChart
-                pieChart=v.findViewById<PieChart>(R.id.day_piechart)
-                pieChart.setUsePercentValues(true)
-                val entries=ArrayList<PieEntry>()
-                if(rem > 0f){entries.add(PieEntry(rem,"REM"))}
-                if(deep > 0f){entries.add(PieEntry(deep,"Deep Sleep"))}
-                if(light > 0f){entries.add(PieEntry(light,"Light Sleep"))}
-                if(awake > 0f){ entries.add(PieEntry(awak,"Awake"))}
+                    var pieChart: PieChart
+                    pieChart=v.findViewById<PieChart>(R.id.day_piechart)
+                    pieChart.setUsePercentValues(true)
+                    val entries=ArrayList<PieEntry>()
+                    if(rem > 0f){entries.add(PieEntry(rem,"REM"))}
+                    if(deep > 0f){entries.add(PieEntry(deep,"Deep Sleep"))}
+                    if(light > 0f){entries.add(PieEntry(light,"Light Sleep"))}
+                    if(kr.ac.kpu.sleepwell.awake > 0f){ entries.add(PieEntry(awak,"Awake"))}
 
-                val colorItems=ArrayList<Int>()
-                for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
-                for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
-                for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
-                for(c in ColorTemplate.MATERIAL_COLORS) colorItems.add(c)
-                colorItems.add(ColorTemplate.getHoloBlue())
+                    val colorItems=ArrayList<Int>()
+                    for(c in ColorTemplate.PASTEL_COLORS) colorItems.add(c)
+                    for(c in ColorTemplate.LIBERTY_COLORS) colorItems.add(c)
+                    for(c in ColorTemplate.VORDIPLOM_COLORS) colorItems.add(c)
+                    for(c in ColorTemplate.MATERIAL_COLORS) colorItems.add(c)
+                    colorItems.add(ColorTemplate.getHoloBlue())
 
-                val pieDataSet= PieDataSet(entries,"")
+                    val pieDataSet= PieDataSet(entries,"")
 
-                pieDataSet.apply {
-                    colors=colorItems
-                    valueTextColor= Color.BLACK
-                    valueTextSize=12f
-                }
+                    pieDataSet.apply {
+                        colors=colorItems
+                        valueTextColor= Color.BLACK
+                        valueTextSize=12f
+                    }
 
-                val pieData= PieData(pieDataSet)
-                pieChart.apply {
-                    data=pieData
-                    description.isEnabled=false
-                    isRotationEnabled=false
-                    centerText="수면 비율"
-                    setCenterTextSize(20f)
-                    setEntryLabelColor(Color.BLACK)
-                    animateY(1400, Easing.EaseInOutQuad)
-                    animate()
+                    val pieData= PieData(pieDataSet)
+                    pieChart.apply {
+                        data=pieData
+                        description.isEnabled=false
+                        isRotationEnabled=false
+                        centerText="수면 비율"
+                        setCenterTextSize(20f)
+                        setEntryLabelColor(Color.BLACK)
+                        animateY(1400, Easing.EaseInOutQuad)
+                        animate()
+                    }
                 }
             }
         })
