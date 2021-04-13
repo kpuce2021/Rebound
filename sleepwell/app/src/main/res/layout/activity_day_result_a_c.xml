@@ -252,13 +252,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content">
                     <TextView
-                        android:id="@+id/sleep_score_a"
                         android:textColor="@color/white"
                         android:text="수면 요인"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content">
                     </TextView>
                     <TextView
+                        android:id="@+id/sleep_factor_a"
                         android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/white"

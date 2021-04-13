@@ -190,7 +190,12 @@ class Fragment0 : Fragment() {
                     if (dbitems.size > 0) {
                         for (i in 0..dbitems.size - 1) {
                             var x = dbitems.get(i)
-                            strFactor = strFactor.plus(x + "/")
+                            if (i==dbitems.size-1){
+                                strFactor = strFactor.plus(x)
+                            }
+                            else{
+                                strFactor = strFactor.plus(x + "/")
+                            }
                             view.factor.setText(strFactor)
                         }
                     }
@@ -221,8 +226,14 @@ class Fragment0 : Fragment() {
                         }
                         for(i in 0..selected.size-1) {
                             var x = selected.get(i)
-                            strFactor = strFactor.plus(x+"/")
+                            if (i==selected.size-1){
+                                strFactor = strFactor.plus(x)
+                            }
+                            else{
+                                strFactor = strFactor.plus(x + "/")
+                            }
                             view.factor.setText(strFactor)
+
                             if(x == "알코올"){
                                 dbRef.update("alcohol", true)
                             }

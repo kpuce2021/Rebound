@@ -34,6 +34,7 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
+import kotlinx.android.synthetic.main.fragment_0.view.*
 import kotlinx.android.synthetic.main.fragment_1.*
 import kotlinx.android.synthetic.main.fragment_trend_child_frag1_week.*
 import java.io.FileInputStream
@@ -82,6 +83,49 @@ class Day_resultAC : AppCompatActivity() {
                 Log.w("tag", "Listen failed.", e)
             }
             if(snapshot != null && snapshot.exists()){
+
+                var strFactor = ""
+                var dbitems = arrayListOf<String>()
+                if (snapshot?.data!!["alcohol"].toString() == "true") {
+                    dbitems.add("알코올")
+                }
+                if (snapshot?.data!!["caffeine"].toString() == "true") {
+                    dbitems.add("카페인")
+                }
+                if (snapshot?.data!!["cold"].toString() == "true") {
+                    dbitems.add("감기")
+                }
+                if (snapshot?.data!!["food"].toString() == "true") {
+                    dbitems.add("야식")
+                }
+                if (snapshot?.data!!["other_bed"].toString() == "true") {
+                    dbitems.add("다른 침대")
+                }
+                if (snapshot?.data!!["pill"].toString() == "true") {
+                    dbitems.add("수면 보조제")
+                }
+                if (snapshot?.data!!["shower"].toString() == "true") {
+                    dbitems.add("샤워")
+                }
+                if (snapshot?.data!!["smoke"].toString() == "true") {
+                    dbitems.add("흡연")
+                }
+                if (snapshot?.data!!["work_out"].toString() == "true") {
+                    dbitems.add("운동")
+                }
+                if (dbitems.size > 0) {
+                    for (i in 0..dbitems.size - 1) {
+                        var x = dbitems.get(i)
+                        if (i==dbitems.size-1){
+                            strFactor = strFactor.plus(x)
+                        }
+                        else{
+                            strFactor = strFactor.plus(x + ", ")
+                        }
+                        sleep_factor_a.setText(strFactor)
+                    }
+                }
+
                 var sleep_time = snapshot?.data!!["sleep_time"].toString()
                 var sleep_start = snapshot?.data!!["go_to_bed"].toString()
                 var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
