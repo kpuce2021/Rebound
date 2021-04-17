@@ -3,8 +3,10 @@ package kr.ac.kpu.sleepwell
 import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.media.MediaPlayer
 import android.media.MediaRecorder
 import android.os.Bundle
@@ -15,12 +17,20 @@ import android.view.*
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.data.PieDataSet
+import com.github.mikephil.charting.data.PieEntry
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.fragment_0.*
+import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 import kotlinx.android.synthetic.main.fragment_0.view.*
+import kotlinx.coroutines.selects.select
 import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
@@ -33,6 +43,20 @@ private const val LOG_TAG = "Error"
 
 class Fragment0 : Fragment() {
     val user = FirebaseAuth.getInstance()
+    val userkey = user.uid.toString()
+    val db = Firebase.firestore
+    val day = findDateFactor()
+    var factordata = hashMapOf(
+            "alcohol" to false,
+            "caffeine" to false,
+            "smoke" to false,
+            "food" to false,
+            "work_out" to false,
+            "cold" to false,
+            "pill" to false,
+            "shower" to false,
+            "other_bed" to false
+    )
     //firebase
     private lateinit var storageRef: StorageReference
     //private lateinit var mFirebaseStorage: FirebaseStorage
@@ -110,24 +134,138 @@ class Fragment0 : Fragment() {
             }
         }
     }
+    private fun findDateFactor(): String {
+        val cal = Calendar.getInstance()
+        cal.time = Date()
+        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
+        var ampm = cal.get(Calendar.AM_PM)
+        if(ampm == Calendar.PM){
+            return df.format(cal.time)
+        }
+        else{cal.add(Calendar.DATE,-1)
+            return df.format(cal.time) }
+    }
+
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        var view = inflater.inflate(R.layout.fragment_0,container,false)
-
-        //수면 요소
-        view.factorbox.setOnClickListener {
-            val builder = AlertDialog.Builder(activity)
-            val dialogView = layoutInflater.inflate(R.layout.sleepcheck_dialog,null)
-            builder.setView(dialogView)
-                .setNegativeButton("취소"){ dialogInterface, i ->
+        var view = inflater.inflate(R.layout.fragment_0, container, false)
+        val dbRef = db.collection(userkey).document(day)
+        dbRef.get()
+                .addOnSuccessListener {
+            dbRef.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
+                if (e != null) {
 
                 }
-                .setPositiveButton("완료"){ dialogInterface, i ->
-
+                if (snapshot != null && snapshot.exists()) {
+                    var strFactor = ""
+                    var dbitems = arrayListOf<String>()
+                    if (snapshot?.data!!["alcohol"].toString() == "true") {
+                        dbitems.add("알코올")
+                    }
+                    if (snapshot?.data!!["caffeine"].toString() == "true") {
+                        dbitems.add("카페인")
+                    }
+                    if (snapshot?.data!!["cold"].toString() == "true") {
+                        dbitems.add("감기")
+                    }
+                    if (snapshot?.data!!["food"].toString() == "true") {
+                        dbitems.add("야식")
+                    }
+                    if (snapshot?.data!!["other_bed"].toString() == "true") {
+                        dbitems.add("다른 침대")
+                    }
+                    if (snapshot?.data!!["pill"].toString() == "true") {
+                        dbitems.add("수면 보조제")
+                    }
+                    if (snapshot?.data!!["shower"].toString() == "true") {
+                        dbitems.add("샤워")
+                    }
+                    if (snapshot?.data!!["smoke"].toString() == "true") {
+                        dbitems.add("흡연")
+                    }
+                    if (snapshot?.data!!["work_out"].toString() == "true") {
+                        dbitems.add("운동")
+                    }
+                    if (dbitems.size > 0) {
+                        for (i in 0..dbitems.size - 1) {
+                            var x = dbitems.get(i)
+                            if (i==dbitems.size-1){
+                                strFactor = strFactor.plus(x)
+                            }
+                            else{
+                                strFactor = strFactor.plus(x + "/")
+                            }
+                            view.factor.setText(strFactor)
+                        }
+                    }
                 }
-                .show()
+            })
         }
+        view.factorbox.setOnClickListener {
+            dbRef.set(factordata, SetOptions.merge())
+                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
+                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
+            val items = arrayOf("알코올", "카페인", "흡연", "야식", "운동", "감기", "수면 보조제", "샤워", "다른 침대")
+            val selectedItemIndex = ArrayList<Int>()
+            val builder = AlertDialog.Builder(activity)
+                    .setTitle("수면 전 요소들을 추가하세요.")
+                    .setMultiChoiceItems(items, null) { dialogInterface: DialogInterface, i: Int, b: Boolean
+                        ->
+                        if (b) {
+                            selectedItemIndex.add(i)
+                        } else if (selectedItemIndex.contains(i)) {
+                            selectedItemIndex.remove(i)
+                        }
+                    }
+                    .setPositiveButton("완료") { dialogInterface: DialogInterface, i: Int ->
+                        var selected = ArrayList<String>()
+                        var strFactor = ""
+                        for (j in selectedItemIndex) {
+                            selected.add(items[j])
+                        }
+                        for(i in 0..selected.size-1) {
+                            var x = selected.get(i)
+                            if (i==selected.size-1){
+                                strFactor = strFactor.plus(x)
+                            }
+                            else{
+                                strFactor = strFactor.plus(x + "/")
+                            }
+                            view.factor.setText(strFactor)
+
+                            if(x == "알코올"){
+                                dbRef.update("alcohol", true)
+                            }
+                            if(x == "카페인"){
+                                dbRef.update("caffeine", true)
+                            }
+                            if(x == "감기"){
+                                dbRef.update("cold", true)
+                            }
+                            if(x == "야식"){
+                                dbRef.update("food", true)
+                            }
+                            if(x == "운동"){
+                                dbRef.update("work_out", true)
+                            }
+                            if(x == "흡연"){
+                                dbRef.update("smoke", true)
+                            }
+                            if(x == "수면 보조제"){
+                                dbRef.update("pill", true)
+                            }
+                            if(x == "샤워"){
+                                dbRef.update("shower", true)
+                            }
+                            if(x == "다른 침대"){
+                                dbRef.update("other_bed", true)
+                            }
+                        }
+                    }
+                    .show()
+        }
+
 
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
@@ -152,62 +290,6 @@ class Fragment0 : Fragment() {
             }*/
             val intent=Intent(activity,SleepStart::class.java)      //background2에서 자동실행
             startActivity(intent)
-            /*if(i==0) {
-                daynow=daytime()    //시작버튼 누른 시간 저장
-                for(i in 0..19){
-                    //arraylist[i]=i.toString()
-                    //timearraylist[i]=i.toString()
-                    arraylist.add(i,i.toString())
-                    timearraylist.add(i,i.toString())
-                }
-                arraylist.removeAll(arraylist)
-                timearraylist.removeAll(timearraylist)
-                startListening()
-                isRunning=true
-                isTimergoOkay=true
-                val Decibelcheckandrecording=getDecibel()
-                Decibelcheckandrecording.start()
-                RenewWL().start()
-
-            }
-            else{
-                isTimerfinished=true
-                isRunning=false
-                isTimergoOkay=false
-                stopListening()
-                if(amIstartRecording==true){
-                    stopRecording()
-                }
-
-                val time = (endTime - startTime)
-                val sectime = time /1000
-                val mintime = (sectime/60).toInt() //몇분 잤는지
-                if (mintime < 0) { //수면 시간이 x분 미만일 경우
-                    val alertDialog = AlertDialog.Builder(activity)
-                            .setTitle("수면 분석을 위한 수면 시간이 충분하지 않습니다.")
-                            .setNegativeButton("닫기",null)
-                            .create()
-                    alertDialog.show()
-                }
-                else{
-                    getsizefile=arraylist.size-1  //max 9 min 0
-                    storageRef=FirebaseStorage.getInstance().reference
-                    val userFileRef=storageRef.child(userEmail).child(daynow)
-                    for(i in 0..getsizefile){
-                        val filenameRef:StorageReference=userFileRef.child(daynow+" 녹음파일 "+getTime()+".mp3")
-                        filenameRef.putFile(Uri.fromFile(Filearraylist.get(i))) }
-                    activity?.let {
-                        val intent = Intent(activity, Day_resultAC::class.java)
-                        //intent.putExtra("getsizefile",getsizefile.toString())
-                        Log.d("getsizefile", getsizefile.toString())
-                        intent.putExtra("filenames", arraylist)
-                        intent.putExtra("times", timearraylist)
-                        requireActivity().startActivity(intent)
-                    }
-                }
-                renameFile()
-                RenewWL().interrupt()
-            } */
         }
         return view
     }
