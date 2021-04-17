@@ -1,33 +1,20 @@
 package kr.ac.kpu.sleepwell
 
-import android.graphics.Color
+import android.content.ContentValues.TAG
 import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.SystemClock
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
-import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.BarData
-import com.github.mikephil.charting.data.BarDataSet
-import com.github.mikephil.charting.data.BarEntry
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
-import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.QueryDocumentSnapshot
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_sleep_start.*
-import kotlinx.android.synthetic.main.fragment_1.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -35,12 +22,12 @@ import kotlin.collections.ArrayList
 
 
 private const val LOG_TAG = "Error"
+val db = Firebase.firestore
+val user = FirebaseAuth.getInstance()
+val userkey = user.uid.toString()
+var isRunning=true
 
 class Fragment1 : Fragment() {
-    val db = Firebase.firestore
-    val user = FirebaseAuth.getInstance()
-    val userkey = user.uid.toString()
-
     var sleepDatalist=ArrayList<dayrecordData>()
     /*private var REM_values=ArrayList<BarEntry>()
     private var deepSleep_values=ArrayList<BarEntry>()
@@ -54,6 +41,7 @@ class Fragment1 : Fragment() {
     private var pausePosition:Int?=null
     private var isPaused:Boolean=false
     var arraylist=ArrayList<String>(100)   //녹음파일 이름 저장(output2)
+    var documentnames=ArrayList<String>()
     private lateinit var callback: OnBackPressedCallback
     private var checkinglist:Boolean=false
     lateinit var ref2:QueryDocumentSnapshot
@@ -125,44 +113,63 @@ class Fragment1 : Fragment() {
         })*/
 
         db.collection(userkey)
-                .get()
-                .addOnSuccessListener { result->
-                    for(document in result){
-                        Log.d("TAG", "${document.id} => ${document.data}")
-                        checkinglist=false
-                        for(i in 0 until sleepDatalist.size){
-                            if(document.id.replace("-","/").equals(sleepDatalist.get(i).sleep_date)){
-                                Log.d("alreadyhave","data added error")
-                                checkinglist=true
-                                break
+                .addSnapshotListener{value, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+                    if(value!!.size()==0){
+                        block_btn.visibility=View.VISIBLE
+                        Log.d("valuesize",value.size().toString())
+                        sleepdataAdapter?.notifyDataSetChanged()
+                    }
+                    else{
+                        block_btn.visibility=View.GONE
+                        Log.d("valuesize",value.size().toString())
+                        for (document in value!!) {
+                            Log.d("TAG", "${document.id} => ${document.data}")
+                            checkinglist=false
+                            for(i in 0 until sleepDatalist.size) {
+                                if (document.id.replace("-", "/").equals(sleepDatalist.get(i).sleep_date)) {
+                                    Log.d("alreadyhave", "data added error")
+                                    //update
+                                    sleepDatalist.get(i).sleeptime=document.data["go_to_sleep"].toString()
+                                    sleepDatalist.get(i).startsleeptime=document.data["go_to_bed"].toString()
+                                    sleepDatalist.get(i).timetotakesleeptime=document.data["sleep_time"].toString()
+                                    sleepDatalist.get(i).finishsleep=document.data["wake_up"].toString()
+                                    sleepDatalist.get(i).sleep_date=document.id.replace("-","/")
+                                    sleepDatalist.get(i).Rem_sleep=document.data["sleep_rem"].toString()
+                                    sleepDatalist.get(i).deep_sleep=document.data["sleep_deep"].toString()
+                                    sleepDatalist.get(i).light_sleep=document.data["sleep_light"].toString()
+                                    sleepDatalist.get(i).awake_sleep=document.data["awake"].toString()
+                                    checkinglist = true
+                                    break
+                                }
                             }
-                        }
-                        if(!checkinglist){
-                            sleepDatalist.add(dayrecordData(
-                                    document.data["go_to_sleep"].toString(),
-                                    document.data["go_to_bed"].toString(),
-                                    document.data["sleep_time"].toString(),
-                                    document.data["wake_up"].toString(),
-                                    document.id.replace("-","/"),
-                                    document.data["sleep_rem"].toString(),
-                                    document.data["sleep_deep"].toString(),
-                                    document.data["sleep_light"].toString(),
-                                    document.data["awake"].toString()
-                            ))
-                            Log.d("added","data added")
+                            if(!checkinglist){
+                                sleepDatalist.add(dayrecordData(
+                                        document.data["go_to_sleep"].toString(),
+                                        document.data["go_to_bed"].toString(),
+                                        document.data["sleep_time"].toString(),
+                                        document.data["wake_up"].toString(),
+                                        document.id.replace("-","/"),
+                                        document.data["sleep_rem"].toString(),
+                                        document.data["sleep_deep"].toString(),
+                                        document.data["sleep_light"].toString(),
+                                        document.data["awake"].toString()
+                                ))
+                                sleepdataAdapter?.notifyDataSetChanged()
+                            }
                             sleepdataAdapter?.notifyDataSetChanged()
                         }
+                        sleepdataAdapter?.notifyDataSetChanged()
                     }
-                    Log.d("finish","data added")
                     sleepdataAdapter?.notifyDataSetChanged()
-                }
-                .addOnFailureListener{
-                    Log.d("document","document income failure")
                 }
         return v
     }
 
-   /* private fun changeSleep(x :String){
+/* private fun changeSleep(x :String){
         var hour = x.toInt()/60
         var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
         if(hour==0){

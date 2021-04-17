@@ -36,8 +36,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:textSize="20sp"
-                android:visibility="gone"
-                android:text="수면 정보가 없습니다."/>
+                android:text="수면 정보가 없습니다.\n수면정보를 확인하려면 수면 전 수면시작        버튼을 눌러주세요"/>
 
             <ListView
                 android:layout_width="match_parent"
