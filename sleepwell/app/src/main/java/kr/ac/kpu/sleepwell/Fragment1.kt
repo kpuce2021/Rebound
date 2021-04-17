@@ -1,43 +1,38 @@
 package kr.ac.kpu.sleepwell
 
-import androidx.core.content.ContextCompat
-import android.content.Context
 import android.graphics.Color
 import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.SystemClock
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.LinearLayout
-import android.widget.Toast
+import android.widget.ListView
+import android.widget.ProgressBar
 import androidx.activity.OnBackPressedCallback
-import androidx.core.view.isGone
-import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentTransaction
-import com.github.mikephil.charting.animation.Easing
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
-import com.github.mikephil.charting.charts.PieChart
 import com.github.mikephil.charting.components.XAxis
-import com.github.mikephil.charting.data.*
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
+import com.google.firebase.firestore.*
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_day_result_a_c.*
+import kotlinx.android.synthetic.main.activity_sleep_start.*
 import kotlinx.android.synthetic.main.fragment_1.*
-import java.io.FileInputStream
-import java.lang.Exception
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 private const val LOG_TAG = "Error"
 
@@ -46,19 +41,25 @@ class Fragment1 : Fragment() {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
 
-
-    private var REM_values=ArrayList<BarEntry>()
+    var sleepDatalist=ArrayList<dayrecordData>()
+    /*private var REM_values=ArrayList<BarEntry>()
     private var deepSleep_values=ArrayList<BarEntry>()
     private var lightSleep_values=ArrayList<BarEntry>()
     private var Awake_values=ArrayList<BarEntry>()
-    private val colorlist=ArrayList<Int>()
+    private val colorlist=ArrayList<Int>()*/
 
+    //private lateinit var block_btn:Button
     private var getfilesize:Int=0
     private var mediaPlayer: MediaPlayer?=null
     private var pausePosition:Int?=null
     private var isPaused:Boolean=false
     var arraylist=ArrayList<String>(100)   //녹음파일 이름 저장(output2)
     private lateinit var callback: OnBackPressedCallback
+    private var checkinglist:Boolean=false
+    lateinit var ref2:QueryDocumentSnapshot
+
+    //get data
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -66,8 +67,10 @@ class Fragment1 : Fragment() {
     ): View? {
         var v:View=inflater.inflate(R.layout.fragment_1, container, false)
 
-
-
+        val sleepdataAdapter= activity?.let { dayrecordlistAdapter(it,sleepDatalist) }
+        val block_btn:Button=v.findViewById<Button>(R.id.block_btn)
+        var frag_daylistview=v.findViewById<ListView>(R.id.daylistview)
+        frag_daylistview.adapter=sleepdataAdapter
 /*        var calx = Calendar.getInstance()
         calx.time = Date()
         val dfx: DateFormat = SimpleDateFormat("yyyy-MM-dd")
@@ -76,7 +79,7 @@ class Fragment1 : Fragment() {
         daily= dfx.format(calx.time)
         day.setText(daily)//하루 치 결과를 보여줌*/
 
-        val day = findDate1()
+        /*val day = findDate1()
         val Ref_day = db.collection(userkey).document(day)
         Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
             if(e != null){
@@ -85,45 +88,63 @@ class Fragment1 : Fragment() {
             }
             if(snapshot != null && snapshot.exists()){
                 val day2 = findDate2()
-                today.setText(day2)
+                //today.setText(day2)
 
-                var sleep_time = snapshot?.data!!["sleep_time"].toString()
-                var sleep_start = snapshot?.data!!["go_to_bed"].toString()
-                var sleep_deep = snapshot?.data!!["sleep_deep"].toString()
-                var sleep_light = snapshot?.data!!["sleep_light"].toString()
-                var sleep_rem = snapshot?.data!!["sleep_rem"].toString()
+                var sleep_time = snapshot?.data!!["sleep_time"].toString()  //몇분 잤는지
+                var sleep_start = snapshot?.data!!["go_to_bed"].toString()  //자러 간 시간
+                var sleep_deep = snapshot?.data!!["sleep_deep"].toString()  //깊은수면
+                var sleep_light = snapshot?.data!!["sleep_light"].toString()    //얕은수면
+                var sleep_rem = snapshot?.data!!["sleep_rem"].toString()    //램수면
                 var go_to_sleep = snapshot?.data!!["go_to_sleep"].toString()
 
-                changeSleep(sleep_time)
+                /*changeSleep(sleep_time)
                 changeDeep(sleep_deep)
                 changeLight(sleep_light)
                 changeRem(sleep_rem)
                 changeGotoSleep(go_to_sleep)
-                sleep_st.setText(sleep_start)
+                sleep_st.setText(sleep_start)*/
             }
-        })
-        /*document 전체 읽을 때 주석 품
-        Ref.get()
-                .addOnSuccessListener { result ->
-                    for (document in result) {
-                        Log.d("tag", "${document.id} => ${document.data}")
+        })*/
+
+        db.collection(userkey)
+                .get()
+                .addOnSuccessListener { result->
+                    for(document in result){
+                        Log.d("TAG", "${document.id} => ${document.data}")
+                        checkinglist=false
+                        for(i in 0 until sleepDatalist.size){
+                            if(document.id.replace("-","/").equals(sleepDatalist.get(i).sleep_date)){
+                                Log.d("alreadyhave","data added error")
+                                checkinglist=true
+                                break
+                            }
+                        }
+                        if(!checkinglist){
+                            sleepDatalist.add(dayrecordData(
+                                    document.data["go_to_sleep"].toString(),
+                                    document.data["go_to_bed"].toString(),
+                                    document.data["sleep_time"].toString(),
+                                    document.data["wake_up"].toString(),
+                                    document.id.replace("-","/"),
+                                    document.data["sleep_rem"].toString(),
+                                    document.data["sleep_deep"].toString(),
+                                    document.data["sleep_light"].toString(),
+                                    document.data["awake"].toString()
+                            ))
+                            Log.d("added","data added")
+                            sleepdataAdapter?.notifyDataSetChanged()
+                        }
                     }
-                    if (result != null){
-                        block_btn.visibility = View.GONE
-                    } else{}
+                    Log.d("finish","data added")
+                    sleepdataAdapter?.notifyDataSetChanged()
                 }
-                .addOnFailureListener { exception ->
-                    Log.d(tag, "get failed with ", exception)
+                .addOnFailureListener{
+                    Log.d("document","document income failure")
                 }
-        if(){
-        }*/
-        AwakeDrawingGraph(v)
-        SleepcycleCheck(v)
         return v
     }
 
-
-    private fun changeSleep(x :String){
+   /* private fun changeSleep(x :String){
         var hour = x.toInt()/60
         var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
         if(hour==0){
@@ -176,8 +197,9 @@ class Fragment1 : Fragment() {
         else{
             sleep_m.setText(hour.toString()+"시간 "+ minute.toString()+"분")
         }
-    }
+    }*/
 
+    /*
     fun SleepcycleCheck(v:View){
         var awak = 0f
         var rem = 0f
@@ -245,8 +267,9 @@ class Fragment1 : Fragment() {
                 }
             }
         })
-    }
-    private fun AwakeDrawingGraph(v:View){
+    }*/
+
+    /*private fun AwakeDrawingGraph(v:View){
         var barChart: BarChart
         barChart=v.findViewById<BarChart>(R.id.sleep_graph)
         barChart.apply {
@@ -394,10 +417,8 @@ class Fragment1 : Fragment() {
             }
         })
 
-    }
+    }*/
 }
-
-
 fun findDate2(): String {
     val cal = Calendar.getInstance()
     cal.time = Date()

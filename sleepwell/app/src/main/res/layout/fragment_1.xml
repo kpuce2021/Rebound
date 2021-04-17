@@ -3,248 +3,48 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragment1"
     android:id="@+id/Fragment1">
-        <ScrollView
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/background">
-            <FrameLayout
+            android:background="@color/background"
+            android:orientation="vertical"
+            >
+            <TextView
+                android:background="@color/background"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-                <Button
-                    android:id="@+id/block_btn"
-                    android:backgroundTint="@color/background0"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:textSize="20sp"
-                    android:text="수면 정보가 없습니다."/>
-            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:text="일일 수면 기록"
+                android:textStyle="bold"
+                android:textSize="25sp"
+                android:textColor="#ffffff"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="5dp"
+                android:id="@+id/frag1_title"
+                />
+            <Button
+                android:id="@+id/block_btn"
+                android:backgroundTint="@color/background0"
+                android:gravity="center"
+                android:textColor="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:orientation="vertical">
-                <TextView
-                    android:background="@color/background"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left"
-                    android:text="일일 수면 기록"
-                    android:textStyle="bold"
-                    android:textSize="25sp"
-                    android:textColor="#ffffff"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:padding="5dp"
-                    android:id="@+id/frag1_title"
-                    />
-                <TextView
-                    android:id="@+id/today"
-                    android:background="@color/background"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="2021년 2월 27일"
-                    android:textSize="15sp"
-                    android:textColor="#ffffff"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginRight="8dp"
-                    android:padding="5dp"
-                    />
+                android:textSize="20sp"
+                android:visibility="gone"
+                android:text="수면 정보가 없습니다."/>
 
-                <com.github.mikephil.charting.charts.BarChart
-                    android:id="@+id/sleep_graph"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp"
-                    android:background="@color/background2"/>
-
-                <com.github.mikephil.charting.charts.PieChart
-                    android:id="@+id/day_piechart"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginTop="20sp"
-                    android:layout_marginLeft="10sp"
-                    android:layout_marginRight="10sp"
-                    android:padding="10dp" />
-                <TableLayout
-                    android:stretchColumns="*"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <TableRow>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="수면 시간"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/sleep_t"
-                                android:textSize="20sp"
-                                android:textColor="@color/white"
-                                android:textStyle="bold"
-                                android:text="7시간"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="수면 시작 시간"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/sleep_st"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"
-                                android:text="오전 01:00"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                    </TableRow>
-                    <TableRow>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="깊은 수면"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/sleep_d"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"
-                                android:text="3시간 30분"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="얕은 수면"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/sleep_m"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"
-                                android:text="3시간 30분"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                    </TableRow>
-                    <TableRow>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="잠드는데 소요된 시간"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/go_sleep"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"
-                                android:text="0분"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                        <LinearLayout
-                            android:orientation="vertical"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_margin="10dp"
-                            android:padding="20dp"
-                            android:background="@color/background2">
-                            <TextView
-                                android:textColor="@color/white"
-                                android:text="REM 수면"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                            <TextView
-                                android:id="@+id/sleep_r"
-                                android:textSize="20sp"
-                                android:textStyle="bold"
-                                android:textColor="@color/white"
-                                android:text="측정 불가"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content">
-                            </TextView>
-                        </LinearLayout>
-                    </TableRow>
-                </TableLayout>
-                <LinearLayout
-                    android:layout_margin="10dp"
-                    android:background="@color/background2"
-                    android:padding="20dp"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <TextView
-                        android:textColor="@color/white"
-                        android:text="수면 요인"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                    </TextView>
-                    <TextView
-                        android:textSize="20sp"
-                        android:textStyle="bold"
-                        android:textColor="@color/white"
-                        android:text="없음"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content">
-                    </TextView>
-                </LinearLayout>
-            </LinearLayout>
-            </FrameLayout>
-        </ScrollView>
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/daylistview"
+                android:layout_margin="8dp"
+                android:dividerHeight="15dp"
+                />
+        </LinearLayout>
 </FrameLayout>

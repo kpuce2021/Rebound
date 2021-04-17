@@ -43,7 +43,6 @@ data class Response(
         var lightid8:ResBody,
         @SerializedName("state")
         var lightstate: ResBody
-
 )
 
 data class ResBody(
@@ -90,6 +89,7 @@ interface HueLight{
 
 
 class HueActivity : AppCompatActivity() {
+
     //192.168.0.3
     private val http = "http://"
     private lateinit var bridge :String
@@ -107,9 +107,6 @@ class HueActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
-
-
-
 
         useridBtn.setOnClickListener{
             bridge=http+ipET.text.toString()
@@ -195,7 +192,6 @@ class HueActivity : AppCompatActivity() {
 
                 })
             }.run()
-
         }
 
         applyBtn.setOnClickListener {
@@ -222,8 +218,6 @@ class HueActivity : AppCompatActivity() {
                     }.run()
                 }
             }
-
-
         }
 
         briseekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
@@ -296,10 +290,8 @@ class HueActivity : AppCompatActivity() {
 
                         })
                     }.run()
-
                 }
             }
-
         })
     }
 }
