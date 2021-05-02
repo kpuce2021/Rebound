@@ -299,30 +299,30 @@ class backgroundservice : Service(), SensorEventListener {
         sleep_deep = 0
     }
 
-    fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 1
+    fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 0.0.1
         var v0 = Math.abs(x - avg) * 1000
         if (ccount > 0) {
             if (cycleList.get(ccount-1)=="awake") {
-                if (v0 > 200) {
+                if (v0 > 1000) {
                     awake += 1
                 }
                 else { sleep_light += 1 }
             }
             else if (ccount<43){
-                if (v0>250){
+                if (v0>1000){
                     awake += 1
                 }
-                else if(v0 <250 && v0>100){
+                else if(v0 <1000 && v0>300){
                     sleep_light += 1
                 }
                 else {sleep_deep += 1
                 }
             }
             else{
-                if (v0>250){
+                if (v0>1000){
                     awake += 1
                 }
-                else if(v0 <250 && v0>100){
+                else if(v0 <1000 && v0>300){
                     sleep_light += 1
                 }
                 else { sleep_rem += 1 }
