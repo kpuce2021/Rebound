@@ -108,8 +108,30 @@ class HueActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
 
+        val getstore = db.collection("hue").document("ip")
+        getstore.get()
+                .addOnSuccessListener { document ->
+                    if(document != null){
+                        bridge = document["address"].toString()
+                        Log.d("read complete",document["address"].toString())
+                        ipET.hint = "로드 완료"
+                    } else{
+                        Log.d("read failed","no document")
+                    } 
+                }
+                .addOnFailureListener { exception ->
+                    Log.d("failed with",exception.toString())
+                }
+
         useridBtn.setOnClickListener{
-            bridge=http+ipET.text.toString()
+            if(bridge == null){
+                bridge = http+ipET.text.toString()
+            }
+            val huestore = db.collection("hue")
+            val hueaddress = hashMapOf(
+                    "address" to bridge
+            )
+            huestore.document("ip").set(hueaddress)
             val huesetting = Retrofit.Builder()
                     .baseUrl(bridge)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -192,9 +214,7 @@ class HueActivity : AppCompatActivity() {
 
                 })
             }.run()
-        }
 
-        applyBtn.setOnClickListener {
             for(i in 0..7){
                 if(huelighturl[i]!=null){
                     huelightstate[i] = Retrofit.Builder()
@@ -218,7 +238,9 @@ class HueActivity : AppCompatActivity() {
                     }.run()
                 }
             }
+
         }
+
 
         briseekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
