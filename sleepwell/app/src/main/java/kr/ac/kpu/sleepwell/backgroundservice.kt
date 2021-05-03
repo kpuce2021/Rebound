@@ -25,6 +25,7 @@ import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.HashMap
 
 private const val REQUEST_ALL_PERMISSION=100
 private const val DECIBEL = "Decibel"
@@ -61,6 +62,10 @@ class backgroundservice : Service(), SensorEventListener {
     val filename = "sensorlog.txt"
     val day = findDate()
     var startTime = System.currentTimeMillis()
+    val AudioRef = db.collection(userkey).document(day).collection("record").document("audiopath")
+    val decibelRef = db.collection(userkey).document(day).collection("record").document("decibel")
+    private var audiodata=HashMap<String,String>()
+    private var decibeldata=HashMap<String,String>()
 
     private lateinit var mrecorder: MediaRecorder
     private lateinit var mlistener: MediaRecorder
@@ -81,6 +86,9 @@ class backgroundservice : Service(), SensorEventListener {
     private var isTimergoOkay:Boolean=true
     private var amIstartRecording:Boolean=false
     var myapp:MyglobalArraylist?=null
+    private var MaxDecibel:Double=-999.99
+    private var MinDecibel:Double=999.99
+
     //var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
     //var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
     //var Filearraylist=ArrayList<File>(20)   //녹음파일 자체 저장
@@ -97,7 +105,6 @@ class backgroundservice : Service(), SensorEventListener {
         cycleList.add(0, "awake")
         if("startForeground".equals(intent!!.action)){
             startForegroundService()
-
 
             val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
             val date = Date(startTime)
@@ -198,7 +205,6 @@ class backgroundservice : Service(), SensorEventListener {
 
         Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
         renameFile()
-
         isTimerfinished=true
         isRunning=false
         isTimergoOkay=false
@@ -206,6 +212,30 @@ class backgroundservice : Service(), SensorEventListener {
         if(amIstartRecording==true){
             stopRecording()
         }
+        //output2.string
+        for(i in 0 until myapp!!.arraylist.size){
+            audiodata.put("audio $i", myapp!!.arraylist[i])
+        }
+        AudioRef.set(audiodata)
+                .addOnSuccessListener { Log.d("AudioDB", "audio Document successfully written!") }
+                .addOnFailureListener { e -> Log.w("AudioDB", "Error writing Audio document", e) }
+        Log.d("MaxDecibel",MaxDecibel.toString())
+        Log.d("MinDecibel",MinDecibel.toString())
+        MaxDecibel+=60.0
+        MaxDecibel= (Math.round(MaxDecibel*10)/10f).toDouble()
+        decibeldata.put("MaxDecibel",MaxDecibel.toString())
+        Log.d("MaxDecibelPlus60",MaxDecibel.toString())
+        if(MinDecibel.equals("-Infinity")){
+            decibeldata.put("MinDecibel","최저 소음 측정 불가")
+        }else{
+            MinDecibel+=60.0
+            MinDecibel= (Math.round(MinDecibel*10)/10f).toDouble()
+            decibeldata.put("MinDecibel",MinDecibel.toString())
+            Log.d("MinDecibelPlus60",MinDecibel.toString())
+        }
+        decibelRef.set(decibeldata)
+                .addOnSuccessListener { Log.d("decibelDB", "DecibelChecking Document successfully written!") }
+                .addOnFailureListener { e -> Log.w("decibelDB", "Error writing DecibelChecking document", e) }
         stopForeground(true)
         stopSelf()
         Log.d("is Stop?","YES!!")
@@ -377,6 +407,10 @@ class backgroundservice : Service(), SensorEventListener {
                 }*/
                 var Decibel:Double=SoundDB(32767.0)
                 SystemClock.sleep(1000)
+                if(MaxDecibel<Decibel)
+                    MaxDecibel=Decibel
+                if(MinDecibel>Decibel)
+                    MinDecibel=Decibel
                 Log.d(DECIBEL,Decibel.toString()+" db")
                 if(Decibel>=-15.0 && isTimerfinished && myapp!!.arraylist.size<11){
                     //isStartListeningCheck=true
@@ -409,6 +443,10 @@ class backgroundservice : Service(), SensorEventListener {
                     isStopRecordingOkay=false
                     countnum-=1
                     Decibel=SoundDB(32767.0)
+                    if(MaxDecibel<Decibel)
+                        MaxDecibel=Decibel
+                    if(MinDecibel>Decibel)
+                        MinDecibel=Decibel
                     Log.d("countnumber",countnum.toString())
                     SystemClock.sleep(1000)
                 }
@@ -444,7 +482,7 @@ class backgroundservice : Service(), SensorEventListener {
                 prepare()
                 start()
             }catch (e:IllegalArgumentException) {
-                e.printStackTrace();
+                e.printStackTrace()
             }catch (e: IllegalStateException) {
                 e.printStackTrace()
             } catch (e: IOException) {
@@ -528,6 +566,7 @@ class backgroundservice : Service(), SensorEventListener {
                    stop()
                    myapp!!.filearraylist.add(output!!)
                    myapp!!.arraylist.add(output2.toString())
+                   //output2.toString()-->저장
                    Log.d("filearraylist_size",myapp!!.filearraylist.size.toString())
                    //release()
                }

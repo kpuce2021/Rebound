@@ -133,9 +133,9 @@ class Fragment1 : Fragment() {
                                 if (document.id.replace("-", "/").equals(sleepDatalist.get(i).sleep_date)) {
                                     Log.d("alreadyhave", "data added error")
                                     //update
-                                    sleepDatalist.get(i).sleeptime=document.data["go_to_sleep"].toString()
+                                    sleepDatalist.get(i).sleeptime=document.data["sleep_time"].toString()
                                     sleepDatalist.get(i).startsleeptime=document.data["go_to_bed"].toString()
-                                    sleepDatalist.get(i).timetotakesleeptime=document.data["sleep_time"].toString()
+                                    sleepDatalist.get(i).timetotakesleeptime=document.data["go_to_sleep"].toString()
                                     sleepDatalist.get(i).finishsleep=document.data["wake_up"].toString()
                                     sleepDatalist.get(i).sleep_date=document.id.replace("-","/")
                                     sleepDatalist.get(i).Rem_sleep=document.data["sleep_rem"].toString()
@@ -148,9 +148,9 @@ class Fragment1 : Fragment() {
                             }
                             if(!checkinglist){
                                 sleepDatalist.add(dayrecordData(
-                                        document.data["go_to_sleep"].toString(),
-                                        document.data["go_to_bed"].toString(),
                                         document.data["sleep_time"].toString(),
+                                        document.data["go_to_bed"].toString(),
+                                        document.data["go_to_sleep"].toString(),
                                         document.data["wake_up"].toString(),
                                         document.id.replace("-","/"),
                                         document.data["sleep_rem"].toString(),
