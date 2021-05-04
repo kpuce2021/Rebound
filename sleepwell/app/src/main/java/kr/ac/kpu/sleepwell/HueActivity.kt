@@ -2,9 +2,11 @@ package kr.ac.kpu.sleepwell
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
 import androidx.appcompat.app.AppCompatActivity
+import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.synthetic.main.activity_hue.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -92,8 +94,8 @@ class HueActivity : AppCompatActivity() {
 
     //192.168.0.3
     private val http = "http://"
-    private lateinit var bridge :String
-    private lateinit var hueid : String
+    var bridge = "."
+    var hueid = "."
     val huenm : String = "test"
     private lateinit var hueurl : String
     var huelighturl = arrayOfNulls<String>(size=8)
@@ -102,19 +104,100 @@ class HueActivity : AppCompatActivity() {
     var huelightstate = arrayOfNulls<Retrofit>(size=8)
     var huelightremote = arrayOfNulls<HueLight>(size=8)
     var lightbri : Int = 0
+    val userkey = FirebaseAuth.getInstance().currentUser?.uid.toString()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_hue)
 
-        val getstore = db.collection("hue").document("ip")
+        Log.d("userkey",userkey)
+
+        val getstore = db.collection(userkey).document("hue")
         getstore.get()
                 .addOnSuccessListener { document ->
                     if(document != null){
                         bridge = document["address"].toString()
+                        hueid = document["hueid"].toString()
                         Log.d("read complete",document["address"].toString())
+                        Log.d("read complete",document["hueid"].toString())
+                        Log.d("username", hueid)
+                        testTV.text = hueid
+                        hueurl = bridge+"/api/"+hueid+"/"
                         ipET.hint = "로드 완료"
+                        val huelink = Retrofit.Builder()
+                                .baseUrl(hueurl)
+                                .addConverterFactory(GsonConverterFactory.create())
+                                .build()
+                        val link = huelink.create(Huelink::class.java)
+                        val newlight = link.findnewlight()
+                        Runnable {
+                            newlight.enqueue(object : Callback<Response>{
+                                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                    Log.d("link","complete : "+response.toString())
+                                }
+
+                                override fun onFailure(call: Call<Response>, t: Throwable) {
+                                    Log.d("link","failed : "+t)
+                                }
+
+                            })
+                        }.run()
+                        val lightsid = link.getlightsid()
+                        Runnable {
+                            lightsid.enqueue(object : Callback<Response>{
+                                override fun onFailure(call: Call<Response>, t: Throwable) {
+                                    Log.d("lights id","failed : "+t)
+                                    Log.d("light body","failed : "+call.toString())
+                                }
+
+                                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                    lightid[0] = response.body()?.lightid1
+                                    lightid[1] = response.body()?.lightid2
+                                    lightid[2] = response.body()?.lightid3
+                                    lightid[3] = response.body()?.lightid4
+                                    lightid[4] = response.body()?.lightid5
+                                    lightid[5] = response.body()?.lightid6
+                                    lightid[6] = response.body()?.lightid7
+                                    lightid[7] = response.body()?.lightid8
+
+                                    for(i in 0..7){
+                                        if(lightid[i]!=null){
+                                            numlight[i]=i+1
+                                            huelighturl[i]=hueurl+"lights/"+(i+1).toString()+"/"
+                                        }
+                                    }
+
+                                    Log.d("lights id","complete : "+numlight.toString())
+                                }
+
+                            })
+                        }.run()
+                        for(i in 0..7){
+                            if(huelighturl[i]!=null){
+                                huelightstate[i] = Retrofit.Builder()
+                                        .baseUrl(huelighturl[i].toString())
+                                        .addConverterFactory(GsonConverterFactory.create())
+                                        .build()
+                                Log.d("id","id : "+(i+1).toString()+" complete")
+                                huelightremote[i] = huelightstate[i]?.create(HueLight::class.java)
+                                Runnable {
+                                    huelightremote[i]?.getlightstate()?.enqueue(object : Callback<Response>{
+                                        override fun onFailure(call: Call<Response>, t: Throwable) {
+                                            Log.d("remote make","failed : "+(i+1).toString())
+                                        }
+
+                                        override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                            Log.d("remote make","complete : "+(i+1).toString())
+                                            //여기에 리모콘 만들거 만들기, 아직 모름
+                                        }
+
+                                    })
+                                }.run()
+                            }
+                        }
+                        useridBtn.isClickable = false
+                        linkBtn.isClickable = false
                     } else{
                         Log.d("read failed","no document")
                     } 
@@ -124,29 +207,22 @@ class HueActivity : AppCompatActivity() {
                 }
 
         useridBtn.setOnClickListener{
-            if(bridge == null){
-                bridge = http+ipET.text.toString()
-            }
-            val huestore = db.collection("hue")
-            val hueaddress = hashMapOf(
-                    "address" to bridge
-            )
-            huestore.document("ip").set(hueaddress)
+            bridge = http+ipET.text.toString()
             val huesetting = Retrofit.Builder()
                     .baseUrl(bridge)
                     .addConverterFactory(GsonConverterFactory.create())
                     .build()
             val api = huesetting.create(Hueuserid::class.java)
-            val newuser =JSONObject()
-            newuser.put("devicetype",huenm)
+            val newuser = JSONObject()
+            newuser.put("devicetype", huenm)
             val newuserString = newuser.toString()
             val userrequest = newuserString.toRequestBody("application/json".toMediaTypeOrNull())
             Runnable {
                 api.getuserid(userrequest).enqueue(object : Callback<List<Response>> {
 
                     override fun onFailure(call: Call<List<Response>>, t: Throwable) {
-                        Log.d("fail", "failed to get userid : "+ "$t")
-                        Log.d("failresponse","$call")
+                        Log.d("fail", "failed to get userid : " + "$t")
+                        Log.d("failresponse", "$call")
                         testTV.text = t.toString()
                     }
 
@@ -159,11 +235,17 @@ class HueActivity : AppCompatActivity() {
                             hueid = idget.userid
                             Log.d("username", hueid)
                             testTV.text = hueid
-                            hueurl = bridge+"/api/"+hueid+"/"
+                            hueurl = bridge + "/api/" + hueid + "/"
                         }
                     }
                 })
             }.run()
+            val huestore = db.collection(userkey)
+            val hueaddress = hashMapOf(
+                    "address" to bridge,
+                    "hueid" to hueid
+            )
+            huestore.document("hue").set(hueaddress)
         }
         linkBtn.setOnClickListener {
             val huelink = Retrofit.Builder()
