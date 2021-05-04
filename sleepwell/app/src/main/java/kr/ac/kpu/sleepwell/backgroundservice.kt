@@ -32,8 +32,8 @@ private const val DECIBEL = "Decibel"
 private const val LOG_TAG = "Error"
 var cycleList = mutableListOf<String>()
 var timeList = mutableListOf<Long>()
-var scount = 0
 var ccount = 0
+var scount = 0
 var total = 0.0
 var awake = 0
 var go_to_sleep = 0
@@ -253,9 +253,7 @@ class backgroundservice : Service(), SensorEventListener {
             var y2 = Math.pow(y.toDouble(), 2.0)//y제곱
             var z2 = Math.pow(z.toDouble(), 2.0)//z제곱
             var m = Math.sqrt(x2+y2+z2)//움직임 값
-            if (((ftime-startTime)/1000/60)<5){
-                avg = sensorAverage(m)
-            }
+            avg = sensorAverage(m)
             if (ftime-xtime>=300000){
                 ccount += 1
                 timeList.add(ccount, ftime)

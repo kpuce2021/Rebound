@@ -137,7 +137,7 @@ class Day_resultAC : AppCompatActivity() {
                 changeDeep(sleep_deep)
                 changeLight(sleep_light)
                 changeRem(sleep_rem)
-                changeGotoSleep(go_to_sleep)
+                changeGotoSleep(go_to_sleep, sleep_time)
                 sleep_st_a.setText(sleep_start)
                 //sleep_d_a.setText(sleep_deep+"시간")
                 //sleep_m_a.setText(sleep_light+"시간")
@@ -300,14 +300,17 @@ class Day_resultAC : AppCompatActivity() {
         }
     }
 
-    private fun changeGotoSleep(x :String){
+    private fun changeGotoSleep(x :String, y :String){
+        var st = y.toInt()
         var hour = x.toInt()/60
         var minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
-        if(hour==0){
-            go_sleep_a.setText(x+"분")
-        }
-        else{
-            go_sleep_a.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        if (st < 5) {go_sleep_a.setText("0분")}
+        else {
+            if (hour == 0) {
+                go_sleep_a.setText(x + "분")
+            } else {
+                go_sleep_a.setText(hour.toString() + "시간 " + minute.toString() + "분")
+            }
         }
     }
 
