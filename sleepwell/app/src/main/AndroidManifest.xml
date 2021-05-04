@@ -23,7 +23,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Sleepwell"
         android:usesCleartextTraffic="true">
+
         <activity android:name=".dayrecord_details"></activity>
+
         <activity android:name=".NoticeAc" />
         <activity android:name=".HueActivity">
 

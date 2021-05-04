@@ -6,6 +6,7 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.animation.Easing
 import com.github.mikephil.charting.charts.BarChart
@@ -45,7 +46,7 @@ class dayrecord_details : AppCompatActivity() {
     private var ratio_deep:String=""
     private var ratio_light:String=""
 
-
+    private val audiopathlist=ArrayList<String>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -63,6 +64,7 @@ class dayrecord_details : AppCompatActivity() {
         if (date_id != null) {
             id_date.text = date_id.replace("-"," / ")
         }
+
         /*val Ref_day = db.collection(userkey).document(date_id)
         Ref_day.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
             if (e != null) {
@@ -122,8 +124,28 @@ class dayrecord_details : AppCompatActivity() {
                 maxDecibel.text= Math.round(MaxDecibel.toFloat()).toString() + " db"
             }
         })
+        val getaudiopathfromdb = db.collection(userkey).document(date_id).collection("record").document("audiopath")
+        getaudiopathfromdb.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
+            if (e != null) {
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
+            }
+            if (snapshot != null && snapshot.exists()) {
+                var size = snapshot?.data!!["size"].toString()
+                Log.d("justsize",size)
+                for(i in 0 until size.toInt()) {
+                    val audiolist = ArrayList<String>()
+                    Log.d("audiosnapshot", snapshot?.data!!["audio $i"].toString())
+                    var audiodata = snapshot?.data!!["audio $i"].toString()
+                    audiolist.add(audiodata)
+                }
+            }
+        })
+        Log.d("audiopathsize",audiopathlist.size.toString())
+        for(i in 0 until audiopathlist.size){
+            Log.d("audiotag",audiopathlist.get(i))
+        }
         AwakeDrawingGraph(awake_barchart)
-
     }
 
 

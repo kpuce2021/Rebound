@@ -18,6 +18,7 @@ import android.os.SystemClock
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -44,8 +45,10 @@ var REM = 0
 var DEEP = 0
 var AWAKE = 0
 var LIGHT = 0
+var realtime_index = 0
 
 class backgroundservice : Service(), SensorEventListener {
+    val database = Firebase.database.reference
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
     val db = Firebase.firestore
@@ -204,7 +207,7 @@ class backgroundservice : Service(), SensorEventListener {
         }
 
         Log.d("MainActivity", "${sectime}초 수면 = ${mintime}분 수면")
-        renameFile()
+        //renameFile()
         isTimerfinished=true
         isRunning=false
         isTimergoOkay=false
@@ -212,6 +215,8 @@ class backgroundservice : Service(), SensorEventListener {
         if(amIstartRecording==true){
             stopRecording()
         }
+
+        audiodata.put("size",myapp!!.arraylist.size.toString())
         //output2.string
         for(i in 0 until myapp!!.arraylist.size){
             audiodata.put("audio $i", myapp!!.arraylist[i])
@@ -236,6 +241,8 @@ class backgroundservice : Service(), SensorEventListener {
         decibelRef.set(decibeldata)
                 .addOnSuccessListener { Log.d("decibelDB", "DecibelChecking Document successfully written!") }
                 .addOnFailureListener { e -> Log.w("decibelDB", "Error writing DecibelChecking document", e) }
+
+        realtime_index = 0
         stopForeground(true)
         stopSelf()
         Log.d("is Stop?","YES!!")
@@ -262,42 +269,7 @@ class backgroundservice : Service(), SensorEventListener {
         }
         startForeground(1,builder.build())
     }
-    private fun renameFile(){
-        var num = 0
-        val filedir = File(filesDir,File.separator+foldername)
-        var newfilename = "sensorlog-${daytime()}-$num.txt"
-        val file = File("$filedir/$filename")
-        var rename = File("$filedir/$newfilename")
-        while(rename.exists()){
-            num += 1
-            newfilename = "sensorlog-${daytime()}-$num.txt"
-            rename = File("$filedir/$newfilename")
-        }
-        file.renameTo(rename)
-        Log.d("filedir",filedir.toString()+"/$newfilename")
-    }
 
-    private fun WriteTextFile(foldername: String, filename: String, contents: String?) {
-        try {
-            val dir = File(filesDir, File.separator+foldername)
-            //디렉토리 폴더가 없으면 생성함
-            if (!dir.exists()) {
-                dir.mkdir()
-            }
-            //파일 output stream 생성
-            val logoutput = File(dir,filename).absolutePath
-            val fos = FileOutputStream(logoutput, true)
-            //파일쓰기
-            val writer = BufferedWriter(OutputStreamWriter(fos))
-            writer.write(contents)
-            //Log.d("Sensorlog",foldername)
-            writer.flush()
-            writer.close()
-            fos.close()
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-    }
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {}
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -349,9 +321,9 @@ class backgroundservice : Service(), SensorEventListener {
             }
             else{checkCycle(m, avg)}
             var cycle0 = cycleList.get(ccount)
-            var contents = "${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycle0}\n"
-            WriteTextFile(foldername,filename,contents)
-            Log.d("Sensorlog", "time :${getTime()}, m:${m}, avg:${avg}, count:${ccount}, cycle:${cycle0}") // [0] x축값, [1] y축값, [2] z축값, 움직임값
+            var contents = "count:${ccount}, cycle:${cycle0}, change:${Math.abs(m-avg)*1000}  m:${m}, avg:${avg}, time:${getTime()}\n"
+            database.child(userkey).child(daytime()).child(realtime_index.toString()).setValue(contents)
+            realtime_index += 1
         }
     }
     fun initcycle(){
@@ -361,30 +333,30 @@ class backgroundservice : Service(), SensorEventListener {
         sleep_deep = 0
     }
 
-    fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 1
+    fun checkCycle(x: Double, avg: Double) { //수면 분석 알고리즘 version 0.0.1
         var v0 = Math.abs(x - avg) * 1000
         if (ccount > 0) {
             if (cycleList.get(ccount-1)=="awake") {
-                if (v0 > 200) {
+                if (v0 > 1000) {
                     awake += 1
                 }
                 else { sleep_light += 1 }
             }
             else if (ccount<43){
-                if (v0>250){
+                if (v0>1000){
                     awake += 1
                 }
-                else if(v0 <250 && v0>100){
+                else if(v0 <1000 && v0>300){
                     sleep_light += 1
                 }
                 else {sleep_deep += 1
                 }
             }
             else{
-                if (v0>250){
+                if (v0>1000){
                     awake += 1
                 }
-                else if(v0 <250 && v0>100){
+                else if(v0 <1000 && v0>300){
                     sleep_light += 1
                 }
                 else { sleep_rem += 1 }

@@ -38,6 +38,8 @@ android {
 }
 
 dependencies {
+    implementation platform('com.google.firebase:firebase-bom:26.8.0')
+    implementation 'com.google.firebase:firebase-database-ktx'
     // Import the BoM for the Firebase platform
     implementation platform('com.google.firebase:firebase-bom:26.4.0')
     // Declare the dependency for the Cloud Firestore library
