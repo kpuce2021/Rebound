@@ -20,6 +20,7 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 import retrofit2.http.PUT
 import retrofit2.http.GET
+import java.lang.Thread.sleep
 
 
 data class Response(
@@ -143,6 +144,9 @@ class HueActivity : AppCompatActivity() {
 
                             })
                         }.run()
+
+                        sleep(100)
+
                         val lightsid = link.getlightsid()
                         Runnable {
                             lightsid.enqueue(object : Callback<Response>{
@@ -173,6 +177,9 @@ class HueActivity : AppCompatActivity() {
 
                             })
                         }.run()
+
+                        sleep(100)
+
                         for(i in 0..7){
                             if(huelighturl[i]!=null){
                                 huelightstate[i] = Retrofit.Builder()
@@ -266,6 +273,9 @@ class HueActivity : AppCompatActivity() {
 
                 })
             }.run()
+
+            sleep(100)
+
             val lightsid = link.getlightsid()
             Runnable {
                 lightsid.enqueue(object : Callback<Response>{
@@ -296,6 +306,8 @@ class HueActivity : AppCompatActivity() {
 
                 })
             }.run()
+
+            sleep(100)
 
             for(i in 0..7){
                 if(huelighturl[i]!=null){
