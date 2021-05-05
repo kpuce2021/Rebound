@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.gson.annotations.SerializedName
@@ -95,7 +96,7 @@ class HueActivity : AppCompatActivity() {
 
     //192.168.0.3
     private val http = "http://"
-    var bridge = "."
+    var bridge = http
     var hueid = "."
     val huenm : String = "test"
     private lateinit var hueurl : String
@@ -113,7 +114,7 @@ class HueActivity : AppCompatActivity() {
         setContentView(R.layout.activity_hue)
 
         Log.d("userkey",userkey)
-
+/*
         val getstore = db.collection(userkey).document("hue")
         getstore.get()
                 .addOnSuccessListener { document ->
@@ -212,47 +213,57 @@ class HueActivity : AppCompatActivity() {
                 .addOnFailureListener { exception ->
                     Log.d("failed with",exception.toString())
                 }
-
+*/
         useridBtn.setOnClickListener{
-            bridge = http+ipET.text.toString()
-            val huesetting = Retrofit.Builder()
-                    .baseUrl(bridge)
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
-            val api = huesetting.create(Hueuserid::class.java)
-            val newuser = JSONObject()
-            newuser.put("devicetype", huenm)
-            val newuserString = newuser.toString()
-            val userrequest = newuserString.toRequestBody("application/json".toMediaTypeOrNull())
-            Runnable {
-                api.getuserid(userrequest).enqueue(object : Callback<List<Response>> {
+            if(ipET.text.isBlank()){
+                Toast.makeText(this,"휴 브릿지의 ip 주소를 입력해주세요",Toast.LENGTH_SHORT).show()
+            }else{
+                bridge = http+ipET.text.toString()
+                val huesetting = Retrofit.Builder()
+                        .baseUrl(bridge)
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+                val api = huesetting.create(Hueuserid::class.java)
+                val newuser = JSONObject()
+                newuser.put("devicetype", huenm)
+                val newuserString = newuser.toString()
+                val userrequest = newuserString.toRequestBody("application/json".toMediaTypeOrNull())
+                Runnable {
+                    api.getuserid(userrequest).enqueue(object : Callback<List<Response>> {
 
-                    override fun onFailure(call: Call<List<Response>>, t: Throwable) {
-                        Log.d("fail", "failed to get userid : " + "$t")
-                        Log.d("failresponse", "$call")
-                        testTV.text = t.toString()
-                    }
-
-
-                    override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
-                        Log.d("Response:: ", response.toString())
-                        Log.d("Response body:: ", response.body().toString())
-                        val idget: ResBody? = response.body()?.get(0)?.success
-                        if (idget != null) {
-                            hueid = idget.userid
-                            Log.d("username", hueid)
-                            testTV.text = hueid
-                            hueurl = bridge + "/api/" + hueid + "/"
+                        override fun onFailure(call: Call<List<Response>>, t: Throwable) {
+                            Log.d("fail", "failed to get userid : " + "$t")
+                            Log.d("failresponse", "$call")
+                            testTV.text = t.toString()
                         }
-                    }
-                })
-            }.run()
-            val huestore = db.collection(userkey)
-            val hueaddress = hashMapOf(
-                    "address" to bridge,
-                    "hueid" to hueid
-            )
-            huestore.document("hue").set(hueaddress)
+
+
+                        override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
+                            Log.d("Response:: ", response.toString())
+                            Log.d("Response body:: ", response.body().toString())
+                            val idget: ResBody? = response.body()?.get(0)?.success
+                            if (idget != null) {
+                                hueid = idget.userid
+                                Log.d("username", hueid)
+                                testTV.text = hueid
+                                hueurl = bridge + "/api/" + hueid + "/"
+                            }
+                        }
+                    })
+                }.run()
+                if(hueid == "."){
+                    Toast.makeText(this,"브릿지의 링크 버튼을 눌러주세요",Toast.LENGTH_SHORT).show()
+                }
+                else{
+                    val huestore = db.collection(userkey)
+                    val hueaddress = hashMapOf(
+                            "address" to bridge,
+                            "hueid" to hueid
+                    )
+                    huestore.document("hue").set(hueaddress)
+                }
+
+            }
         }
         linkBtn.setOnClickListener {
             val huelink = Retrofit.Builder()
