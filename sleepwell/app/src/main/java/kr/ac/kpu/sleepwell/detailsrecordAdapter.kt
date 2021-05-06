@@ -21,15 +21,15 @@ class detailsrecordAdapter(val context: Context, val audiodatalist:ArrayList<det
         return view
     }
 
-    override fun getItem(p0: Int): Any {
-        TODO("Not yet implemented")
+    override fun getItem(position: Int): Any {
+        return audiodatalist[position]
     }
 
-    override fun getItemId(p0: Int): Long {
-        TODO("Not yet implemented")
+    override fun getItemId(i: Int): Long {
+        return i.toLong()
     }
 
     override fun getCount(): Int {
-        TODO("Not yet implemented")
+        return audiodatalist.size
     }
 }
