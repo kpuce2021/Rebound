@@ -83,7 +83,6 @@ class Day_resultAC : AppCompatActivity() {
                 Log.w("tag", "Listen failed.", e)
             }
             if(snapshot != null && snapshot.exists()){
-
                 var strFactor = ""
                 var dbitems = arrayListOf<String>()
                 if (snapshot?.data!!["alcohol"].toString() == "true") {

@@ -202,7 +202,9 @@ class Fragment0 : Fragment() {
                 }
             })
         }
+        /*
         view.factorbox.setOnClickListener {
+
             dbRef.set(factordata, SetOptions.merge())
                     .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
                     .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
@@ -264,7 +266,7 @@ class Fragment0 : Fragment() {
                         }
                     }
                     .show()
-        }
+        }*/
 
 
         if(!Permissions())
