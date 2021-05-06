@@ -3,31 +3,23 @@ package kr.ac.kpu.sleepwell
 import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.startActivity
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 
-class dayrecordlistAdapter(val context: Context,val sleepDatalist:ArrayList<dayrecordData>):BaseAdapter() {
+class dayrecordlistAdapter(val context: Context, val sleepDatalist: ArrayList<dayrecordData>):BaseAdapter() {
 
     private val db = Firebase.firestore
     private val user = FirebaseAuth.getInstance()
@@ -54,7 +46,6 @@ class dayrecordlistAdapter(val context: Context,val sleepDatalist:ArrayList<dayr
 
         //view.minimumHeight = 600  //sleep_item.xml height
         //view.minimumWidth = 300
-
 
 
         val tv_date = view.findViewById<TextView>(R.id.tv_date)   //수면 날짜

@@ -45,6 +45,8 @@ class Fragment1 : Fragment() {
     private lateinit var callback: OnBackPressedCallback
     private var checkinglist:Boolean=false
     lateinit var ref2:QueryDocumentSnapshot
+    private var dataADD:Boolean=false
+    private var dataCHANGED:Boolean=false
 
     //get data
 
@@ -158,11 +160,14 @@ class Fragment1 : Fragment() {
                                         document.data["sleep_light"].toString(),
                                         document.data["awake"].toString()
                                 ))
+                                sleepDatalist.sortBy { it.sleep_date }
+                                sleepDatalist.reverse()
                                 sleepdataAdapter?.notifyDataSetChanged()
                             }
                             sleepdataAdapter?.notifyDataSetChanged()
                         }
                         sleepdataAdapter?.notifyDataSetChanged()
+                        Log.d("reverse?","reversed")
                     }
                     sleepdataAdapter?.notifyDataSetChanged()
                 }
