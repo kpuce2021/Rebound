@@ -1,15 +1,26 @@
 package kr.ac.kpu.sleepwell
 
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.SystemClock
 import android.util.Log
 import android.view.MotionEvent
+import android.view.View
+import android.widget.CompoundButton
+import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.isVisible
+import com.google.firebase.auth.FirebaseAuth
+import kotlinx.android.synthetic.main.activity_sleep_start.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.toRequestBody
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.ktx.Firebase
@@ -27,6 +38,15 @@ class SleepStart : AppCompatActivity() {
     lateinit var dayresultintent:Intent
     var countnum=4
 
+    private val http = "http://"
+    var hueid = "."
+    var huelighturl = arrayOfNulls<String>(size=8)
+    var lightid = arrayOfNulls<ResBody>(size=8)
+    var numlight = arrayOfNulls<Int>(size=8)
+    var huelightstate = arrayOfNulls<Retrofit>(size=8)
+    var huelightremote = arrayOfNulls<HueLight>(size=8)
+    var lightbri : Int = 0
+    val userkey = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private fun findDateFactor(): String {
         val cal = Calendar.getInstance()
         cal.time = Date()
@@ -65,6 +85,7 @@ class SleepStart : AppCompatActivity() {
             finish()
         }*/
 
+
         btn_stop.setOnTouchListener { view, motionEvent ->
             when(motionEvent.action){
                 MotionEvent.ACTION_DOWN->{
@@ -81,6 +102,190 @@ class SleepStart : AppCompatActivity() {
             }
             return@setOnTouchListener false
         }
+        val huebtn = db.collection("hue").document(userkey)
+        huebtn.get()
+                .addOnSuccessListener { document ->
+                    if(document != null){
+                        val able = document["able"].toString()
+                        if(able=="1"){
+                            btn_huelink.visibility = View.VISIBLE
+                        }
+                        Log.d("read complete",document["able"].toString())
+                    }
+                }
+                .addOnFailureListener{
+                    Log.d("failed with",it.toString())
+                }
+
+
+
+
+        btn_huelink.setOnClickListener {
+            val getstore = db.collection("hue").document(userkey)
+            getstore.get()
+                    .addOnSuccessListener { document ->
+                        if(document != null){
+                            val bridge = document["address"].toString()
+                            hueid = document["hueid"].toString()
+                            Log.d("read complete",document["address"].toString())
+                            Log.d("read complete",document["hueid"].toString())
+                            Log.d("username", hueid)
+                            val hueurl = bridge+"/api/"+hueid+"/"
+                            val huelink = Retrofit.Builder()
+                                    .baseUrl(hueurl)
+                                    .addConverterFactory(GsonConverterFactory.create())
+                                    .build()
+                            val link = huelink.create(Huelink::class.java)
+                            val newlight = link.findnewlight()
+                            Runnable {
+                                newlight.enqueue(object : Callback<Response> {
+                                    override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                        Log.d("link","complete : "+response.toString())
+                                    }
+
+                                    override fun onFailure(call: Call<Response>, t: Throwable) {
+                                        Log.d("link","failed : "+t)
+                                    }
+
+                                })
+                            }.run()
+
+                            val lightsid = link.getlightsid()
+                            Runnable {
+                                lightsid.enqueue(object : Callback<Response> {
+                                    override fun onFailure(call: Call<Response>, t: Throwable) {
+                                        Log.d("lights id","failed : "+t)
+                                        Log.d("light body","failed : "+call.toString())
+                                    }
+
+                                    override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                        lightid[0] = response.body()?.lightid1
+                                        lightid[1] = response.body()?.lightid2
+                                        lightid[2] = response.body()?.lightid3
+                                        lightid[3] = response.body()?.lightid4
+                                        lightid[4] = response.body()?.lightid5
+                                        lightid[5] = response.body()?.lightid6
+                                        lightid[6] = response.body()?.lightid7
+                                        lightid[7] = response.body()?.lightid8
+
+                                        for(i in 0..7){
+                                            if(lightid[i]!=null){
+                                                numlight[i]=i+1
+                                                huelighturl[i]=hueurl+"lights/"+(i+1).toString()+"/"
+                                            }
+                                        }
+
+                                        Log.d("lights id","complete : "+numlight.toString())
+                                    }
+
+                                })
+                            }.run()
+
+                            for(i in 0..7){
+                                if(huelighturl[i]!=null){
+                                    huelightstate[i] = Retrofit.Builder()
+                                            .baseUrl(huelighturl[i].toString())
+                                            .addConverterFactory(GsonConverterFactory.create())
+                                            .build()
+                                    Log.d("id","id : "+(i+1).toString()+" complete")
+                                    huelightremote[i] = huelightstate[i]?.create(HueLight::class.java)
+                                    Runnable {
+                                        huelightremote[i]?.getlightstate()?.enqueue(object : Callback<Response> {
+                                            override fun onFailure(call: Call<Response>, t: Throwable) {
+                                                Log.d("remote make","failed : "+(i+1).toString())
+                                            }
+
+                                            override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
+                                                Log.d("remote make","complete : "+(i+1).toString())
+                                                //여기에 리모콘 만들거 만들기, 아직 모름
+                                            }
+
+                                        })
+                                    }.run()
+                                }
+                            }
+
+
+                        } else{
+                            Log.d("read failed","no document")
+                        }
+                    }
+                    .addOnFailureListener { exception ->
+                        Log.d("failed with",exception.toString())
+                    }
+            hueswitch.visibility = View.VISIBLE
+            huebri.visibility = View.VISIBLE
+        }
+
+        huebri.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener{
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                lightbri = progress
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+                lightbri = seekBar!!.progress
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+                lightbri = seekBar!!.progress
+                val bri = JSONObject()
+                bri.put("bri",lightbri)
+                val briString = bri.toString()
+                val brirequest = briString.toRequestBody("application/json".toMediaTypeOrNull())
+                Runnable {
+                    huelightremote[0]?.lightservice(brirequest)?.enqueue(object : Callback<List<Response>>{
+                        override fun onFailure(call: Call<List<Response>>, t: Throwable) {
+                            Log.d("bri","failed : "+t)
+                        }
+
+                        override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
+                            Log.d("bri","success : "+response.body().toString())
+                        }
+
+                    })
+                }.run()
+            }
+
+        })
+        hueswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
+            override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
+                if(isChecked){
+                    val lighton = JSONObject()
+                    lighton.put("on",true)
+                    val lightonString = lighton.toString()
+                    val lightonrequest = lightonString.toRequestBody("application/json".toMediaTypeOrNull())
+                    Runnable {
+                        huelightremote[0]?.lightservice(lightonrequest)?.enqueue(object : Callback<List<Response>>{
+                            override fun onFailure(call: Call<List<Response>>, t: Throwable) {
+                                Log.d("on","failed : "+t)
+                            }
+
+                            override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
+                                Log.d("on","success : "+response.body().toString())
+                            }
+
+                        })
+                    }.run()
+                }else{
+                    val lightoff = JSONObject()
+                    lightoff.put("on",false)
+                    val lightoffString = lightoff.toString()
+                    val lightoffrequest = lightoffString.toRequestBody("application/json".toMediaTypeOrNull())
+                    Runnable {
+                        huelightremote[0]?.lightservice(lightoffrequest)?.enqueue(object : Callback<List<Response>>{
+                            override fun onFailure(call: Call<List<Response>>, t: Throwable) {
+                                Log.d("off","failed : "+t)
+                            }
+
+                            override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
+                                Log.d("off","success : "+response.body().toString())
+                            }
+
+                        })
+                    }.run()
+                }
+            }
+        })
     }
 
     inner class runUI_thread():Thread(){

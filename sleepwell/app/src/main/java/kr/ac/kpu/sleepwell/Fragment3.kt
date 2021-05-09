@@ -1,6 +1,7 @@
 package kr.ac.kpu.sleepwell
 
 import android.app.ActionBar
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -45,6 +46,12 @@ class Fragment3 : Fragment() {
         }
         else
             Toast.makeText(activity,"로그인 되지 않았습니다.", Toast.LENGTH_SHORT).show()
+
+        
+        btn_call.setOnClickListener {
+            val hueintent = Intent(activity,HueActivity::class.java)
+            startActivity(hueintent)
+        }
 
         return v
     }
