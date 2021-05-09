@@ -126,8 +126,6 @@ class Fragment0 : Fragment() {
         }
     }
 
-
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         var view = inflater.inflate(R.layout.fragment_0, container, false)

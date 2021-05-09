@@ -239,6 +239,8 @@
                 android:layout_marginRight="8dp"
                 android:padding="5dp"
                 android:textSize="18sp"
+                android:id="@+id/tv_sleepfactor"
+                android:visibility="gone"
                 />
 
             <TextView
@@ -251,7 +253,90 @@
                 android:layout_marginRight="8dp"
                 android:padding="5dp"
                 android:textSize="18sp"
+                android:visibility="gone"
                 />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_wine_bar_24"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_windbar"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_smoking_rooms_24"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_smoking"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_local_cafe_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_caffaine"
+                    android:visibility="gone"
+                    />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_restaurant_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_retaurant"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_directions_run_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_exercise"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_sick_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_cold"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_enhanced_sleeppill_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_sleeppill"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_shower_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_shower"
+                    android:visibility="gone"
+                    />
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_anotherbed_24_white"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_anotherbed"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+
+
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
@@ -259,6 +344,7 @@
                 android:layout_margin="8dp"
                 android:dividerHeight="5dp"
                 android:divider="@color/background"
+                android:visibility="gone"
                 />
         </LinearLayout>
     </ScrollView>

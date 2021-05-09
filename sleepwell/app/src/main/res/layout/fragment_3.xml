@@ -106,14 +106,14 @@
                            android:id="@+id/btn_feedback"
                            android:drawableTop="@drawable/ic_baseline_feedback_24"
                            />
+
                        <Button
+                           android:id="@+id/btn_call"
                            android:layout_marginLeft="5dp"
                            android:background="@drawable/mypage_buttonlayout"
-                           android:textColor="#ffffff"
-                           android:text="고객센터"
-                           android:id="@+id/btn_call"
-                           android:drawableTop="@drawable/ic_baseline_call_24"
-                           />
+                           android:drawableTop="@drawable/ic_baseline_highlight_24"
+                           android:text="휴 설정"
+                           android:textColor="#ffffff" />
                    </TableRow>
                </TableLayout>
 
