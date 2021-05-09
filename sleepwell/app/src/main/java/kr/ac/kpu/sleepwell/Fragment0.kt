@@ -142,8 +142,6 @@ class Fragment0 : Fragment() {
                 if (ua == true) {
                     view.alarm.setText(at)
                 }
-                alarm_switch.isChecked = ua == true
-                alarm_t.setText(at)
             }
         })
 
