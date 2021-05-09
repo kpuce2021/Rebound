@@ -24,7 +24,7 @@ import retrofit2.http.GET
 import java.lang.Thread.sleep
 
 
-data class Response(
+public data class Response(
         @SerializedName("success")
         var success:ResBody,
         @SerializedName("error")
@@ -49,7 +49,7 @@ data class Response(
         var lightstate: ResBody
 )
 
-data class ResBody(
+public data class ResBody(
         @SerializedName("description")
         var description: String,
         @SerializedName("username")
@@ -97,7 +97,7 @@ class HueActivity : AppCompatActivity() {
     //192.168.0.3
     private val http = "http://"
     var bridge = http
-    var hueid = "."
+    var hueid = "new"
     val huenm : String = "test"
     private lateinit var hueurl : String
     var huelighturl = arrayOfNulls<String>(size=8)
@@ -114,106 +114,8 @@ class HueActivity : AppCompatActivity() {
         setContentView(R.layout.activity_hue)
 
         Log.d("userkey",userkey)
-/*
-        val getstore = db.collection(userkey).document("hue")
-        getstore.get()
-                .addOnSuccessListener { document ->
-                    if(document != null){
-                        bridge = document["address"].toString()
-                        hueid = document["hueid"].toString()
-                        Log.d("read complete",document["address"].toString())
-                        Log.d("read complete",document["hueid"].toString())
-                        Log.d("username", hueid)
-                        testTV.text = hueid
-                        hueurl = bridge+"/api/"+hueid+"/"
-                        ipET.hint = "로드 완료"
-                        val huelink = Retrofit.Builder()
-                                .baseUrl(hueurl)
-                                .addConverterFactory(GsonConverterFactory.create())
-                                .build()
-                        val link = huelink.create(Huelink::class.java)
-                        val newlight = link.findnewlight()
-                        Runnable {
-                            newlight.enqueue(object : Callback<Response>{
-                                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                                    Log.d("link","complete : "+response.toString())
-                                }
 
-                                override fun onFailure(call: Call<Response>, t: Throwable) {
-                                    Log.d("link","failed : "+t)
-                                }
 
-                            })
-                        }.run()
-
-                        sleep(100)
-
-                        val lightsid = link.getlightsid()
-                        Runnable {
-                            lightsid.enqueue(object : Callback<Response>{
-                                override fun onFailure(call: Call<Response>, t: Throwable) {
-                                    Log.d("lights id","failed : "+t)
-                                    Log.d("light body","failed : "+call.toString())
-                                }
-
-                                override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                                    lightid[0] = response.body()?.lightid1
-                                    lightid[1] = response.body()?.lightid2
-                                    lightid[2] = response.body()?.lightid3
-                                    lightid[3] = response.body()?.lightid4
-                                    lightid[4] = response.body()?.lightid5
-                                    lightid[5] = response.body()?.lightid6
-                                    lightid[6] = response.body()?.lightid7
-                                    lightid[7] = response.body()?.lightid8
-
-                                    for(i in 0..7){
-                                        if(lightid[i]!=null){
-                                            numlight[i]=i+1
-                                            huelighturl[i]=hueurl+"lights/"+(i+1).toString()+"/"
-                                        }
-                                    }
-
-                                    Log.d("lights id","complete : "+numlight.toString())
-                                }
-
-                            })
-                        }.run()
-
-                        sleep(100)
-
-                        for(i in 0..7){
-                            if(huelighturl[i]!=null){
-                                huelightstate[i] = Retrofit.Builder()
-                                        .baseUrl(huelighturl[i].toString())
-                                        .addConverterFactory(GsonConverterFactory.create())
-                                        .build()
-                                Log.d("id","id : "+(i+1).toString()+" complete")
-                                huelightremote[i] = huelightstate[i]?.create(HueLight::class.java)
-                                Runnable {
-                                    huelightremote[i]?.getlightstate()?.enqueue(object : Callback<Response>{
-                                        override fun onFailure(call: Call<Response>, t: Throwable) {
-                                            Log.d("remote make","failed : "+(i+1).toString())
-                                        }
-
-                                        override fun onResponse(call: Call<Response>, response: retrofit2.Response<Response>) {
-                                            Log.d("remote make","complete : "+(i+1).toString())
-                                            //여기에 리모콘 만들거 만들기, 아직 모름
-                                        }
-
-                                    })
-                                }.run()
-                            }
-                        }
-                        useridBtn.isClickable = false
-                        linkBtn.isClickable = false
-                    } else{
-                        Log.d("read failed","no document")
-                    } 
-                }
-                .addOnFailureListener { exception ->
-                    Log.d("failed with",exception.toString())
-                }
-*/
         useridBtn.setOnClickListener{
             if(ipET.text.isBlank()){
                 Toast.makeText(this,"휴 브릿지의 ip 주소를 입력해주세요",Toast.LENGTH_SHORT).show()
@@ -247,20 +149,23 @@ class HueActivity : AppCompatActivity() {
                                 Log.d("username", hueid)
                                 testTV.text = hueid
                                 hueurl = bridge + "/api/" + hueid + "/"
+                                val huestore = db.collection("hue")
+                                val hueaddress = hashMapOf(
+                                        "address" to bridge,
+                                        "hueid" to hueid,
+                                        "able" to 1
+                                )
+                                huestore.document(userkey).set(hueaddress)
+
+
                             }
                         }
                     })
                 }.run()
-                if(hueid == "."){
-                    Toast.makeText(this,"브릿지의 링크 버튼을 눌러주세요",Toast.LENGTH_SHORT).show()
-                }
-                else{
-                    val huestore = db.collection(userkey)
-                    val hueaddress = hashMapOf(
-                            "address" to bridge,
-                            "hueid" to hueid
-                    )
-                    huestore.document("hue").set(hueaddress)
+
+                linkBtn.visibility = View.VISIBLE
+                if(testTV.text.isBlank()){
+                    Toast.makeText(this,"브릿지 위쪽의 링크 버튼을 눌러주세요",Toast.LENGTH_SHORT).show()
                 }
 
             }
@@ -343,7 +248,9 @@ class HueActivity : AppCompatActivity() {
                     }.run()
                 }
             }
-
+            briseekBar.visibility = View.VISIBLE
+            onoffswitch.visibility = View.VISIBLE
+            briTV.visibility = View.VISIBLE
         }
 
 
