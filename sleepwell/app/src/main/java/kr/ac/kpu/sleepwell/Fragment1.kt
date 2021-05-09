@@ -45,6 +45,8 @@ class Fragment1 : Fragment() {
     private lateinit var callback: OnBackPressedCallback
     private var checkinglist:Boolean=false
     lateinit var ref2:QueryDocumentSnapshot
+    private var dataADD:Boolean=false
+    private var dataCHANGED:Boolean=false
 
     //get data
 
@@ -133,9 +135,9 @@ class Fragment1 : Fragment() {
                                 if (document.id.replace("-", "/").equals(sleepDatalist.get(i).sleep_date)) {
                                     Log.d("alreadyhave", "data added error")
                                     //update
-                                    sleepDatalist.get(i).sleeptime=document.data["go_to_sleep"].toString()
+                                    sleepDatalist.get(i).sleeptime=document.data["sleep_time"].toString()
                                     sleepDatalist.get(i).startsleeptime=document.data["go_to_bed"].toString()
-                                    sleepDatalist.get(i).timetotakesleeptime=document.data["sleep_time"].toString()
+                                    sleepDatalist.get(i).timetotakesleeptime=document.data["go_to_sleep"].toString()
                                     sleepDatalist.get(i).finishsleep=document.data["wake_up"].toString()
                                     sleepDatalist.get(i).sleep_date=document.id.replace("-","/")
                                     sleepDatalist.get(i).Rem_sleep=document.data["sleep_rem"].toString()
@@ -148,9 +150,9 @@ class Fragment1 : Fragment() {
                             }
                             if(!checkinglist){
                                 sleepDatalist.add(dayrecordData(
-                                        document.data["go_to_sleep"].toString(),
-                                        document.data["go_to_bed"].toString(),
                                         document.data["sleep_time"].toString(),
+                                        document.data["go_to_bed"].toString(),
+                                        document.data["go_to_sleep"].toString(),
                                         document.data["wake_up"].toString(),
                                         document.id.replace("-","/"),
                                         document.data["sleep_rem"].toString(),
@@ -158,11 +160,14 @@ class Fragment1 : Fragment() {
                                         document.data["sleep_light"].toString(),
                                         document.data["awake"].toString()
                                 ))
+                                sleepDatalist.sortBy { it.sleep_date }
+                                sleepDatalist.reverse()
                                 sleepdataAdapter?.notifyDataSetChanged()
                             }
                             sleepdataAdapter?.notifyDataSetChanged()
                         }
                         sleepdataAdapter?.notifyDataSetChanged()
+                        Log.d("reverse?","reversed")
                     }
                     sleepdataAdapter?.notifyDataSetChanged()
                 }

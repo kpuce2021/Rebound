@@ -1,31 +1,25 @@
 package kr.ac.kpu.sleepwell
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import com.github.mikephil.charting.animation.Easing
-import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.charts.PieChart
-import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.*
-import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.interfaces.datasets.IBarDataSet
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
 
-class dayrecordlistAdapter(val context: Context,val sleepDatalist:ArrayList<dayrecordData>):BaseAdapter() {
+class dayrecordlistAdapter(val context: Context, val sleepDatalist: ArrayList<dayrecordData>):BaseAdapter() {
 
     private val db = Firebase.firestore
     private val user = FirebaseAuth.getInstance()
@@ -50,8 +44,9 @@ class dayrecordlistAdapter(val context: Context,val sleepDatalist:ArrayList<dayr
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
         val view: View = LayoutInflater.from(context).inflate(R.layout.sleep_item, null)
 
-        view.minimumHeight = 500  //sleep_item.xml height
-        view.minimumWidth = 300
+        //view.minimumHeight = 600  //sleep_item.xml height
+        //view.minimumWidth = 300
+
 
         val tv_date = view.findViewById<TextView>(R.id.tv_date)   //수면 날짜
         val details = view.findViewById<Button>(R.id.btn_details) //더보기버튼
@@ -80,10 +75,16 @@ class dayrecordlistAdapter(val context: Context,val sleepDatalist:ArrayList<dayr
         tv_sleeptime.text = sleepdata.sleeptime + "분"
         tv_startsleeptime.text = sleepdata.startsleeptime
         tv_deepsleep.text = sleepdata.deep_sleep + "분"
-        tv_awakesleep.text = sleepdata.awake_sleep + "분"
+        tv_awakesleep.text = sleepdata.awake_sleep + "%"
 
         details.setOnClickListener {
-            
+            val intent=Intent(context,dayrecord_details::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            intent.putExtra("date_id",sleepdata.sleep_date.replace("/","-"))
+            //intent.putExtra("ratio_rem",sleepdata.Rem_sleep.toInt())
+            //intent.putExtra("ratio_deep",sleepdata.deep_sleep.toInt())
+            //intent.putExtra("ratio_awake",sleepdata.awake_sleep.toInt())
+            //intent.putExtra("ratio_light",sleepdata.light_sleep.toInt())
+            context.startActivity(intent)
         }
         DrawingPiechart(sleep_ratio_piechart,ratio_rem,ratio_deep,ratio_light,ratio_awake)
         return view

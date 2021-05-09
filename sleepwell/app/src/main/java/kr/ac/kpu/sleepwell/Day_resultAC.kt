@@ -29,6 +29,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.EventListener
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
@@ -70,8 +71,66 @@ class Day_resultAC : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_day_result_a_c)
+        if (intent.hasExtra("si")) {
+            if(intent.hasExtra("day")){
+                var factordata = hashMapOf(
+                    "alcohol" to false,
+                    "caffeine" to false,
+                    "smoke" to false,
+                    "food" to false,
+                    "work_out" to false,
+                    "cold" to false,
+                    "pill" to false,
+                    "shower" to false,
+                    "other_bed" to false
+                )
+                var day = intent.getStringExtra("day")
+                val items = arrayOf("알코올", "카페인", "흡연", "야식", "운동", "감기", "수면 보조제", "샤워", "다른 침대")
+                val dbRef = kr.ac.kpu.sleepwell.db.collection(kr.ac.kpu.sleepwell.userkey).document(day!!)
+                dbRef.set(factordata, SetOptions.merge())
+                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
+                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
+                var selected = java.util.ArrayList<String>()
+                var selectedItemIndex = intent.getIntegerArrayListExtra("si")
+                if (selectedItemIndex != null) {
+                    for (j in selectedItemIndex) {
+                        selected.add(items[j])
+                    }
+                }
+                for(i in 0..selected.size-1) {
+                    var x = selected.get(i)
+                    if(x == "알코올"){
+                        dbRef.update("alcohol", true)
+                    }
+                    if(x == "카페인"){
+                        dbRef.update("caffeine", true)
+                    }
+                    if(x == "감기"){
+                        dbRef.update("cold", true)
+                    }
+                    if(x == "야식"){
+                        dbRef.update("food", true)
+                    }
+                    if(x == "운동"){
+                        dbRef.update("work_out", true)
+                    }
+                    if(x == "흡연"){
+                        dbRef.update("smoke", true)
+                    }
+                    if(x == "수면 보조제"){
+                        dbRef.update("pill", true)
+                    }
+                    if(x == "샤워"){
+                        dbRef.update("shower", true)
+                    }
+                    if(x == "다른 침대"){
+                        dbRef.update("other_bed", true)
+                    }
+                }
+            }
+        }
 
-        val myapp:MyglobalArraylist=application as MyglobalArraylist
+            val myapp:MyglobalArraylist=application as MyglobalArraylist
         val day2 = findDate2()
         day_a.setText(day2)
 
@@ -83,7 +142,6 @@ class Day_resultAC : AppCompatActivity() {
                 Log.w("tag", "Listen failed.", e)
             }
             if(snapshot != null && snapshot.exists()){
-
                 var strFactor = ""
                 var dbitems = arrayListOf<String>()
                 if (snapshot?.data!!["alcohol"].toString() == "true") {
