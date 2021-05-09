@@ -252,6 +252,23 @@
                 android:padding="5dp"
                 android:textSize="18sp"
                 />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                >
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/ic_baseline_wine_bar_24"
+                    android:layout_marginLeft="8dp"
+                    android:id="@+id/image_winebar"
+                    android:visibility="gone"
+                    />
+            </LinearLayout>
+
+
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
