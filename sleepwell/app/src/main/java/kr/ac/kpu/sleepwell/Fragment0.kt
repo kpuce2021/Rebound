@@ -28,7 +28,9 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.StorageReference
+import kotlinx.android.synthetic.main.activity_alarm.*
 import kotlinx.android.synthetic.main.activity_day_result_a_c.*
+import kotlinx.android.synthetic.main.fragment_0.*
 import kotlinx.android.synthetic.main.fragment_0.view.*
 import kotlinx.coroutines.selects.select
 import java.io.*
@@ -126,10 +128,23 @@ class Fragment0 : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-
-        var selectedItemIndex = ArrayList<Int>()
-
         var view = inflater.inflate(R.layout.fragment_0, container, false)
+        var selectedItemIndex = ArrayList<Int>()
+        val dbRef = db.collection("alarm").document(userkey)
+        dbRef.addSnapshotListener(EventListener<DocumentSnapshot>{snapshot,e->
+            if(e != null){
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                var ua = snapshot?.data!!["use_alarm"].toString().toBoolean()
+                var at = snapshot?.data!!["alarm"].toString()
+                if (ua == true) {
+                    view.alarm.setText(at)
+                }
+            }
+        })
+
 
         view.factorbox.setOnClickListener {
             val dialog = activity?.let { it1 -> BottomSheet(it1) }
