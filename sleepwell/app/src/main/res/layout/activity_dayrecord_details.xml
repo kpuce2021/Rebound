@@ -223,7 +223,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="9:47"
+                        android:text="설정 없음"
                         android:textColor="#ffffff"
                         android:id="@+id/alarm_time"
                         />
