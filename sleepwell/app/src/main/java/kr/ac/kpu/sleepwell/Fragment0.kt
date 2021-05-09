@@ -146,6 +146,11 @@ class Fragment0 : Fragment() {
                 })
             }
         }
+        view.alarmbox.setOnClickListener {
+            val intent=Intent(activity,AlarmActivity::class.java)
+            startActivity(intent)
+        }
+
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
         //firebase init
