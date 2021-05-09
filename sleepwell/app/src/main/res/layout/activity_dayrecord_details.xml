@@ -240,6 +240,7 @@
                 android:padding="5dp"
                 android:textSize="18sp"
                 android:id="@+id/tv_sleepfactor"
+                android:visibility="gone"
                 />
 
             <TextView
@@ -266,6 +267,7 @@
                     android:background="@drawable/ic_baseline_wine_bar_24"
                     android:layout_marginLeft="8dp"
                     android:id="@+id/image_windbar"
+                    android:visibility="gone"
                     />
                 <ImageView
                     android:layout_width="wrap_content"

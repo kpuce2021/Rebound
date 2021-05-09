@@ -153,34 +153,41 @@ class dayrecord_details : AppCompatActivity() {
                 //var strFactor = ""
                 //var dbitems = arrayListOf<String>()
                 if (snapshot?.data!!["alcohol"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_windbar.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["caffeine"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_smoking.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["cold"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_caffaine.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["food"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_retaurant.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["other_bed"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_exercise.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["pill"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_cold.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["shower"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_sleeppill.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["smoke"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_shower.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["work_out"].toString() == "true") {
+                    tv_sleepfactor.visibility=View.VISIBLE
                     image_anotherbed.visibility= View.VISIBLE
                 }
-            }else{
-                tv_sleepfactor.visibility=View.GONE
             }
         })
         AwakeDrawingGraph(awake_barchart)
