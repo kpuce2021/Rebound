@@ -119,7 +119,6 @@ class dayrecord_details : AppCompatActivity() {
                 return@EventListener
             }
             if (snapshot != null && snapshot.exists()) {
-
                 var MaxDecibel = snapshot?.data!!["MaxDecibel"].toString()
                 //var MinDecibel = snapshot?.data!!["MinDecibel"].toString().toInt()
                 //var olimDecibel=round(MaxDecibel.toFloat()*10)/10
