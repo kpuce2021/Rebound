@@ -45,18 +45,7 @@ class Fragment0 : Fragment() {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
     val db = Firebase.firestore
-    val day = findDateFactor()
-    var factordata = hashMapOf(
-            "alcohol" to false,
-            "caffeine" to false,
-            "smoke" to false,
-            "food" to false,
-            "work_out" to false,
-            "cold" to false,
-            "pill" to false,
-            "shower" to false,
-            "other_bed" to false
-    )
+
     //firebase
     private lateinit var storageRef: StorageReference
     //private lateinit var mFirebaseStorage: FirebaseStorage
@@ -134,140 +123,33 @@ class Fragment0 : Fragment() {
             }
         }
     }
-    private fun findDateFactor(): String {
-        val cal = Calendar.getInstance()
-        cal.time = Date()
-        val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
-        var ampm = cal.get(Calendar.AM_PM)
-        if(ampm == Calendar.PM){
-            return df.format(cal.time)
-        }
-        else{cal.add(Calendar.DATE,-1)
-            return df.format(cal.time) }
-    }
+
 
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
+
+        var selectedItemIndex = ArrayList<Int>()
+
         var view = inflater.inflate(R.layout.fragment_0, container, false)
-        val dbRef = db.collection(userkey).document(day)
-        dbRef.get()
-                .addOnSuccessListener {
-            dbRef.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
-                if (e != null) {
 
-                }
-                if (snapshot != null && snapshot.exists()) {
-                    var strFactor = ""
-                    var dbitems = arrayListOf<String>()
-                    if (snapshot?.data!!["alcohol"].toString() == "true") {
-                        dbitems.add("알코올")
-                    }
-                    if (snapshot?.data!!["caffeine"].toString() == "true") {
-                        dbitems.add("카페인")
-                    }
-                    if (snapshot?.data!!["cold"].toString() == "true") {
-                        dbitems.add("감기")
-                    }
-                    if (snapshot?.data!!["food"].toString() == "true") {
-                        dbitems.add("야식")
-                    }
-                    if (snapshot?.data!!["other_bed"].toString() == "true") {
-                        dbitems.add("다른 침대")
-                    }
-                    if (snapshot?.data!!["pill"].toString() == "true") {
-                        dbitems.add("수면 보조제")
-                    }
-                    if (snapshot?.data!!["shower"].toString() == "true") {
-                        dbitems.add("샤워")
-                    }
-                    if (snapshot?.data!!["smoke"].toString() == "true") {
-                        dbitems.add("흡연")
-                    }
-                    if (snapshot?.data!!["work_out"].toString() == "true") {
-                        dbitems.add("운동")
-                    }
-                    if (dbitems.size > 0) {
-                        for (i in 0..dbitems.size - 1) {
-                            var x = dbitems.get(i)
-                            if (i==dbitems.size-1){
-                                strFactor = strFactor.plus(x)
-                            }
-                            else{
-                                strFactor = strFactor.plus(x + "/")
-                            }
-                            view.factor.setText(strFactor)
-                        }
-                    }
-                }
-            })
-        }
-        /*
         view.factorbox.setOnClickListener {
-
-            dbRef.set(factordata, SetOptions.merge())
-                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
-                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
-            val items = arrayOf("알코올", "카페인", "흡연", "야식", "운동", "감기", "수면 보조제", "샤워", "다른 침대")
-            val selectedItemIndex = ArrayList<Int>()
-            val builder = AlertDialog.Builder(activity)
-                    .setTitle("수면 전 요소들을 추가하세요.")
-                    .setMultiChoiceItems(items, null) { dialogInterface: DialogInterface, i: Int, b: Boolean
-                        ->
-                        if (b) {
-                            selectedItemIndex.add(i)
-                        } else if (selectedItemIndex.contains(i)) {
-                            selectedItemIndex.remove(i)
-                        }
+            val dialog = activity?.let { it1 -> BottomSheet(it1) }
+            if (dialog != null) {
+                dialog.show()
+                dialog.setOnClickedListener(object : BottomSheet.ClickListener{
+                    override fun onClicked(stFactor: String, sii : ArrayList<Int>) {
+                        view.factor.setText(stFactor)
+                        view.factor.setTextColor(ContextCompat.getColor(context!!, R.color.white))
+                        selectedItemIndex = sii
                     }
-                    .setPositiveButton("완료") { dialogInterface: DialogInterface, i: Int ->
-                        var selected = ArrayList<String>()
-                        var strFactor = ""
-                        for (j in selectedItemIndex) {
-                            selected.add(items[j])
-                        }
-                        for(i in 0..selected.size-1) {
-                            var x = selected.get(i)
-                            if (i==selected.size-1){
-                                strFactor = strFactor.plus(x)
-                            }
-                            else{
-                                strFactor = strFactor.plus(x + "/")
-                            }
-                            view.factor.setText(strFactor)
-
-                            if(x == "알코올"){
-                                dbRef.update("alcohol", true)
-                            }
-                            if(x == "카페인"){
-                                dbRef.update("caffeine", true)
-                            }
-                            if(x == "감기"){
-                                dbRef.update("cold", true)
-                            }
-                            if(x == "야식"){
-                                dbRef.update("food", true)
-                            }
-                            if(x == "운동"){
-                                dbRef.update("work_out", true)
-                            }
-                            if(x == "흡연"){
-                                dbRef.update("smoke", true)
-                            }
-                            if(x == "수면 보조제"){
-                                dbRef.update("pill", true)
-                            }
-                            if(x == "샤워"){
-                                dbRef.update("shower", true)
-                            }
-                            if(x == "다른 침대"){
-                                dbRef.update("other_bed", true)
-                            }
-                        }
-                    }
-                    .show()
-        }*/
-
+                })
+            }
+        }
+        view.alarmbox.setOnClickListener {
+            val intent=Intent(activity,AlarmActivity::class.java)
+            startActivity(intent)
+        }
 
         if(!Permissions())
             Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
@@ -284,13 +166,14 @@ class Fragment0 : Fragment() {
             Toast.makeText(activity,"로그인 되지 않았습니다.",Toast.LENGTH_SHORT).show()
         }
         view.sleep_btn.setOnClickListener{
-            /*if (GroundService.serviceIntent==null) {
-                serviceIntent = Intent(activity, GroundService::class.java)
-                startService(serviceIntent)
-            } else {
-                serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
-            }*/
-            val intent=Intent(activity,SleepStart::class.java)      //background2에서 자동실행
+                /*if (GroundService.serviceIntent==null) {
+                    serviceIntent = Intent(activity, GroundService::class.java)
+                    startService(serviceIntent)
+                } else {
+                    serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
+                }*/
+            val intent=Intent(activity,SleepStart::class.java) //background2에서 자동실행
+            intent.putExtra("si",selectedItemIndex)
             startActivity(intent)
         }
         return view

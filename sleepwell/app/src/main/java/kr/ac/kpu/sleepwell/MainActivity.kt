@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
 
         tabs_main.setupWithViewPager(viewpager_main)
         val images = ArrayList<Int>()
-        images.add(R.drawable.ic_baseline_bedtime_24)
+        images.add(R.drawable.ic_baseline_bedtime_24_3)
         images.add(R.drawable.ic_baseline_today_24)
         images.add(R.drawable.ic_baseline_assessment_24)
         images.add(R.drawable.ic_baseline_person_24)
