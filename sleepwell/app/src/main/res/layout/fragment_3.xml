@@ -23,7 +23,7 @@
                    android:layout_width="wrap_content"
                    android:layout_height="wrap_content"
                    android:textSize="30sp"
-                   android:text="sleepwell"
+                   android:text="Sleep Well"
                    android:textStyle="bold"
                    android:textColor="#ffffff"
                    />
@@ -74,8 +74,8 @@
                            android:layout_marginLeft="5dp"
                            android:background="@drawable/mypage_buttonlayout"
                            android:textColor="#ffffff"
-                           android:text="수면알람"
-                           android:id="@+id/btn_sleepstart"
+                           android:text="알람 설정"
+                           android:id="@+id/btn_alarm"
                            android:drawableTop="@drawable/ic_baseline_alarm_add_24"
                            />
                        <Button
@@ -94,7 +94,7 @@
                        <Button
                            android:background="@drawable/mypage_buttonlayout"
                            android:textColor="#ffffff"
-                           android:text="사용법"
+                           android:text="FAQ"
                            android:id="@+id/btn_FAQ"
                            android:drawableTop="@drawable/ic_baseline_question_answer_24"
                            />

@@ -32,8 +32,14 @@ class AlarmActivity : AppCompatActivity() {
 
             var hour = if (datetime[Calendar.HOUR] === 0) "12" else datetime[Calendar.HOUR].toString() + ""
             var minute = datetime.get(Calendar.MINUTE)
-            var text ="$hour:$m $am_pm"
-            alarm_t.setText(text)
+            if(m.toInt() > 9) {
+                var text = "$hour:$m $am_pm"
+                alarm_t.setText(text)
+            }
+            else{
+                var text = "$hour:0$m $am_pm"
+                alarm_t.setText(text)
+            }
             dbRef.update("alarm", alarm_t.text)
                     .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
                     .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
