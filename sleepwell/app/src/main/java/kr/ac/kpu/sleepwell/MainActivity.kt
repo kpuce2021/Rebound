@@ -30,5 +30,9 @@ class MainActivity : AppCompatActivity() {
         images.add(R.drawable.ic_baseline_person_24_2)
         for (i in 0..3) tabs_main.getTabAt(i)!!.setIcon(images[i])
     }
+
+    override fun onBackPressed() {
+        moveTaskToBack(true)
+    }
 }
 
