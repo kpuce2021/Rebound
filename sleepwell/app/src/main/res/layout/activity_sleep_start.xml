@@ -78,11 +78,11 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@color/background"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clock"
-        app:srcCompat="@drawable/ic_baseline_highlight_24" />
+        app:srcCompat="@drawable/ic_baseline_highlight_off" />
 
     <ImageButton
         android:id="@+id/btn_huelink2"
@@ -90,7 +90,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:background="@color/background"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/clock"
