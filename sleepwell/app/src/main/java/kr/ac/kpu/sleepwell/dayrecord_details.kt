@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.EventLog
 import android.util.Log
 import android.view.View
 import androidx.core.content.ContextCompat
@@ -127,8 +128,6 @@ class dayrecord_details : AppCompatActivity() {
             }
         })
 
-
-
         val getdecibelfromdb = db.collection(userkey).document(date_id).collection("record").document("decibel")
         getdecibelfromdb.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
             if (e != null) {
@@ -142,7 +141,7 @@ class dayrecord_details : AppCompatActivity() {
                 maxDecibel.text= Math.round(MaxDecibel.toFloat()).toString() + " db"
             }
         })
-        //val getaudiopathfromdb = db.collection(userkey).document(date_id).collection("record").document("audiopath")
+        val getaudiopathfromdb = db.collection("audiodata").document(userkey).collection(date_id).document("AudiofileRoute")
         /*getaudiopathfromdb.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
             if (e != null) {
                 Log.w("tag", "Listen failed.", e)
@@ -157,9 +156,30 @@ class dayrecord_details : AppCompatActivity() {
                             snapshot?.data!!["audio $i"].toString(),
                             "play "+(i+1).toString()
                     ))
-                }
+               }
             }
         })*/
+        getaudiopathfromdb
+                .addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
+            if (e != null) {
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
+            }
+            if (snapshot != null && snapshot.exists()) {
+                tv_noise.visibility=View.VISIBLE
+                recordlistview.visibility=View.VISIBLE  // audio file size 최소 1
+                var size = snapshot?.data!!["size"].toString()
+                Log.d("justsize",size)
+                for(i in 0 until size.toInt()) {
+                    Log.d("audiosnapshot", snapshot?.data!!["audio $i"].toString())
+                    audiodatalist.add(detailsRecorddata(
+                            snapshot?.data!!["audio $i"].toString(),
+                            "play "+(i+1).toString()
+                    ))
+                }
+            }
+        })
+
         val factor_day = db.collection(userkey).document(date_id)
         factor_day.addSnapshotListener(EventListener<DocumentSnapshot>{snapshot, e->
             if(e != null){

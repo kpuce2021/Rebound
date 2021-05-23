@@ -122,7 +122,6 @@ class dayrecordlistAdapter(val context: Context, val sleepDatalist: ArrayList<da
         return view
     }
 
-
     override fun getItem(position: Int): Any {
         return sleepDatalist[position]
     }

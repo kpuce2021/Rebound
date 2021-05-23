@@ -52,6 +52,7 @@ class backgroundservice : Service(), SensorEventListener {
     val user = FirebaseAuth.getInstance()
     val userkey = user.uid.toString()
     val db = Firebase.firestore
+
     var data = hashMapOf(
             "sleep_time" to 0, //분을 단위로 사용
             "sleep_deep" to 0,
@@ -65,8 +66,9 @@ class backgroundservice : Service(), SensorEventListener {
     val filename = "sensorlog.txt"
     val day = findDate()
     var startTime = System.currentTimeMillis()
-    val AudioRef = db.collection(userkey).document(day).collection("record").document("audiopath")
+    //val AudioRef = db.collection(userkey).document(day).collection("record").document("audiopath")
     val decibelRef = db.collection(userkey).document(day).collection("record").document("decibel")
+    val AudioRef = db.collection("audiodata").document(userkey).collection(daytime()).document("AudiofileRoute")
     private var audiodata=HashMap<String,String>()
     private var decibeldata=HashMap<String,String>()
 
@@ -224,6 +226,7 @@ class backgroundservice : Service(), SensorEventListener {
         AudioRef.set(audiodata)
                 .addOnSuccessListener { Log.d("AudioDB", "audio Document successfully written!") }
                 .addOnFailureListener { e -> Log.w("AudioDB", "Error writing Audio document", e) }
+
         Log.d("MaxDecibel",MaxDecibel.toString())
         Log.d("MinDecibel",MinDecibel.toString())
         MaxDecibel+=60.0

@@ -11,7 +11,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        android:gravity="center"
+        android:gravity="center_vertical"
         >
         <TextView
             android:layout_width="wrap_content"
@@ -30,9 +30,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="15sp"
-            android:text="DETAILS >>"
+            android:text="Details  >>>"
             android:textStyle="bold"
             android:id="@+id/btn_details"
+            android:background="@drawable/detailsbutton_custom"
+            android:layout_marginRight="10dp"
             />
     </LinearLayout>
 

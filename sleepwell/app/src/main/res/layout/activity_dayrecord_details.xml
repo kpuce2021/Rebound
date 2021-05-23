@@ -233,19 +233,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="수면 중 발생한 소음"
-                android:textColor="#ffffff"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:padding="5dp"
-                android:textSize="18sp"
-                android:visibility="gone"
-                />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
                 android:text="수면 요인"
                 android:textColor="#ffffff"
                 android:layout_marginTop="8dp"
@@ -343,6 +330,19 @@
                     />
             </LinearLayout>
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="수면 중 발생한 소음"
+                android:textColor="#ffffff"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="5dp"
+                android:textSize="18sp"
+                android:visibility="gone"
+                android:id="@+id/tv_noise"
+                />
             <ListView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
