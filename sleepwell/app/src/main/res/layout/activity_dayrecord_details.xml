@@ -330,6 +330,110 @@
                     />
             </LinearLayout>
 
+            <LinearLayout
+                android:visibility="gone"
+                android:id="@+id/sleepfactor_text"
+                android:background="@drawable/mypage_background"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="5dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="알코올"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_windbar"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="흡연"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_smoking"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="카페인"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_caffaine"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="야식"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_restuarant"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="운동"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_exercise"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="감기"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_cold"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="수면보조제"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_sleeppill"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="샤워"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_shower"
+                    android:visibility="gone"
+                    />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="#ffffff"
+                    android:text="다른 침대"
+                    android:layout_marginLeft="5dp"
+                    android:id="@+id/tv_anotherbed"
+                    android:visibility="gone"
+                    />
+
+            </LinearLayout>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

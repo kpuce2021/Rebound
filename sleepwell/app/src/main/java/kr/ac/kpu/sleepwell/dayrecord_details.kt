@@ -166,9 +166,11 @@ class dayrecord_details : AppCompatActivity() {
                 return@EventListener
             }
             if (snapshot != null && snapshot.exists()) {
-                tv_noise.visibility=View.VISIBLE
-                recordlistview.visibility=View.VISIBLE  // audio file size 최소 1
                 var size = snapshot?.data!!["size"].toString()
+                if(size.toInt()>0){
+                    tv_noise.visibility=View.VISIBLE
+                    recordlistview.visibility=View.VISIBLE  // audio file size 최소 1
+                }
                 Log.d("justsize",size)
                 for(i in 0 until size.toInt()) {
                     Log.d("audiosnapshot", snapshot?.data!!["audio $i"].toString())
@@ -192,46 +194,64 @@ class dayrecord_details : AppCompatActivity() {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
                     image_windbar.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_windbar.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["caffeine"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_smoking.visibility= View.VISIBLE
+                    image_caffaine.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_caffaine.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["cold"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_caffaine.visibility= View.VISIBLE
+                    image_cold.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_cold.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["food"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
                     image_retaurant.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_restuarant.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["other_bed"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_exercise.visibility= View.VISIBLE
+                    image_anotherbed.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_anotherbed.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["pill"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_cold.visibility= View.VISIBLE
+                    image_sleeppill.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_sleeppill.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["shower"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_sleeppill.visibility= View.VISIBLE
+                    image_shower.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_shower.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["smoke"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_shower.visibility= View.VISIBLE
+                    image_smoking.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_smoking.visibility=View.VISIBLE
                 }
                 if (snapshot?.data!!["work_out"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
                     sleepfactor_layout.visibility=View.VISIBLE
-                    image_anotherbed.visibility= View.VISIBLE
+                    image_exercise.visibility= View.VISIBLE
+                    sleepfactor_text.visibility=View.VISIBLE
+                    tv_exercise.visibility=View.VISIBLE
                 }
             }
         })
