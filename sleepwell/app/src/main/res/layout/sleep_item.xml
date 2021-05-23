@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:textSize="15sp"
-            android:text="details >>"
+            android:text="DETAILS >>"
             android:textStyle="bold"
             android:id="@+id/btn_details"
             />
@@ -117,7 +117,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#ffffff"
-                        android:text="수면시작시간"
+                        android:text="수면 시작"
                         />
                     <TextView
                         android:layout_width="wrap_content"
@@ -167,7 +167,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#ffffff"
-                        android:text="깊은수면"
+                        android:text="깊은 수면"
                         />
                     <TextView
                         android:layout_width="wrap_content"
@@ -209,12 +209,12 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="#ffffff"
-                        android:text="뒤척인수면"
+                        android:text="얕은 수면"
                         />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:id="@+id/tv_awakesleep"
+                        android:id="@+id/tv_lightsleep"
                         android:text="6:47"
                         android:textColor="#ffffff"
                         android:textSize="20sp"

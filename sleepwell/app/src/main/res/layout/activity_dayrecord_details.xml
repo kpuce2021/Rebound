@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="left"
-                android:text="details"
+                android:text="기록 세부 내용"
                 android:textStyle="bold"
                 android:textSize="25sp"
                 android:textColor="#ffffff"
@@ -229,19 +229,6 @@
                         />
                 </LinearLayout>
             </LinearLayout>
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="수면 요인"
-                android:textColor="#ffffff"
-                android:layout_marginTop="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                android:padding="5dp"
-                android:textSize="18sp"
-                android:id="@+id/tv_sleepfactor"
-                android:visibility="gone"
-                />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -256,7 +243,27 @@
                 android:visibility="gone"
                 />
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="수면 요인"
+                android:textColor="#ffffff"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="5dp"
+                android:textSize="18sp"
+                android:id="@+id/tv_sleepfactor"
+                android:visibility="gone"
+                />
             <LinearLayout
+                android:id="@+id/sleepfactor_layout"
+                android:visibility="gone"
+                android:background="@drawable/mypage_background"
+                android:layout_marginTop="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:padding="5dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
@@ -335,7 +342,6 @@
                     android:visibility="gone"
                     />
             </LinearLayout>
-
 
             <ListView
                 android:layout_width="match_parent"

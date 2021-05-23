@@ -107,10 +107,27 @@ class dayrecord_details : AppCompatActivity() {
                 rem = ratio_rem.toFloat()
                 deep = ratio_deep.toFloat()
                 light = ratio_light.toFloat()
-                rem_time.text= (rem*5f).toInt().toString()+" min"
+                rem_time.text= rem.toInt().toString()+" min"
                 SleepcycleCheck_piechart(details_deep_piechart2,rem,deep,light,awak)
             }
         })
+
+        val Ref_alarm = db.collection("alarm").document(userkey)
+        Ref_alarm.addSnapshotListener(EventListener<DocumentSnapshot> {snapshot,e->
+            if(e != null){
+                Log.w("tag", "Listen failed.", e)
+                return@EventListener
+            }
+            if(snapshot != null && snapshot.exists()){
+                var alarm_t = snapshot?.data!!["alarm"].toString() //알람 시간
+                var use = snapshot?.data!!["use_alarm"].toString() //알람 여부
+                if(use == "true"){
+                    alarm_time.text = alarm_t
+                }
+            }
+        })
+
+
 
         val getdecibelfromdb = db.collection(userkey).document(date_id).collection("record").document("decibel")
         getdecibelfromdb.addSnapshotListener(EventListener<DocumentSnapshot> { snapshot, e ->
@@ -153,38 +170,47 @@ class dayrecord_details : AppCompatActivity() {
                 //var dbitems = arrayListOf<String>()
                 if (snapshot?.data!!["alcohol"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_windbar.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["caffeine"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_smoking.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["cold"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_caffaine.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["food"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_retaurant.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["other_bed"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_exercise.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["pill"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_cold.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["shower"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_sleeppill.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["smoke"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_shower.visibility= View.VISIBLE
                 }
                 if (snapshot?.data!!["work_out"].toString() == "true") {
                     tv_sleepfactor.visibility=View.VISIBLE
+                    sleepfactor_layout.visibility=View.VISIBLE
                     image_anotherbed.visibility= View.VISIBLE
                 }
             }
