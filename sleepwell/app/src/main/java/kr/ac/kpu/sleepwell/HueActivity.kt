@@ -147,7 +147,7 @@ class HueActivity : AppCompatActivity() {
                             if (idget != null) {
                                 hueid = idget.userid
                                 Log.d("username", hueid)
-                                testTV.text = hueid
+                                testTV.text = "Hue setting complete"
                                 hueurl = bridge + "/api/" + hueid + "/"
                                 val huestore = db.collection("hue")
                                 val hueaddress = hashMapOf(

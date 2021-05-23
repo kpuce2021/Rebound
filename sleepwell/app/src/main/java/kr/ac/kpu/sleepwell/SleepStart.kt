@@ -109,12 +109,13 @@ class SleepStart : AppCompatActivity() {
                         val able = document["able"].toString()
                         if(able=="1"){
                             btn_huelink.visibility = View.VISIBLE
+                            btn_huelink2.visibility = View.GONE
                         }
                         Log.d("read complete",document["able"].toString())
                     }
                 }
-                .addOnFailureListener{
-                    Log.d("failed with",it.toString())
+                .addOnFailureListener{ document ->
+                    Log.d("failed with",document.toString())
                 }
 
 
@@ -262,6 +263,8 @@ class SleepStart : AppCompatActivity() {
 
                             override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
                                 Log.d("on","success : "+response.body().toString())
+                                btn_huelink.visibility = View.GONE
+                                btn_huelink2.visibility = View.VISIBLE
                             }
 
                         })
@@ -279,6 +282,8 @@ class SleepStart : AppCompatActivity() {
 
                             override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
                                 Log.d("off","success : "+response.body().toString())
+                                btn_huelink.visibility = View.VISIBLE
+                                btn_huelink2.visibility = View.GONE
                             }
 
                         })

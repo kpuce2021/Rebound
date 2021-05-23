@@ -51,26 +51,15 @@
         app:layout_constraintTop_toBottomOf="@id/clock"
         />
 
-    <Button
-        android:id="@+id/btn_huelink"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:text="휴링크"
-        android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/clock" />
-
     <Switch
         android:id="@+id/hueswitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="70dp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_huelink" />
+        app:layout_constraintTop_toBottomOf="@+id/clock" />
 
     <SeekBar
         android:id="@+id/huebri"
@@ -82,4 +71,28 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/hueswitch" />
+
+    <ImageButton
+        android:id="@+id/btn_huelink"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@color/background"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clock"
+        app:srcCompat="@drawable/ic_baseline_highlight_24" />
+
+    <ImageButton
+        android:id="@+id/btn_huelink2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:background="@color/background"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/clock"
+        app:srcCompat="@drawable/ic_baseline_highlight_24" />
 </androidx.constraintlayout.widget.ConstraintLayout>
