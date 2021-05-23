@@ -59,7 +59,7 @@ class dayrecordlistAdapter(val context: Context, val sleepDatalist: ArrayList<da
         val tv_sleeptime = view.findViewById<TextView>(R.id.tv_sleeptime) // 수면시간 textview
         val tv_startsleeptime = view.findViewById<TextView>(R.id.tv_startsleeptime)   //수면시작시간 textview
         val tv_deepsleep = view.findViewById<TextView>(R.id.tv_deepsleep) //깊은수면 textview
-        val tv_awakesleep = view.findViewById<TextView>(R.id.tv_awakesleep)   //뒤척인수면 textview
+        val tv_lightsleep = view.findViewById<TextView>(R.id.tv_lightsleep)   //뒤척인수면 textview
 
         val sleepdata = sleepDatalist[position]
 
@@ -69,13 +69,45 @@ class dayrecordlistAdapter(val context: Context, val sleepDatalist: ArrayList<da
         ratio_awake = sleepdata.awake_sleep.toInt()   //깬수면
         ratio_light = sleepdata.light_sleep.toInt()   //얉은수면
 
+
         tv_date.text = sleepdata.sleep_date
+        //분으로 ㅈ같이 써있어서 시간 분으로 바꿈
+        var hour : Int
+        var minute : Int
+        var x : Int
+
+        x = sleepdata.sleeptime.toInt()
+        hour = x/60
+        minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            tv_sleeptime.setText(x.toString()+"분")
+        }
+        else{
+            tv_sleeptime.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+
+        x = sleepdata.deep_sleep.toInt()
+        hour = x/60
+        minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            tv_deepsleep.setText(x.toString()+"분")
+        }
+        else{
+            tv_deepsleep.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
+
+        x = sleepdata.light_sleep.toInt()
+        hour = x/60
+        minute = ((x.toDouble()/60 - hour.toDouble())*60).toInt()
+        if(hour==0){
+            tv_lightsleep.setText(x.toString()+"분")
+        }
+        else{
+            tv_lightsleep.setText(hour.toString()+"시간 "+ minute.toString()+"분")
+        }
         //tv_startSleep.text = sleepdata.startsleeptime
         //tv_finishSleep.text = sleepdata.finishsleep
-        tv_sleeptime.text = sleepdata.sleeptime + "분"
         tv_startsleeptime.text = sleepdata.startsleeptime
-        tv_deepsleep.text = sleepdata.deep_sleep + "분"
-        tv_awakesleep.text = sleepdata.awake_sleep + "%"
 
         details.setOnClickListener {
             val intent=Intent(context,dayrecord_details::class.java).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK)

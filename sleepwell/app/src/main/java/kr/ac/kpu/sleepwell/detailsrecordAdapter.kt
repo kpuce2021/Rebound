@@ -25,7 +25,7 @@ class detailsrecordAdapter(val context: Context, val audiodatalist:ArrayList<det
 
         val audiodata = audiodatalist[position]
 
-        tv_number.setText("play"+audiodata.playnumnber)
+        tv_number.setText(audiodata.playnumnber)
         var audiopath=audiodata.audiopath
 
         //재생시작
