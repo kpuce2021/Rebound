@@ -347,6 +347,8 @@ class SleepStart : AppCompatActivity() {
         hueswitch.setOnCheckedChangeListener(object : CompoundButton.OnCheckedChangeListener {
             override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
                 if(isChecked){
+                    btn_huelink.visibility = View.GONE
+                    btn_huelink2.visibility = View.VISIBLE
                     val lighton = JSONObject()
                     lighton.put("on",true)
                     val lightonString = lighton.toString()
@@ -359,13 +361,14 @@ class SleepStart : AppCompatActivity() {
 
                             override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
                                 Log.d("on","success : "+response.body().toString())
-                                btn_huelink.visibility = View.GONE
-                                btn_huelink2.visibility = View.VISIBLE
+
                             }
 
                         })
                     }.run()
                 }else{
+                    btn_huelink.visibility = View.VISIBLE
+                    btn_huelink2.visibility = View.GONE
                     val lightoff = JSONObject()
                     lightoff.put("on",false)
                     val lightoffString = lightoff.toString()
@@ -378,8 +381,7 @@ class SleepStart : AppCompatActivity() {
 
                             override fun onResponse(call: Call<List<Response>>, response: retrofit2.Response<List<Response>>) {
                                 Log.d("off","success : "+response.body().toString())
-                                btn_huelink.visibility = View.VISIBLE
-                                btn_huelink2.visibility = View.GONE
+
                             }
 
                         })
