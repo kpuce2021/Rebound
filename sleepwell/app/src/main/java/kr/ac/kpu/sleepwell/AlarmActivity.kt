@@ -50,6 +50,7 @@ class AlarmActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alarm)
+
         dbRef.addSnapshotListener(EventListener<DocumentSnapshot>{snapshot,e->
             if(e != null){
                 Log.w("tag", "Listen failed.", e)
@@ -81,6 +82,10 @@ class AlarmActivity : AppCompatActivity() {
                         .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
                         .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
             }
+        }
+        alarm_repeat.setOnClickListener {
+            val intent= Intent(this,AlarmActivity2::class.java)
+            startActivity(intent)
         }
         backbutton.setOnClickListener {
             val intent= Intent(this,MainActivity::class.java)
