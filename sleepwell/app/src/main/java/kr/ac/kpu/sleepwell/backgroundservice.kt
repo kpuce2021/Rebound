@@ -564,9 +564,10 @@ class backgroundservice : Service(), SensorEventListener {
         val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
         var ampm = cal.get(Calendar.AM_PM)
         if(ampm == Calendar.PM){
+            cal.add(Calendar.DATE,+1)
             return df.format(cal.time)
         }
-        else{cal.add(Calendar.DATE,-1)
+        else{
             return df.format(cal.time) }
     }
 }

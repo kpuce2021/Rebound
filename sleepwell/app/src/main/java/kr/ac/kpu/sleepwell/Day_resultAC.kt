@@ -477,17 +477,16 @@ class Day_resultAC : AppCompatActivity() {
         val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
         var ampm = cal.get(Calendar.AM_PM)
         if(ampm == Calendar.PM){
+            cal.add(Calendar.DATE,+1)
             return df.format(cal.time)
         }
-        else{cal.add(Calendar.DATE,-1)
-            return df.format(cal.time) }
+        else{ return df.format(cal.time) }
     }
 
     fun findDate2(): String {
         val cal = Calendar.getInstance()
         cal.time = Date()
         val df: DateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
-        cal.add(Calendar.DATE,-1)
         return df.format(cal.time)
     }
 
