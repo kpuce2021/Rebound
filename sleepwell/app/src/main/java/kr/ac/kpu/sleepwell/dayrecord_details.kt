@@ -62,6 +62,7 @@ class dayrecord_details : AppCompatActivity() {
 
         if (date_id != null) {
             id_date.text = date_id.replace("-"," / ")
+            Log.d("date_id",date_id)
         }
 
         /*val Ref_day = db.collection(userkey).document(date_id)

@@ -227,6 +227,7 @@ class backgroundservice : Service(), SensorEventListener {
                 .addOnSuccessListener { Log.d("AudioDB", "audio Document successfully written!") }
                 .addOnFailureListener { e -> Log.w("AudioDB", "Error writing Audio document", e) }
 
+        Log.d("date_id",daytime())
         Log.d("MaxDecibel",MaxDecibel.toString())
         Log.d("MinDecibel",MinDecibel.toString())
         MaxDecibel+=60.0
