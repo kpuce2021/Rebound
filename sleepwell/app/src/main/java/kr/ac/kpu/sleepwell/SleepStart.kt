@@ -21,12 +21,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import kotlinx.android.synthetic.main.activity_sleep_start.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -47,20 +41,21 @@ class SleepStart : AppCompatActivity() {
     var huelightremote = arrayOfNulls<HueLight>(size=8)
     var lightbri : Int = 0
     val userkey = FirebaseAuth.getInstance().currentUser?.uid.toString()
+
     private fun findDateFactor(): String {
         val cal = Calendar.getInstance()
         cal.time = Date()
         val df: DateFormat = SimpleDateFormat("yyyy-MM-dd")
         var ampm = cal.get(Calendar.AM_PM)
         if(ampm == Calendar.PM){
+            cal.add(Calendar.DATE,+1)
             return df.format(cal.time)
         }
-        else{cal.add(Calendar.DATE,-1)
+        else{
             return df.format(cal.time) }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sleep_start)
         val myapp=application as MyglobalArraylist
