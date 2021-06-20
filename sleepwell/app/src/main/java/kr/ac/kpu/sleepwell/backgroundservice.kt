@@ -1,11 +1,9 @@
 package kr.ac.kpu.sleepwell
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -16,7 +14,10 @@ import android.os.Build
 import android.os.IBinder
 import android.os.SystemClock
 import android.util.Log
+import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
+import com.google.android.gms.auth.api.signin.GoogleSignIn.requestPermissions
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.ktx.database
 import com.google.firebase.firestore.SetOptions
@@ -26,6 +27,7 @@ import java.io.*
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.jar.Manifest
 import kotlin.collections.HashMap
 
 private const val REQUEST_ALL_PERMISSION=100
@@ -97,6 +99,17 @@ class backgroundservice : Service(), SensorEventListener {
     //var arraylist=ArrayList<String>(20)   //녹음파일 이름 저장(output2)
     //var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
     //var Filearraylist=ArrayList<File>(20)   //녹음파일 자체 저장
+
+    private var mThread:Thread?=null
+
+    private val multiplePermissionsCode=100
+    private var permissionToRecordAccepted = false
+
+    private val requiredPermissions = arrayOf(
+        android.Manifest.permission.RECORD_AUDIO,
+        android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+        android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
     private val sensorManager by lazy {
         getSystemService(Context.SENSOR_SERVICE) as SensorManager  //센서 매니저에대한 참조를 얻기위함
     }
@@ -105,46 +118,78 @@ class backgroundservice : Service(), SensorEventListener {
         TODO("Return the communication channel to the service.")
     }
 
+    override fun onCreate() {
+
+    }
+
+    private fun checkPermissions(){
+        var rejectedPermissionList = ArrayList<String>()
+
+        //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
+        for(permission in requiredPermissions){
+            if(ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                //만약 권한이 없다면 rejectedPermissionList에 추가
+                rejectedPermissionList.add(permission)
+            }
+        }
+        //거절된 퍼미션이 있다면...
+        if(rejectedPermissionList.isNotEmpty()){
+            //권한 요청!
+            val array = arrayOfNulls<String>(rejectedPermissionList.size)
+            ActivityCompat.requestPermissions(application?.applicationContext as Activity,rejectedPermissionList.toArray(array), multiplePermissionsCode)
+        }
+    }
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         timeList.add(0, startTime)
         cycleList.add(0, "awake")
         if("startForeground".equals(intent!!.action)){
             startForegroundService()
 
-            val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
-            val date = Date(startTime)
-            val sttime = format.format(date)
-            val dbRef = db.collection(userkey).document(day)
-            dbRef.set(data, SetOptions.merge())
-                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
-                    .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
+                val format = SimpleDateFormat("a hh:mm", Locale("ko","KR"))
+                val date = Date(startTime)
+                val sttime = format.format(date)
+                val dbRef = db.collection(userkey).document(day)
+                dbRef.set(data, SetOptions.merge())
+                        .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully written!") }
+                        .addOnFailureListener { e -> Log.w("DB", "Error writing document", e) }
 
-            dbRef.update("go_to_bed", sttime)
-                    .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
-                    .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
+                dbRef.update("go_to_bed", sttime)
+                        .addOnSuccessListener { Log.d("DB", "DocumentSnapshot successfully updated!") }
+                        .addOnFailureListener { e -> Log.w("DB", "Error updating document", e) }
 
-            sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
-                    sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
-                    SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
-
-            /*for(i in 0..19){
-                //arraylist[i]=i.toString()
-                //timearraylist[i]=i.toString()
-                arraylist.add(i,i.toString())
-                timearraylist.add(i,i.toString())
-            }
-            arraylist.removeAll(arraylist)
-            timearraylist.removeAll(timearraylist)*/
-            myapp=application as MyglobalArraylist
-            myapp!!.AllarraylistInit()
-            startListening()
-            isRunning=true
-            isTimergoOkay=true
-            val Decibelcheckandrecording=getDecibel()
-            Decibelcheckandrecording.start()
+                sensorManager.registerListener(this,    // 센서 이벤트 값을 받을 리스너 (현재의 액티비티에서 받음)
+                        sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),// 센서 종류
+                        SensorManager.SENSOR_DELAY_NORMAL)// 수신 빈도
+                /*for(i in 0..19){
+                    //arraylist[i]=i.toString()
+                    //timearraylist[i]=i.toString()
+                    arraylist.add(i,i.toString())
+                    timearraylist.add(i,i.toString())
+                }
+                arraylist.removeAll(arraylist)
+                timearraylist.removeAll(timearraylist)*/
+                myapp=application as MyglobalArraylist
+                myapp!!.AllarraylistInit()
+                /*if (ActivityCompat.checkSelfPermission(applicationContext as Activity, android.Manifest.permission.RECORD_AUDIO)
+                        != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(applicationContext as Activity, arrayOf(android.Manifest.permission.RECORD_AUDIO),10);
+                } else {
+                    startListening()
+                    isRunning=true
+                    isTimergoOkay=true
+                    val Decibelcheckandrecording=getDecibel()
+                    Decibelcheckandrecording.start()
+                }*/
+                startListening()
+                isRunning=true
+                isTimergoOkay=true
+                val Decibelcheckandrecording=getDecibel()
+                Decibelcheckandrecording.start()
         }
         return START_STICKY
     }
+
 
     fun gotoSleep(i :Int, x :String){
         if(i<cycleList.size-1){
@@ -255,12 +300,12 @@ class backgroundservice : Service(), SensorEventListener {
     private fun startForegroundService(){
         val builder: NotificationCompat.Builder = NotificationCompat.Builder(this, "default")
         builder.setSmallIcon(R.mipmap.ic_launcher_round)
-        builder.setPriority(2)
+        builder.priority = 0
         builder.setContentTitle("SleepWell")
         builder.setContentText("SleepWell 수면 진행중입니다.")
 
         val notificationintent:Intent= Intent(this, SleepStart::class.java)
-        val pendingintent: PendingIntent = PendingIntent.getActivity(this,0,notificationintent,PendingIntent.FLAG_UPDATE_CURRENT)
+        val pendingintent: PendingIntent = PendingIntent.getActivity(this,0,notificationintent,0)
         builder.setContentIntent(pendingintent)
         builder.setAutoCancel(true)
 
@@ -505,6 +550,7 @@ class backgroundservice : Service(), SensorEventListener {
         //arraylist.add(output2.toString())
         //myapp!!.filearraylist.add(output!!)
         //myapp!!.arraylist.add(output2.toString())
+        //mrecorder.reset()
         mrecorder = MediaRecorder().apply {
             //setAudioEncodingBitRate(16)
             setAudioSource(MediaRecorder.AudioSource.MIC)
@@ -512,7 +558,7 @@ class backgroundservice : Service(), SensorEventListener {
             //setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             //setAudioSamplingRate(8000)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
-            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_WB)
+            setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
             setOutputFile(output2)
             try {
                 prepare()
@@ -542,7 +588,7 @@ class backgroundservice : Service(), SensorEventListener {
                    myapp!!.arraylist.add(output2.toString())
                    //output2.toString()-->저장
                    Log.d("filearraylist_size",myapp!!.filearraylist.size.toString())
-                   //release()
+                   release()
                }
            }catch (e:IllegalStateException){
                e.printStackTrace()

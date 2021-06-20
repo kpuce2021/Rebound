@@ -63,11 +63,9 @@ class AlarmActivity : AppCompatActivity() {
                 alarm_t.setText(at)
             }
         })
-
         alarm_t.setOnClickListener{
             showTimePicker()
         }
-
         alarm_switch.setOnCheckedChangeListener { buttonView, isChecked ->
             if(isChecked){
                 dbRef.set(alarm_data, SetOptions.merge())

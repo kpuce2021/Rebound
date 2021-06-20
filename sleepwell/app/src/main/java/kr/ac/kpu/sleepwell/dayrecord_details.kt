@@ -283,7 +283,6 @@ class dayrecord_details : AppCompatActivity() {
             valueTextColor= Color.BLACK
             valueTextSize=10f
         }
-
         val pieData= PieData(pieDataSet)
         pieChart.apply {
             data=pieData

@@ -1,6 +1,8 @@
 package kr.ac.kpu.sleepwell
 
+import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -11,6 +13,8 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.SeekBar
 import androidx.appcompat.app.AlertDialog
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_sleep_start.*
@@ -31,6 +35,11 @@ class SleepStart : AppCompatActivity() {
     lateinit var backgroundintent:Intent
     lateinit var dayresultintent:Intent
     var countnum=4
+    private val multiplePermissionsCode=100
+    private val requiredPermissions = arrayOf(
+            Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE)
 
     private val http = "http://"
     var hueid = "."
@@ -58,6 +67,7 @@ class SleepStart : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sleep_start)
+        //checkPermissions()  //퍼미션 요청
         val myapp=application as MyglobalArraylist
         backgroundintent= Intent(this,backgroundservice::class.java)
         dayresultintent= Intent(this,Day_resultAC::class.java)
@@ -67,7 +77,7 @@ class SleepStart : AppCompatActivity() {
             dayresultintent.putExtra("si",selectedItemIndex)
             dayresultintent.putExtra("day",day)
         }
-        backgroundintent.setAction("startForeground")
+        backgroundintent.action = "startForeground"
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             startForegroundService(backgroundintent)
         }else{
@@ -112,9 +122,6 @@ class SleepStart : AppCompatActivity() {
                 .addOnFailureListener{ document ->
                     Log.d("failed with",document.toString())
                 }
-
-
-
 
         btn_huelink.setOnClickListener {
             val getstore = db.collection("hue").document(userkey)
@@ -414,5 +421,37 @@ class SleepStart : AppCompatActivity() {
             .setNegativeButton("닫기",null)
             .create()
         alertDialog.show()
+    }
+
+    private fun checkPermissions(){
+        var rejectedPermissionList = ArrayList<String>()
+
+        //필요한 퍼미션들을 하나씩 끄집어내서 현재 권한을 받았는지 체크
+        for(permission in requiredPermissions){
+            if(ContextCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
+                //만약 권한이 없다면 rejectedPermissionList에 추가
+                rejectedPermissionList.add(permission)
+            }
+        }
+        //거절된 퍼미션이 있다면...
+        if(rejectedPermissionList.isNotEmpty()){
+            //권한 요청!
+            val array = arrayOfNulls<String>(rejectedPermissionList.size)
+            ActivityCompat.requestPermissions(this, rejectedPermissionList.toArray(array), multiplePermissionsCode)
+        }
+    }
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        when(requestCode){
+            multiplePermissionsCode->{
+                if(grantResults.isNotEmpty()){
+                    for((i,permission) in permissions.withIndex()){
+                        if(grantResults[i]!= PackageManager.PERMISSION_GRANTED){
+                            Log.i("failure","failure")
+                        }
+                    }
+                }
+            }
+        }
     }
 }

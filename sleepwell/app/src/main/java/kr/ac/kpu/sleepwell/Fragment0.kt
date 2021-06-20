@@ -1,6 +1,7 @@
 package kr.ac.kpu.sleepwell
 
 import android.Manifest
+import android.app.Activity
 import android.app.AlertDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -15,6 +16,7 @@ import android.os.SystemClock
 import android.util.Log
 import android.view.*
 import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.data.PieDataSet
@@ -84,16 +86,16 @@ class Fragment0 : Fragment() {
     var timearraylist=ArrayList<String>(20) //시간 저장(녹음 파일)
     var Filearraylist=ArrayList<File>(20)   //녹음파일 자체 저장
     //RECORD_AUDIO에 퍼미션 요청 변수
-    private var permissions2: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
+    private var requirepermission: Array<String> = arrayOf(Manifest.permission.RECORD_AUDIO,Manifest.permission.READ_EXTERNAL_STORAGE,Manifest.permission.WRITE_EXTERNAL_STORAGE)
     private var permissionToRecordAccepted = false
     val foldername: String = "LogFolder"
     val filename = "sensorlog.txt"
-
-    fun Permissions(): Boolean {
+    val listpermissions= arrayOf(Manifest.permission.RECORD_AUDIO)
+    /*fun Permissions(): Boolean {
         val permissionWRITE_EXTERNAL_STORAGE = activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.WRITE_EXTERNAL_STORAGE) }
         val permissionREAD_EXTERNAL_STORAGE=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it, Manifest.permission.READ_EXTERNAL_STORAGE) }
         val permissionRECORD=activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }
-        val listPermissionsNeeded: MutableList<String> = ArrayList()
+        val listPermissionsNeeded: ArrayList<String> = ArrayList()
         if (permissionWRITE_EXTERNAL_STORAGE != PackageManager.PERMISSION_GRANTED) {
             listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
         }
@@ -124,7 +126,7 @@ class Fragment0 : Fragment() {
                 }
             }
         }
-    }
+    }*/
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
@@ -164,8 +166,8 @@ class Fragment0 : Fragment() {
             startActivity(intent)
         }
 
-        if(!Permissions())
-            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()
+        /*if(!Permissions())
+            Toast.makeText(activity,"권한을 허용하세요.",Toast.LENGTH_SHORT).show()*/
         //firebase init
         val user=Firebase.auth.currentUser
         if(user!=null){
@@ -185,9 +187,13 @@ class Fragment0 : Fragment() {
                 } else {
                     serviceIntent = GroundService.serviceIntent;//getInstance().getApplication();
                 }*/
-            val intent=Intent(activity,SleepStart::class.java) //background2에서 자동실행
-            intent.putExtra("si",selectedItemIndex)
-            startActivity(intent)
+            if(activity?.applicationContext?.let { ContextCompat.checkSelfPermission(it,Manifest.permission.RECORD_AUDIO) }!=PackageManager.PERMISSION_GRANTED){
+                requestPermissions(listpermissions,REQUEST_ALL_PERMISSION)
+            }else{
+                val intent=Intent(activity,SleepStart::class.java) //background2에서 자동실행
+                intent.putExtra("si",selectedItemIndex)
+                startActivity(intent)
+            }
         }
         return view
     }
