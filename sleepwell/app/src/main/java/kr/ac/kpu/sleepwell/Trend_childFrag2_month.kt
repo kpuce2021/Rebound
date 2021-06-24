@@ -34,8 +34,6 @@ class Trend_childFrag2_month : Fragment() {
 
     fun SleepCycleRadar(v:View){
         var radarChart: RadarChart
-        radarChart=v.findViewById<RadarChart>(R.id.radar_chart)
-
         val data_radar=ArrayList<RadarEntry>()
         data_radar.add(RadarEntry(8f,15f))
         data_radar.add(RadarEntry(4f,20f))
@@ -49,33 +47,12 @@ class Trend_childFrag2_month : Fragment() {
         val data = RadarData()
         data.addDataSet(dataset)
         val labels = arrayOf("Awake", "RemSleep", "LightSleep", "DeepSleep")
-        val xAxis = radarChart.xAxis
-        xAxis.valueFormatter = IndexAxisValueFormatter(labels)
-        xAxis.textColor=R.color.white
-        radarChart.data = data
     }
 
     fun MaxDevibelcheck(v:View){
 
         var lineChart: LineChart
-        lineChart=v.findViewById<LineChart>(R.id.sound_linechart)
 
-        lineChart.apply {
-            description.isEnabled=false
-            setMaxVisibleValueCount(16)
-            setPinchZoom(false)
-            setDrawGridBackground(false)
-            setDrawBorders(false)
-            legend.isEnabled=false
-            setTouchEnabled(false)
-            isDoubleTapToZoomEnabled=false
-            animateY(2000)
-
-            axisRight.run {
-                isEnabled=false
-                textSize=15f
-            }
-        }
 
         val type=ArrayList<String>()
         type.add("")
@@ -96,32 +73,6 @@ class Trend_childFrag2_month : Fragment() {
         y_type.add("80db")
         y_type.add("100db")
 
-        //x축설정
-        val xaxis=lineChart.xAxis
-        xaxis.apply{
-            setDrawGridLines(false)
-            isEnabled=true
-            position= XAxis.XAxisPosition.BOTTOM
-            setDrawAxisLine(false)
-            textColor=R.color.white
-            granularity=0.5f
-            isGranularityEnabled=false
-            valueFormatter= IndexAxisValueFormatter(type)
-            textSize=12f
-        }
-        //y축설정
-        val yaxis=lineChart.axisLeft
-        yaxis.apply {
-            isEnabled = true
-            axisMinimum = 0f // 최소값
-            axisMaximum = 100f // 최대값
-            granularity = 10f // 값 만큼 라인선 설정
-            setDrawLabels(true) // 값 셋팅 설정
-            textColor = Color.RED // 색상 설정
-            axisLineColor = Color.BLACK // 축 색상 설정
-            gridColor = Color.BLACK // 격자 색상 설정
-            //valueFormatter=IndexAxisValueFormatter(y_type)
-        }
 
         var entries=ArrayList<Entry>()
 
@@ -154,9 +105,5 @@ class Trend_childFrag2_month : Fragment() {
 
         set1.setColor(Color.BLACK)
         set1.setCircleColor(Color.BLACK)
-        lineChart.data=data
-        lineChart.setVisibleXRange(1.0f,16.0f)
     }
-
-
 }
