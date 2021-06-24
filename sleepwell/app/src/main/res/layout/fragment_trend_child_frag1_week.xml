@@ -14,6 +14,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
             <Button
+                android:id="@+id/no_w_data"
                 android:backgroundTint="@color/background0"
                 android:paddingTop="300dp"
                 android:gravity="center_horizontal"
@@ -73,6 +74,7 @@
                                 android:textColor="#ffffffff"
                                 />
                             <TextView
+                                android:id="@+id/w_score"
                                 android:paddingTop="15dp"
                                 android:paddingLeft="15dp"
                                 android:paddingBottom="15dp"
@@ -107,6 +109,7 @@
                                 android:textColor="#ffffffff"
                                 />
                             <TextView
+                                android:id="@+id/w_time"
                                 android:paddingTop="15dp"
                                 android:paddingLeft="15dp"
                                 android:paddingBottom="15dp"
@@ -148,6 +151,7 @@
                                 android:textColor="#ffffffff"
                                 />
                             <TextView
+                                android:id="@+id/w_start"
                                 android:paddingTop="15dp"
                                 android:paddingLeft="15dp"
                                 android:paddingBottom="15dp"
@@ -182,6 +186,7 @@
                                 android:textColor="#ffffffff"
                                 />
                             <TextView
+                                android:id="@+id/w_end"
                                 android:paddingTop="15dp"
                                 android:paddingLeft="15dp"
                                 android:paddingBottom="15dp"
@@ -210,6 +215,7 @@
                     android:paddingRight="10dp"
                     />
                 <com.github.mikephil.charting.charts.BarChart
+                    android:id="@+id/w_barchart"
                     android:background="@drawable/trend_background1"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -217,7 +223,7 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     />
-                <TextView
+                <!--<TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="left"
@@ -231,6 +237,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"/>
                 <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/w_Linechart1"
                     android:background="@drawable/trend_background1"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -252,6 +259,7 @@
                     android:paddingLeft="10dp"
                     android:paddingRight="10dp"/>
                 <com.github.mikephil.charting.charts.LineChart
+                    android:id="@+id/w_Linechart2"
                     android:background="@drawable/trend_background1"
                     android:layout_width="match_parent"
                     android:layout_height="300dp"
@@ -259,6 +267,7 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     />
+                -->
             </LinearLayout>
         </FrameLayout>
     </ScrollView>
