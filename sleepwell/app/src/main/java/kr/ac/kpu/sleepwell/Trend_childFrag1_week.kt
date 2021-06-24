@@ -93,11 +93,11 @@ class Trend_childFrag1_week : Fragment() {
         val colorlist = ArrayList<Int>()
         val set : BarDataSet
 
-        values.add(BarEntry(0.toFloat(),10f))
-        values.add(BarEntry(1.toFloat(),10f))
-        values.add(BarEntry(2.toFloat(),10f))
-        values.add(BarEntry(3.toFloat(),10f))
-        values.add(BarEntry(4.toFloat(),10f))
+        values.add(BarEntry(0.toFloat(),6f))
+        values.add(BarEntry(1.toFloat(),7f))
+        values.add(BarEntry(2.toFloat(),8f))
+        values.add(BarEntry(3.toFloat(),8.3f))
+        values.add(BarEntry(4.toFloat(),4.5f))
         values.add(BarEntry(5.toFloat(),0f))
         values.add(BarEntry(6.toFloat(),0f))
         type.add("일")
@@ -107,7 +107,7 @@ class Trend_childFrag1_week : Fragment() {
         type.add("목")
         type.add("금")
         type.add("토")
-        colorlist.add(Color.parseColor("#66dddd"))
+        colorlist.add(Color.parseColor("#55aadd"))
 
         if (w_barchart.data !=null && w_barchart.data.dataSetCount > 1){
             val chartData = w_barchart.data
