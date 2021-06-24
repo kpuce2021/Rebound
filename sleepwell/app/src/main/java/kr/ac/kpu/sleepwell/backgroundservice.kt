@@ -70,7 +70,7 @@ class backgroundservice : Service(), SensorEventListener {
     var startTime = System.currentTimeMillis()
     //val AudioRef = db.collection(userkey).document(day).collection("record").document("audiopath")
     val decibelRef = db.collection(userkey).document(day).collection("record").document("decibel")
-    val AudioRef = db.collection("audiodata").document(userkey).collection(daytime()).document("AudiofileRoute")
+    val AudioRef = db.collection("audiodata").document(userkey).collection(day).document("AudiofileRoute")
     private var audiodata=HashMap<String,String>()
     private var decibeldata=HashMap<String,String>()
 
