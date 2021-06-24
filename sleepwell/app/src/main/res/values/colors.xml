@@ -14,4 +14,7 @@
     <color name="Transparency">#00000000</color>
     <color name="DarkOrange">#FFFF8C00</color>
     <color name="CRIMSON">#FFDC143C</color>
+    <color name="maroon">#FF800000</color>
+    <color name="saddlebrown">#ff8b4513</color>
+    <color name="olive">#ff808000</color>
 </resources>

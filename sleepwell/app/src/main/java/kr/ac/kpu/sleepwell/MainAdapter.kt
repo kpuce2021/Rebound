@@ -21,7 +21,8 @@ class MainAdapter(fm:FragmentManager): FragmentPagerAdapter(fm) {
         itext.add("일일 수면")
         itext.add("트랜드")
         itext.add("마이페이지")
-       
+
+
     }
     override fun getItem(position: Int): Fragment {
         return items[position]

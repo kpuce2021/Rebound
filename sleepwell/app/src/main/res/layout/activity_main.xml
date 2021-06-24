@@ -19,7 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dip"
         android:layout_weight="1"
-        android:background="@color/background2"
+        android:background="@color/black"
+        app:tabTextColor="#39A59B"
         app:tabIndicatorColor="#39A59B"
         app:tabRippleColor="#39A59B"
         app:tabSelectedTextColor="#39A59B" />

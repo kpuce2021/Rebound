@@ -2,6 +2,7 @@ package kr.ac.kpu.sleepwell
 
 import android.content.Context
 import android.media.MediaPlayer
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,7 +15,8 @@ import java.io.FileInputStream
 class detailsrecordAdapter(val context: Context, val audiodatalist:ArrayList<detailsRecorddata>): BaseAdapter() {
 
     private var mediaPlayer: MediaPlayer?=null
-    private var isPaused:Boolean=false
+    private var isPaused:Boolean=true
+    private var pausePosition:Int?=null
 
     override fun getView(position: Int, convertview: View?, parent: ViewGroup?): View {
         val view: View = LayoutInflater.from(context).inflate(R.layout.details_musicbar, null)
@@ -30,24 +32,38 @@ class detailsrecordAdapter(val context: Context, val audiodatalist:ArrayList<det
 
         //재생시작
         btn_play.setOnClickListener{
-            btn_play.setBackgroundResource(R.drawable.ic_baseline_pause_24)
-            val fis= FileInputStream(audiopath)
-            if(mediaPlayer!=null){
-                mediaPlayer!!.release()
-            }
-            try{
-                mediaPlayer= MediaPlayer().apply {
-                    //재생이 멈췄을 때
-                    setOnCompletionListener {
-                        btn_play.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
-                    }
-                    setDataSource(fis.fd)
-                    prepare()
-                    start()
-                    isPaused=false
+            if(isPaused){
+                btn_play.setBackgroundResource(R.drawable.ic_baseline_pause_24)
+                val fis= FileInputStream(audiopath)
+                if(mediaPlayer!=null){
+                    mediaPlayer!!.release()
                 }
-            }catch (e: Exception){
-                e.printStackTrace()
+                try{
+                    mediaPlayer= MediaPlayer().apply {
+                        //재생이 멈췄을 때
+                        setOnCompletionListener {
+                            btn_play.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
+                            isPaused=true
+                        }
+                        setDataSource(fis.fd)
+                        prepare()
+                        start()
+                        isPaused=false
+                    }
+                }catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }
+            else{
+                btn_play.setBackgroundResource(R.drawable.ic_baseline_play_arrow_24)
+                if(mediaPlayer!=null && mediaPlayer!!.isPlaying){
+                    mediaPlayer?.apply {
+                        pause()
+                        isPaused=true
+                        pausePosition= mediaPlayer!!.currentPosition
+                        Log.d("pause check",":"+pausePosition)
+                    }
+                }
             }
         }
         //다시재생
