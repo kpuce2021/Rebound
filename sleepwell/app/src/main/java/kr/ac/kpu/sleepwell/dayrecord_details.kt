@@ -23,6 +23,10 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_dayrecord_details.*
 import kotlinx.android.synthetic.main.activity_dayrecord_details.awake_barchart
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class dayrecord_details : AppCompatActivity() {
 
@@ -258,7 +262,6 @@ class dayrecord_details : AppCompatActivity() {
         })
         AwakeDrawingGraph(awake_barchart)
     }
-
 
     fun SleepcycleCheck_piechart(pieChart: PieChart,rem:Float,deep:Float,light:Float,awake:Float){
 

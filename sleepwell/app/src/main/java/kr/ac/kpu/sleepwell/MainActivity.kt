@@ -2,6 +2,7 @@ package kr.ac.kpu.sleepwell
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -33,7 +34,11 @@ class MainActivity : AppCompatActivity() {
         val fragmentAdapter=MainAdapter(supportFragmentManager)
         viewpager_main.adapter=fragmentAdapter
 
+        //abs_main.getChildAt(0).setBackgroundColor(Color.parseColor("#00000000"))
+
         tabs_main.setupWithViewPager(viewpager_main)
+
+
         val images = ArrayList<Int>()
         images.add(R.drawable.ic_baseline_bedtime_24_3)
         images.add(R.drawable.ic_baseline_today_24)
